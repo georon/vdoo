@@ -13,6 +13,7 @@ interface VdooDesktop {
   exportPdf(request: { html: string; suggestedName: string }): Promise<{ path: string; name: string } | null>;
   files: VdooFiles;
   ai: VdooAi;
+  odoo: VdooOdoo;
 }
 
 type EditCommand = "undo" | "redo" | "cut" | "copy" | "paste" | "selectAll";
@@ -75,6 +76,19 @@ interface VdooAi {
 interface ProviderModel { id: string; name: string; contextLength: number | null }
 
 interface CustomEndpointStatus { configured: boolean; baseUrl: string; hasKey: boolean }
+
+interface OdooStatus { configured: boolean; url: string; user: string; database: string }
+
+/** What the server reported after a sign-in. */
+interface OdooConnection { version: string; database: string; user: string; login: string; uid: number; isAdmin: boolean }
+
+interface VdooOdoo {
+  status(): Promise<OdooStatus>;
+  /** An empty user means admin; an empty database means the server's only one. */
+  save(input: { url: string; user: string; database: string }): Promise<{ ok: boolean; status?: OdooStatus; error?: string }>;
+  /** Signs in with the saved URL and user. The password is used for this call and not kept. */
+  connect(password: string): Promise<{ ok: boolean; connection?: OdooConnection; error?: string }>;
+}
 
 interface Window {
   vdooDesktop?: VdooDesktop;

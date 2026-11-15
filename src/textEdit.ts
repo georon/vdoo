@@ -83,3 +83,19 @@ const markdownActions: Record<string, Action> = {
 /** The edit for a Markdown toolbar action, or null when `action` isn't a text edit. */
 export const markdownEdit = (action: string, value: string, s: number, e: number): TextEdit | null =>
   Object.hasOwn(markdownActions, action) ? markdownActions[action](value, s, e) : null;
+
+export interface TextMatch { index: number; length: number; wrapped: boolean }
+
+/**
+ * Where `query` occurs next in `text`, ignoring case. Forwards, the first match starting at or after `from`;
+ * backwards, the last match ending at or before `from`. With none left in that direction the search carries on from
+ * the other end of the text (`wrapped`). Null when the text doesn't contain the query.
+ */
+export function findMatch(text: string, query: string, from: number, backwards = false): TextMatch | null {
+  if (!query) return null;
+  const matches = [...text.matchAll(new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"))];
+  if (!matches.length) return null;
+  const found = backwards ? matches.findLast((m) => m.index + m[0].length <= from) : matches.find((m) => m.index >= from);
+  const match = found ?? (backwards ? matches[matches.length - 1] : matches[0]);
+  return { index: match.index, length: match[0].length, wrapped: !found };
+}

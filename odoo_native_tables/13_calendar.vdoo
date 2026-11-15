@@ -1,0 +1,1383 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Calendar",
+  "tables": [
+    {
+      "id": "t_calendar_event",
+      "name": "calendar_event",
+      "comment": "calendar.event — Calendar Event",
+      "color": "#40c057",
+      "columns": [
+        {
+          "id": "calendar_event.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "calendar_event.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Meeting Subject"
+        },
+        {
+          "id": "calendar_event.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Organizer"
+        },
+        {
+          "id": "calendar_event.start",
+          "name": "start",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Start"
+        },
+        {
+          "id": "calendar_event.stop",
+          "name": "stop",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Stop (computed, stored)"
+        },
+        {
+          "id": "calendar_event.allday",
+          "name": "allday",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "All Day"
+        },
+        {
+          "id": "calendar_event.start_date",
+          "name": "start_date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Start Date (computed, stored)"
+        },
+        {
+          "id": "calendar_event.stop_date",
+          "name": "stop_date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "End Date (computed, stored)"
+        },
+        {
+          "id": "calendar_event.duration",
+          "name": "duration",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Duration (computed, stored)"
+        },
+        {
+          "id": "calendar_event.location",
+          "name": "location",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Location"
+        },
+        {
+          "id": "calendar_event.videocall_location",
+          "name": "videocall_location",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Meeting URL (computed, stored)"
+        },
+        {
+          "id": "calendar_event.videocall_channel_id",
+          "name": "videocall_channel_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Discuss Channel → discuss_channel (not in this diagram)"
+        },
+        {
+          "id": "calendar_event.privacy",
+          "name": "privacy",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Privacy (public | private | confidential)"
+        },
+        {
+          "id": "calendar_event.show_as",
+          "name": "show_as",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Show as (free | busy)"
+        },
+        {
+          "id": "calendar_event.res_model_id",
+          "name": "res_model_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Document Model"
+        },
+        {
+          "id": "calendar_event.res_model",
+          "name": "res_model",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Document Model Name (computed, stored)"
+        },
+        {
+          "id": "calendar_event.res_id",
+          "name": "res_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Document ID"
+        },
+        {
+          "id": "calendar_event.recurrency",
+          "name": "recurrency",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Recurrent"
+        },
+        {
+          "id": "calendar_event.recurrence_id",
+          "name": "recurrence_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Recurrence Rule"
+        },
+        {
+          "id": "calendar_event.follow_recurrence",
+          "name": "follow_recurrence",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Follow recurrence"
+        },
+        {
+          "id": "calendar_event.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_calendar_attendee",
+      "name": "calendar_attendee",
+      "comment": "calendar.attendee — Calendar Attendee Information",
+      "color": "",
+      "columns": [
+        {
+          "id": "calendar_attendee.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "calendar_attendee.event_id",
+          "name": "event_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Meeting linked"
+        },
+        {
+          "id": "calendar_attendee.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Attendee"
+        },
+        {
+          "id": "calendar_attendee.common_name",
+          "name": "common_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Common name (computed, stored)"
+        },
+        {
+          "id": "calendar_attendee.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status"
+        },
+        {
+          "id": "calendar_attendee.availability",
+          "name": "availability",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Available/Busy (free | busy)"
+        },
+        {
+          "id": "calendar_attendee.access_token",
+          "name": "access_token",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Invitation Token"
+        }
+      ]
+    },
+    {
+      "id": "t_calendar_recurrence",
+      "name": "calendar_recurrence",
+      "comment": "calendar.recurrence — Event Recurrence Rule",
+      "color": "#40c057",
+      "columns": [
+        {
+          "id": "calendar_recurrence.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "calendar_recurrence.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name (computed, stored)"
+        },
+        {
+          "id": "calendar_recurrence.base_event_id",
+          "name": "base_event_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Base event"
+        },
+        {
+          "id": "calendar_recurrence.event_tz",
+          "name": "event_tz",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Timezone"
+        },
+        {
+          "id": "calendar_recurrence.rrule",
+          "name": "rrule",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Rrule (computed, stored)"
+        },
+        {
+          "id": "calendar_recurrence.rrule_type",
+          "name": "rrule_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Rrule type (daily | weekly | monthly | yearly)"
+        },
+        {
+          "id": "calendar_recurrence.interval",
+          "name": "interval",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Interval"
+        },
+        {
+          "id": "calendar_recurrence.end_type",
+          "name": "end_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "End type (count | end_date | forever)"
+        },
+        {
+          "id": "calendar_recurrence.count",
+          "name": "count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Count"
+        },
+        {
+          "id": "calendar_recurrence.until",
+          "name": "until",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Repeat Until"
+        },
+        {
+          "id": "calendar_recurrence.month_by",
+          "name": "month_by",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Month by (date | day)"
+        },
+        {
+          "id": "calendar_recurrence.day",
+          "name": "day",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Day"
+        },
+        {
+          "id": "calendar_recurrence.weekday",
+          "name": "weekday",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Weekday (MON | TUE | WED | THU | FRI | SAT | SUN)"
+        },
+        {
+          "id": "calendar_recurrence.byday",
+          "name": "byday",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "By day (1 | 2 | 3 | 4 | -1)"
+        }
+      ]
+    },
+    {
+      "id": "t_calendar_alarm",
+      "name": "calendar_alarm",
+      "comment": "calendar.alarm — Event Alarm",
+      "color": "#40c057",
+      "columns": [
+        {
+          "id": "calendar_alarm.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "calendar_alarm.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "calendar_alarm.alarm_type",
+          "name": "alarm_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (notification | email)"
+        },
+        {
+          "id": "calendar_alarm.duration",
+          "name": "duration",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Remind Before"
+        },
+        {
+          "id": "calendar_alarm.interval",
+          "name": "interval",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit"
+        },
+        {
+          "id": "calendar_alarm.duration_minutes",
+          "name": "duration_minutes",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Duration in minutes (computed, stored)"
+        },
+        {
+          "id": "calendar_alarm.mail_template_id",
+          "name": "mail_template_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email Template (computed, stored) → mail_template (not in this diagram)"
+        },
+        {
+          "id": "calendar_alarm.notify_responsible",
+          "name": "notify_responsible",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Notify Responsible"
+        }
+      ]
+    },
+    {
+      "id": "t_calendar_event_type",
+      "name": "calendar_event_type",
+      "comment": "calendar.event.type — Event Meeting Type",
+      "color": "#40c057",
+      "columns": [
+        {
+          "id": "calendar_event_type.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "calendar_event_type.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "calendar_event_type.color",
+          "name": "color",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Color"
+        }
+      ]
+    },
+    {
+      "id": "t_calendar_filters",
+      "name": "calendar_filters",
+      "comment": "calendar.filters — Calendar Filters",
+      "color": "",
+      "columns": [
+        {
+          "id": "calendar_filters.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "calendar_filters.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Me"
+        },
+        {
+          "id": "calendar_filters.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Employee"
+        },
+        {
+          "id": "calendar_filters.partner_checked",
+          "name": "partner_checked",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Checked"
+        },
+        {
+          "id": "calendar_filters.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_mail_activity",
+      "name": "mail_activity",
+      "comment": "mail.activity — Activity",
+      "color": "",
+      "columns": [
+        {
+          "id": "mail_activity.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mail_activity.res_model_id",
+          "name": "res_model_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Document Model"
+        },
+        {
+          "id": "mail_activity.res_model",
+          "name": "res_model",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Document Model (computed, stored)"
+        },
+        {
+          "id": "mail_activity.res_id",
+          "name": "res_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Document ID"
+        },
+        {
+          "id": "mail_activity.activity_type_id",
+          "name": "activity_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Activity Type"
+        },
+        {
+          "id": "mail_activity.summary",
+          "name": "summary",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Summary"
+        },
+        {
+          "id": "mail_activity.date_deadline",
+          "name": "date_deadline",
+          "type": "date",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Due Date"
+        },
+        {
+          "id": "mail_activity.date_done",
+          "name": "date_done",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Done Date (computed, stored)"
+        },
+        {
+          "id": "mail_activity.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Assigned to"
+        },
+        {
+          "id": "mail_activity.calendar_event_id",
+          "name": "calendar_event_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Calendar Meeting"
+        },
+        {
+          "id": "mail_activity.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_mail_activity_type",
+      "name": "mail_activity_type",
+      "comment": "mail.activity.type — Activity Type",
+      "color": "",
+      "columns": [
+        {
+          "id": "mail_activity_type.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mail_activity_type.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "mail_activity_type.category",
+          "name": "category",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Action (default | upload_file | phonecall | meeting)"
+        },
+        {
+          "id": "mail_activity_type.res_model",
+          "name": "res_model",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Model"
+        },
+        {
+          "id": "mail_activity_type.delay_count",
+          "name": "delay_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Schedule"
+        },
+        {
+          "id": "mail_activity_type.delay_unit",
+          "name": "delay_unit",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Delay units (days | weeks | months)"
+        },
+        {
+          "id": "mail_activity_type.chaining_type",
+          "name": "chaining_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Chaining Type (suggest | trigger)"
+        },
+        {
+          "id": "mail_activity_type.triggered_next_type_id",
+          "name": "triggered_next_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Trigger (computed, stored)"
+        },
+        {
+          "id": "mail_activity_type.default_user_id",
+          "name": "default_user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Default User"
+        },
+        {
+          "id": "mail_activity_type.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "mail_activity_type.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_res_users_settings",
+      "name": "res_users_settings",
+      "comment": "res.users.settings — User Settings",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_users_settings.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users_settings.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "User"
+        },
+        {
+          "id": "res_users_settings.calendar_default_privacy",
+          "name": "calendar_default_privacy",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Calendar Default Privacy (public | private | confidential)"
+        }
+      ]
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        },
+        {
+          "id": "res_partner.calendar_last_notif_ack",
+          "name": "calendar_last_notif_ack",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Last notification marked as read from base Calendar"
+        }
+      ]
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "comment": "res.users — User; delegates to res.partner via partner_id; reference copy, details in 00_contacts_core",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        }
+      ]
+    },
+    {
+      "id": "t_ir_model",
+      "name": "ir_model",
+      "comment": "ir.model — Models; reference copy",
+      "color": "",
+      "columns": [
+        {
+          "id": "ir_model.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "ir_model.model",
+          "name": "model",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Model"
+        },
+        {
+          "id": "ir_model.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Model Description (translated: one value per language)"
+        }
+      ]
+    },
+    {
+      "id": "t_calendar_event_res_partner_rel",
+      "name": "calendar_event_res_partner_rel",
+      "comment": "many2many calendar.event.partner_ids ↔ res.partner (Attendees)",
+      "color": "",
+      "columns": [
+        {
+          "id": "calendar_event_res_partner_rel.calendar_event_id",
+          "name": "calendar_event_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "calendar.event id"
+        },
+        {
+          "id": "calendar_event_res_partner_rel.res_partner_id",
+          "name": "res_partner_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.partner id"
+        }
+      ]
+    },
+    {
+      "id": "t_meeting_category_rel",
+      "name": "meeting_category_rel",
+      "comment": "many2many calendar.event.categ_ids ↔ calendar.event.type (Tags)",
+      "color": "",
+      "columns": [
+        {
+          "id": "meeting_category_rel.event_id",
+          "name": "event_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "calendar.event id"
+        },
+        {
+          "id": "meeting_category_rel.type_id",
+          "name": "type_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "calendar.event.type id"
+        }
+      ]
+    },
+    {
+      "id": "t_calendar_alarm_calendar_event_rel",
+      "name": "calendar_alarm_calendar_event_rel",
+      "comment": "many2many calendar.event.alarm_ids ↔ calendar.alarm (Reminders)",
+      "color": "",
+      "columns": [
+        {
+          "id": "calendar_alarm_calendar_event_rel.calendar_event_id",
+          "name": "calendar_event_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "calendar.event id"
+        },
+        {
+          "id": "calendar_alarm_calendar_event_rel.calendar_alarm_id",
+          "name": "calendar_alarm_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "calendar.alarm id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_calendar_event_user_id",
+      "parent": "t_res_users",
+      "child": "t_calendar_event",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "calendar_event.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_event_res_model_id",
+      "parent": "t_ir_model",
+      "child": "t_calendar_event",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "res_model_id",
+      "columns": [
+        {
+          "fk": "calendar_event.res_model_id",
+          "ref": "ir_model.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_event_recurrence_id",
+      "parent": "t_calendar_recurrence",
+      "child": "t_calendar_event",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "recurrence_id",
+      "columns": [
+        {
+          "fk": "calendar_event.recurrence_id",
+          "ref": "calendar_recurrence.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_attendee_event_id",
+      "parent": "t_calendar_event",
+      "child": "t_calendar_attendee",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "event_id",
+      "columns": [
+        {
+          "fk": "calendar_attendee.event_id",
+          "ref": "calendar_event.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_attendee_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_calendar_attendee",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "calendar_attendee.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_recurrence_base_event_id",
+      "parent": "t_calendar_event",
+      "child": "t_calendar_recurrence",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "base_event_id",
+      "columns": [
+        {
+          "fk": "calendar_recurrence.base_event_id",
+          "ref": "calendar_event.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_filters_user_id",
+      "parent": "t_res_users",
+      "child": "t_calendar_filters",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "calendar_filters.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_filters_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_calendar_filters",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "calendar_filters.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mail_activity_res_model_id",
+      "parent": "t_ir_model",
+      "child": "t_mail_activity",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "res_model_id",
+      "columns": [
+        {
+          "fk": "mail_activity.res_model_id",
+          "ref": "ir_model.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mail_activity_activity_type_id",
+      "parent": "t_mail_activity_type",
+      "child": "t_mail_activity",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "activity_type_id",
+      "columns": [
+        {
+          "fk": "mail_activity.activity_type_id",
+          "ref": "mail_activity_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mail_activity_user_id",
+      "parent": "t_res_users",
+      "child": "t_mail_activity",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "mail_activity.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mail_activity_calendar_event_id",
+      "parent": "t_calendar_event",
+      "child": "t_mail_activity",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "calendar_event_id",
+      "columns": [
+        {
+          "fk": "mail_activity.calendar_event_id",
+          "ref": "calendar_event.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mail_activity_type_triggered_next_type_id",
+      "parent": "t_mail_activity_type",
+      "child": "t_mail_activity_type",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "triggered_next_type_id",
+      "columns": [
+        {
+          "fk": "mail_activity_type.triggered_next_type_id",
+          "ref": "mail_activity_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mail_activity_type_default_user_id",
+      "parent": "t_res_users",
+      "child": "t_mail_activity_type",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "default_user_id",
+      "columns": [
+        {
+          "fk": "mail_activity_type.default_user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_settings_user_id",
+      "parent": "t_res_users",
+      "child": "t_res_users_settings",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "res_users_settings.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_event_res_partner_rel_calendar_event_id",
+      "parent": "t_calendar_event",
+      "child": "t_calendar_event_res_partner_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "calendar_event_id",
+      "columns": [
+        {
+          "fk": "calendar_event_res_partner_rel.calendar_event_id",
+          "ref": "calendar_event.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_event_res_partner_rel_res_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_calendar_event_res_partner_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "res_partner_id",
+      "columns": [
+        {
+          "fk": "calendar_event_res_partner_rel.res_partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_meeting_category_rel_event_id",
+      "parent": "t_calendar_event",
+      "child": "t_meeting_category_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "event_id",
+      "columns": [
+        {
+          "fk": "meeting_category_rel.event_id",
+          "ref": "calendar_event.id"
+        }
+      ]
+    },
+    {
+      "id": "r_meeting_category_rel_type_id",
+      "parent": "t_calendar_event_type",
+      "child": "t_meeting_category_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "type_id",
+      "columns": [
+        {
+          "fk": "meeting_category_rel.type_id",
+          "ref": "calendar_event_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_alarm_calendar_event_rel_calendar_event_id",
+      "parent": "t_calendar_event",
+      "child": "t_calendar_alarm_calendar_event_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "calendar_event_id",
+      "columns": [
+        {
+          "fk": "calendar_alarm_calendar_event_rel.calendar_event_id",
+          "ref": "calendar_event.id"
+        }
+      ]
+    },
+    {
+      "id": "r_calendar_alarm_calendar_event_rel_calendar_alarm_id",
+      "parent": "t_calendar_alarm",
+      "child": "t_calendar_alarm_calendar_event_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "calendar_alarm_id",
+      "columns": [
+        {
+          "fk": "calendar_alarm_calendar_event_rel.calendar_alarm_id",
+          "ref": "calendar_alarm.id"
+        }
+      ]
+    }
+  ]
+}

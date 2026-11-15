@@ -607,11 +607,111 @@ installs automatically (`sale_stock`, `purchase_stock`, `sale_crm`, `sale_projec
             "(e.g. `stock_reference_sale_rel`), which replaced procurement groups.",
         ],
     },
+    {
+        "slug": "13_calendar",
+        "title": "Calendar",
+        "modules": ["calendar"],
+        "summary": """
+Meetings and their attendees, reminders, tags and recurrence rules. A meeting is a row of `calendar_event`; every
+invited contact gets a `calendar_attendee` row holding their answer. The Calendar module also ties meetings to
+activities (`mail_activity`), so a "Meeting" activity on any record and its calendar entry stay in step.
+""",
+        "tables": {
+            "calendar.event": ["name", "user_id", "start", "stop", "allday", "start_date", "stop_date", "duration", "location",
+                               "videocall_location", "videocall_channel_id", "privacy", "show_as", "res_model_id", "res_model",
+                               "res_id", "recurrency", "recurrence_id", "follow_recurrence", "active"],
+            "calendar.attendee": ["event_id", "partner_id", "common_name", "state", "availability", "access_token"],
+            "calendar.recurrence": ["name", "base_event_id", "event_tz", "rrule", "rrule_type", "interval", "end_type", "count",
+                                    "until", "month_by", "day", "weekday", "byday"],
+            "calendar.alarm": ["name", "alarm_type", "duration", "interval", "duration_minutes", "mail_template_id",
+                               "notify_responsible"],
+            "calendar.event.type": ["name", "color"],
+            "calendar.filters": ["user_id", "partner_id", "partner_checked", "active"],
+            "mail.activity": ["res_model_id", "res_model", "res_id", "activity_type_id", "summary", "date_deadline", "date_done",
+                              "user_id", "calendar_event_id", "active"],
+            "mail.activity.type": ["name", "category", "res_model", "delay_count", "delay_unit", "chaining_type",
+                                   "triggered_next_type_id", "default_user_id", "sequence", "active"],
+            "res.users.settings": ["user_id", "calendar_default_privacy"],
+        },
+        "refs": {"res.partner": PARTNER_REF + ["calendar_last_notif_ack"], "res.users": USER_REF, "ir.model": ["model", "name"]},
+        "m2m": [("calendar.event", "partner_ids"), ("calendar.event", "categ_ids"), ("calendar.event", "alarm_ids")],
+        "flows": [
+            "Creating a meeting writes one `calendar_event` row. Its attendees are contacts: `calendar_event_res_partner_rel` "
+            "lists them, and Odoo keeps one `calendar_attendee` row per invited contact with their answer in `state` "
+            "(`needsAction`, `tentative`, `declined`, `accepted`) and the token used by the links in the invitation email.",
+            "The organizer is a user (`calendar_event.user_id`); attendees are contacts, so people without a login can be invited.",
+            "A repeating meeting is one `calendar_recurrence` row (the rule, in `rrule` and its parts) plus one `calendar_event` "
+            "row per occurrence, each pointing back through `recurrence_id`. `base_event_id` is the occurrence the others are "
+            "copied from; an occurrence edited on its own has `follow_recurrence = false`.",
+            "Reminders are shared definitions (`calendar_alarm`: notification or email, how long before) attached to meetings "
+            "through `calendar_alarm_calendar_event_rel`.",
+            "A meeting can belong to a record of any model: `res_model_id`/`res_model` name the model and `res_id` the row "
+            "(an opportunity, a contact …). There is no database foreign key on `res_id`.",
+            "Scheduling an activity whose type has `category = 'meeting'` creates the meeting and stores it in "
+            "`mail_activity.calendar_event_id`; moving the meeting updates the activity's `date_deadline`, and deleting "
+            "the meeting deletes the activity.",
+        ],
+        "notes": [
+            "All-day meetings use `start_date`/`stop_date`; timed meetings use `start`/`stop`, stored in UTC.",
+            "`calendar_filters` is each user's list of other people's calendars shown in the calendar side panel "
+            "(`partner_checked` = currently ticked).",
+            "`res_users_settings.calendar_default_privacy` is the privacy applied to a user's meetings that have no `privacy` of their own.",
+            "`res_partner.calendar_last_notif_ack` is when the contact last dismissed calendar notifications; reminders before it are not shown again.",
+            "`mail_activity` and `mail_activity_type` belong to the `mail` module and serve every app; Calendar adds "
+            "`calendar_event_id` and the `meeting` category.",
+            "Google and Outlook synchronisation (`google_calendar`, `microsoft_calendar`) add their own id columns to "
+            "`calendar_event`, `calendar_recurrence` and `calendar_attendee`; they are not installed here.",
+            "The Appointments app (online booking) builds on these tables but is Odoo Enterprise, so it is not in the "
+            "Community source and has no diagram.",
+        ],
+    },
+    {
+        "slug": "14_todo",
+        "title": "To-do",
+        "modules": ["project_todo"],
+        "summary": """
+The To-do app has no tables of its own: a to-do is a private task, a row of `project_task` with no project and no
+parent. It reuses the Project tables for assignees, personal stages and tags, and `mail_activity` for reminders.
+""",
+        "tables": {
+            "project.task": ["name", "description", "project_id", "parent_id", "state", "priority", "date_deadline", "color",
+                             "sequence", "company_id", "active"],
+            "project.task.stage.personal": ["task_id", "user_id", "stage_id"],
+            "project.task.type": ["name", "sequence", "fold", "user_id"],
+            "project.tags": ["name", "color"],
+            "mail.activity": ["res_model_id", "res_model", "res_id", "activity_type_id", "summary", "date_deadline", "user_id", "active"],
+        },
+        "refs": {"res.users": USER_REF, "project.project": ["name"], "mail.activity.type": ["name", "category"],
+                 "ir.model": ["model", "name"]},
+        "m2m": [("project.task", "tag_ids")],
+        "flows": [
+            "A to-do is a `project_task` row with `project_id` and `parent_id` empty. The To-do app lists the current "
+            "user's rows of that kind: those with a `project_task_user_rel` row for the user.",
+            "`project_task_user_rel` holds one row per assignee of a to-do. Its `stage_id` is that person's own column for "
+            "it, so two people sharing a to-do can each file it differently.",
+            "Personal stages are `project_task_type` rows with `user_id` set. Each user gets Inbox, Today, This Week, "
+            "This Month, Later, Done and Cancelled the first time they need them.",
+            "Done and cancelled are `state` values (`1_done`, `1_canceled`), not stages; a to-do has no `stage_id` of its own.",
+            "A reminder is a `mail_activity` row with `res_model = 'project.task'` and `res_id` = the to-do. "
+            "\"Add a To-do\" from the activity menu creates the to-do and its activity together.",
+            "\"Convert to Task\" sets `project_id` on the same row: it becomes a normal task and leaves the To-do app.",
+        ],
+        "notes": [
+            "`project_todo` installs itself with Project (`auto_install`), and gives every internal user a welcome to-do.",
+            "`project_task_user_rel` is the table of `project.task.stage.personal`, not a plain many2many table; "
+            "`project_task.user_ids` reads the same rows.",
+            "`mail_activity.res_id` has no database foreign key: the pair (`res_model`, `res_id`) names the row.",
+            "A to-do created without a title takes the first line of its `description` as `name`.",
+            "The full task and stage columns are in 07_project; activities are detailed in 13_calendar.",
+        ],
+    },
 ]
 
 # Which diagram owns a model, so reference copies can say where the details are.
 HOME: dict[str, str] = {}
-for _app in APPS[:-1]:
+for _app in APPS:
+    if _app["slug"] == "12_cross_app_links":
+        continue
     for _name in _app["tables"]:
         HOME.setdefault(_name, _app["slug"])
 
@@ -626,6 +726,7 @@ TABLE_NOTES = {
                    "adjustments set `inventory_quantity` and apply it, which creates moves.",
     "project_task_user_rel": "Table of `project.task.stage.personal`. Each row is one assignee of a task (`task_id`, `user_id`) "
                              "and that user's personal stage for it (`stage_id`).",
+    "mail_activity": "One row per scheduled activity on any record: (`res_model`, `res_id`) name the record, `user_id` is who must do it.",
     "hr_version": "One row per dated version of an employee's job, contract and private details.",
 }
 
@@ -696,8 +797,8 @@ the `.vdoo` and `.md` files, so make lasting changes in `spec.py` (or save an ed
 
 ## Limits
 
-- Community edition only. Enterprise apps and fields (Accounting's `account_accountant`, Studio, Field Service,
-  Rental, Planning …) are not in the source used here.
+- Community edition only. Enterprise apps and fields (Accounting's `account_accountant`, Appointments, Studio,
+  Field Service, Rental, Planning …) are not in the source used here.
 - The diagrams show columns as the ORM defines them; database constraints added in SQL (unique indexes,
   check constraints) are not drawn.
 """

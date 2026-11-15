@@ -3,6 +3,7 @@
 // Run `npm run build` first. VDOO_SMOKE_SHOTS=folder also saves screenshots there.
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -230,6 +231,47 @@ try {
   assert.equal(await plain.inputValue(), "line one\nline <two>\n");
   console.log("ok  a second file opens in a new tab; Text and Rich text modes switch from the toolbar and the Mode menu");
 
+  // Ctrl+F finds in the file from the cursor down: in the text (and Markdown) source, and in rich text.
+  const selection = () => page.evaluate(() => {
+    const el = document.activeElement?.closest(".doc")?.querySelector("textarea") ?? document.querySelector(".doc:not([hidden]) textarea");
+    return [el.selectionStart, el.selectionEnd];
+  });
+  await plain.evaluate((el) => el.setSelectionRange(0, 0));
+  await plain.press("Control+f");
+  const findBox = page.locator(".doc:not([hidden])").getByLabel("Find in file");
+  await findBox.pressSequentially("LINE");
+  assert.deepEqual(await selection(), [0, 4], "the first match at or below the cursor, ignoring case");
+  await findBox.press("Enter");
+  assert.deepEqual(await selection(), [9, 13], "Enter moves to the next match down");
+  await findBox.press("Enter");
+  assert.deepEqual(await selection(), [0, 4]);
+  await page.locator(".doc:not([hidden]) .find-note").getByText("Continued from the top").waitFor();
+  await findBox.press("Shift+Enter");
+  assert.deepEqual(await selection(), [9, 13], "Shift+Enter moves up");
+  await findBox.fill("nowhere");
+  await page.locator(".doc:not([hidden]) .find-note").getByText("No matches").waitFor();
+  await findBox.fill("<two>");
+  await findBox.press("Escape");
+  assert.equal(await findBox.count(), 0);
+  assert.equal(await page.evaluate(() => document.activeElement?.tagName), "TEXTAREA", "closing puts the cursor back in the text");
+  assert.deepEqual(await selection(), [14, 19]);
+  await page.getByRole("group", { name: "Editor mode" }).getByRole("button", { name: "Rich text" }).click();
+  await richPlain.waitFor();
+  await page.getByRole("menuitem", { name: "Edit" }).click();
+  await page.getByRole("menuitem", { name: /Find/ }).click();
+  await findBox.pressSequentially("line");
+  await findBox.press("Enter");
+  await findBox.pressSequentially(" <tw");
+  assert.equal(await page.evaluate(() => [...CSS.highlights.get("vdoo-find")].join("|")), "line <tw", "the match is highlighted while the find box has the focus");
+  assert.equal(await findBox.inputValue(), "line <tw");
+  await findBox.press("Escape");
+  assert.equal(await page.evaluate(() => String(document.getSelection())), "line <tw", "closing selects the match in the rich text");
+  assert.equal(await page.evaluate(() => CSS.highlights.has("vdoo-find")), false);
+  assert.equal(await richPlain.innerHTML(), "line one<br>line &lt;two&gt;<br>", "finding changes nothing");
+  await page.getByRole("group", { name: "Editor mode" }).getByRole("button", { name: "Text", exact: true }).click();
+  await plain.waitFor();
+  console.log("ok  Ctrl+F and Edit › Find select the next match in text and rich text");
+
   // HTML opens as rich text, sanitized; the formatting toolbar edits it.
   await tree.getByRole("button", { name: "page.html" }).click();
   const rich = page.getByLabel("page.html rich text");
@@ -315,6 +357,50 @@ try {
   await settings.getByText(/^Not set/).waitFor();
   await settings.getByRole("button", { name: "Close" }).click();
   console.log("ok  Settings has a default directory, and Open and Open folder start there");
+
+  // Settings › Odoo: URL and user are saved, the password is asked for in a dialog when the connection is tested.
+  const odooServer = http.createServer((req, res) => {
+    let body = "";
+    req.on("data", (chunk) => { body += chunk; });
+    req.on("end", () => {
+      const { params } = JSON.parse(body);
+      const answer = req.url === "/web/database/list" ? { result: ["demo"] }
+        : req.url === "/web/session/authenticate" && params.login === "admin" && params.password === "secret"
+          ? { result: { uid: 2, is_admin: true, db: params.db, name: "Mitchell Admin", server_version: "19.0" } }
+          : { error: { code: 200, message: "Odoo Server Error", data: { name: "odoo.exceptions.AccessDenied", message: "Access Denied" } } };
+      res.writeHead(200, { "Content-Type": "application/json" }).end(JSON.stringify({ jsonrpc: "2.0", id: 1, ...answer }));
+    });
+  });
+  await new Promise((resolve) => odooServer.listen(0, "127.0.0.1", resolve));
+  try {
+    const odooUrl = `http://127.0.0.1:${odooServer.address().port}`;
+    await app.evaluate(({ dialog }) => {
+      globalThis.localQuestions = [];
+      dialog.showMessageBox = async (_win, options) => { globalThis.localQuestions.push(options.message); return { response: 0 }; };
+    });
+    await page.getByRole("button", { name: "Settings" }).click();
+    const odooSettings = page.getByRole("dialog", { name: "Settings" });
+    assert.equal(await odooSettings.getByLabel("Admin user").inputValue(), "admin");
+    await odooSettings.getByLabel("Odoo URL").fill(odooUrl + "/");
+    await odooSettings.getByRole("button", { name: "Test connection" }).click();
+    const ask = page.getByRole("dialog", { name: "Odoo password" });
+    await ask.getByText("127.0.0.1").waitFor();
+    await ask.getByLabel("Odoo password").fill("wrong");
+    await ask.getByRole("button", { name: "Connect" }).click();
+    await ask.getByText(/rejected this user name or password/).waitFor();
+    await ask.getByLabel("Odoo password").fill("secret");
+    await ask.getByLabel("Odoo password").press("Enter");
+    await odooSettings.getByText("Connection verified: Odoo 19.0, database demo, signed in as Mitchell Admin.").waitFor();
+    assert.equal(await ask.count(), 0);
+    assert.deepEqual(await app.evaluate(() => globalThis.localQuestions), [`Connect to ${new URL(odooUrl).host}?`], "a local address is asked about once");
+    const savedOdoo = fs.readFileSync(path.join(userData, "ai", "odoo.json"), "utf8");
+    assert.equal(JSON.parse(savedOdoo).url, odooUrl);
+    assert.equal(JSON.parse(savedOdoo).user, "admin");
+    assert.equal(savedOdoo.includes("secret"), false, "the password is not saved");
+    await shot(page, "odoo-settings");
+    await odooSettings.getByRole("button", { name: "Close" }).click();
+  } finally { odooServer.close(); }
+  console.log("ok  Settings has the Odoo URL and admin user; Test connection asks for the password and signs in");
 
   // Binary files are refused, and the page can't reach files outside what the user opened.
   await tree.getByRole("button", { name: "image.bin" }).click();

@@ -605,4 +605,5 @@ function register(handle, send, { confirmLocal } = {}) {
   handle("vdoo:ai-cancel", (_event, id) => { active.get(id)?.abort(); return true; });
 }
 
-module.exports = { register };
+// odoo.cjs connects through the same guarded fetch and keeps its settings beside the AI ones.
+module.exports = { register, guardedFetch: endpointFetch, resolveAddress: (url) => resolveDestination(url, sessions.defaultSession), file, writeAtomic };

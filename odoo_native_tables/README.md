@@ -20,6 +20,8 @@ modules and their dependencies installed, so names, types and nullability match 
 | [Point of Sale](10_point_of_sale.md) | [10_point_of_sale.vdoo](10_point_of_sale.vdoo) | `point_of_sale` | 10 | 32 |
 | [Website and eCommerce](11_website_ecommerce.md) | [11_website_ecommerce.vdoo](11_website_ecommerce.vdoo) | `website_sale` | 11 | 25 |
 | [Cross-app links](12_cross_app_links.md) | [12_cross_app_links.vdoo](12_cross_app_links.vdoo) | `sale_crm`, `sale_stock`, `purchase_stock`, `sale_project`, `sale_mrp`, `stock_account`, `pos_sale`, `website_sale` | 15 | 37 |
+| [Calendar](13_calendar.md) | [13_calendar.vdoo](13_calendar.vdoo) | `calendar` | 12 | 23 |
+| [To-do](14_todo.md) | [14_todo.vdoo](14_todo.vdoo) | `project_todo` | 6 | 11 |
 
 ¹ The app's tables including its many2many tables; reference copies of other apps' tables are not counted.
 
@@ -75,7 +77,7 @@ the `.vdoo` and `.md` files, so make lasting changes in `spec.py` (or save an ed
 
 ## Limits
 
-- Community edition only. Enterprise apps and fields (Accounting's `account_accountant`, Studio, Field Service,
-  Rental, Planning …) are not in the source used here.
+- Community edition only. Enterprise apps and fields (Accounting's `account_accountant`, Appointments, Studio,
+  Field Service, Rental, Planning …) are not in the source used here.
 - The diagrams show columns as the ORM defines them; database constraints added in SQL (unique indexes,
   check constraints) are not drawn.

@@ -122,7 +122,12 @@ input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent);
 .fmt { min-width: 28px; height: 26px; padding: 0 7px; border: 1px solid transparent; border-radius: 5px; background: none; font-size: 12.5px; cursor: pointer; white-space: nowrap; }
 .fmt:hover { background: var(--hover); }
 .fmt.on { border-color: var(--accent); color: var(--accent); background: var(--hover); }
-.doc-split { display: flex; flex: 1; min-height: 0; }
+.find-bar { display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: var(--panel); border-bottom: 1px solid var(--border); }
+.find-bar input { width: min(320px, 50%); height: 26px; }
+::highlight(vdoo-find) { background: Highlight; color: HighlightText; }
+.find-note { flex: 1; min-width: 0; padding-left: 6px; color: var(--text-2); font-size: 12.5px; }
+.doc-split { display: flex; flex: 1; min-height: 0; position: relative; overflow: hidden; }
+.find-mark { position: absolute; pointer-events: none; border-radius: 2px; background: Highlight; opacity: 0.4; }
 .doc-text { flex: 1; min-width: 0; resize: none; border: none; border-radius: 0; padding: 12px 14px; background: var(--bg); font: 13.5px/1.55 ui-monospace, "Cascadia Code", Menlo, Consolas, monospace; tab-size: 4; }
 .doc-text:focus, .doc-rich:focus { outline: none; }
 .doc-rich, .doc-preview { flex: 1; min-width: 0; overflow: auto; padding: 12px 22px; background: var(--panel); }
@@ -218,6 +223,13 @@ table.columns tr.is-fk { background: var(--fk-bg); }
 .router-key, .router-model-picker { display: grid; gap: 7px; }
 .router-key > div { display: flex; gap: 8px; }
 .router-key input { flex: 1; }
+.odoo-settings { display: grid; gap: 7px; }
+.odoo-settings .odoo-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 10px; }
+.odoo-settings .odoo-fields label { display: grid; gap: 4px; font-size: 12.5px; color: var(--text-2); }
+.odoo-settings .odoo-fields label:first-child { grid-column: 1 / -1; }
+.odoo-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.odoo-password { display: grid; gap: 10px; }
+.odoo-password p { margin: 0; overflow-wrap: anywhere; }
 .router-key-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .router-models { max-height: 170px; overflow-y: auto; }
 .router-models button { display: flex; width: 100%; justify-content: space-between; gap: 10px; padding: 7px 8px; text-align: left; border: none; border-radius: 6px; background: none; cursor: pointer; }

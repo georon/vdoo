@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import { CLAUDE_CODE_URL, PROVIDERS, savedProvider, saveAiPreference, signInChatGPT, type AiProvider } from "./ai";
 import { CustomEndpointSettings } from "./CustomEndpointSettings";
+import { OdooSettings } from "./OdooSettings";
 
 export function Settings({ onClose }: { onClose: () => void }) {
   const ai = window.vdooDesktop?.ai;
@@ -55,6 +56,11 @@ export function Settings({ onClose }: { onClose: () => void }) {
         : <CustomEndpointSettings ai={ai} status={status.custom} onStatus={(custom) => setStatus({ ...status, custom })} />}
         {error && <p className="form-error" role="alert">{error}</p>}
       </>}
+    </section>
+    <section className="settings">
+      <h3>Odoo</h3>
+      {!window.vdooDesktop?.odoo ? <p className="hint">The Odoo connection is available in the desktop app.</p>
+        : <OdooSettings odoo={window.vdooDesktop.odoo} />}
     </section>
   </Modal>;
 }

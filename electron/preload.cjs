@@ -27,6 +27,12 @@ contextBridge.exposeInMainWorld("vdooDesktop", {
     chooseDefaultDir: () => ipcRenderer.invoke("vdoo:files-choose-default-dir"),
     clearDefaultDir: () => ipcRenderer.invoke("vdoo:files-clear-default-dir"),
   },
+  odoo: {
+    status: () => ipcRenderer.invoke("vdoo:odoo-status"),
+    save: (input) => ipcRenderer.invoke("vdoo:odoo-save", input),
+    /** Signs in with the saved URL and user. The password is used for this call only. */
+    connect: (password) => ipcRenderer.invoke("vdoo:odoo-connect", password),
+  },
   ai: {
     status: () => ipcRenderer.invoke("vdoo:ai-status"),
     signInChatGPT: () => ipcRenderer.invoke("vdoo:ai-chatgpt-signin"),

@@ -11,7 +11,7 @@ import { EXAMPLE } from "./example";
 import { readSetting, writeSetting } from "./preferences";
 import { type Menu, MenuBar } from "./MenuBar";
 import { Explorer } from "./Explorer";
-import { type Doc, DocEditor } from "./DocEditor";
+import { type Doc, DocEditor, FIND_EVENT } from "./DocEditor";
 import { docToPrintHtml, pdfName, printInBrowser } from "./exportPdf";
 import { highlight } from "./ColorPicker";
 import { type DocMode, DEFAULT_NAMES, MODE_LABELS, baseName, isSchemaPath, modeForPath } from "./textEdit";
@@ -233,6 +233,7 @@ export function App() {
       else if (key === "n") { event.preventDefault(); if (event.shiftKey) newSchema(); else newDoc(); }
       else if (key === "p" && !event.shiftKey) { event.preventDefault(); if (doc) void exportPdf(doc); }
       else if (key === "w") { event.preventDefault(); if (doc) closeDoc(doc.id); }
+      else if (key === "f" && !event.shiftKey) { event.preventDefault(); if (doc) window.dispatchEvent(new Event(FIND_EVENT)); }
       else if (key === "b" && event.shiftKey) { event.preventDefault(); setSideOpen((v) => !v); }
       else if (!onSchema) return;
       else if (!typing && key === "z" && !event.shiftKey) { event.preventDefault(); undo(); }
@@ -271,6 +272,8 @@ export function App() {
       { label: "Copy", shortcut: "Ctrl+C", onSelect: () => editCommand("copy") },
       { label: "Paste", shortcut: "Ctrl+V", disabled: !desktop, onSelect: () => editCommand("paste") },
       { label: "Select all", shortcut: "Ctrl+A", onSelect: () => editCommand("selectAll") },
+      "separator",
+      { label: "Find…", shortcut: "Ctrl+F", disabled: !doc, onSelect: () => window.dispatchEvent(new Event(FIND_EVENT)) },
     ] },
     { label: "Schema", items: [
       { label: "Add table", onSelect: addTable },

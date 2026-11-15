@@ -172,3 +172,30 @@ describe('markdownEdit', () => {
     assert.deepEqual(a, b)
   })
 })
+
+describe('findMatch', () => {
+  const text = 'One fish, two fish.\nRed FISH, blue fish.'
+  test('finds the first match at or after the cursor, ignoring case', () => {
+    assert.deepEqual(E.findMatch(text, 'fish', 0), { index: 4, length: 4, wrapped: false })
+    assert.deepEqual(E.findMatch(text, 'fish', 4), { index: 4, length: 4, wrapped: false })
+    assert.deepEqual(E.findMatch(text, 'fish', 5), { index: 14, length: 4, wrapped: false })
+    assert.deepEqual(E.findMatch(text, 'Fish', 19), { index: 24, length: 4, wrapped: false })
+  })
+  test('carries on from the top after the last match', () => {
+    assert.deepEqual(E.findMatch(text, 'fish', 36), { index: 4, length: 4, wrapped: true })
+  })
+  test('backwards finds the last match ending at or before the cursor, then carries on from the bottom', () => {
+    assert.deepEqual(E.findMatch(text, 'fish', 24, true), { index: 14, length: 4, wrapped: false })
+    assert.deepEqual(E.findMatch(text, 'fish', 4, true), { index: 35, length: 4, wrapped: true })
+  })
+  test('the query is plain text, not a pattern', () => {
+    assert.deepEqual(E.findMatch('a.c abc a.c', 'a.c', 1), { index: 8, length: 3, wrapped: false })
+    assert.deepEqual(E.findMatch('f(x) [1] $5 \\n', '[1]', 0), { index: 5, length: 3, wrapped: false })
+    assert.equal(E.findMatch('abc', '(', 0), null)
+  })
+  test('matches across lines and returns null without a query or a match', () => {
+    assert.deepEqual(E.findMatch(text, 'fish.\nred', 0), { index: 14, length: 9, wrapped: false })
+    assert.equal(E.findMatch(text, '', 0), null)
+    assert.equal(E.findMatch(text, 'shark', 0), null)
+  })
+})

@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const { pathToFileURL } = require("node:url");
 const ai = require("./ai.cjs");
 const files = require("./files.cjs");
+const odoo = require("./odoo.cjs");
 const pdf = require("./pdf.cjs");
 const { csp } = require("./csp.cjs");
 
@@ -51,7 +52,7 @@ async function openLink(rawUrl) {
   await shell.openExternal(url.href);
 }
 
-// Asked here rather than in the page before a custom endpoint on this computer or the local network is used.
+// Asked here rather than in the page before a custom endpoint or an Odoo server on this computer or the local network is used.
 async function confirmLocalAddress(url, addresses) {
   const { response } = await dialog.showMessageBox(win, {
     type: "warning", title: "Connect to a local address?", message: `Connect to ${url.host}?`,
@@ -124,6 +125,7 @@ else {
       return listener(event, ...args);
     });
     ai.register(handle, (channel, payload) => win?.webContents.send(channel, payload), { confirmLocal: confirmLocalAddress });
+    odoo.register(handle, { fetch: ai.guardedFetch, resolve: ai.resolveAddress, confirmLocal: confirmLocalAddress, file: ai.file, writeAtomic: ai.writeAtomic });
 
     handle("vdoo:pending-file", () => {
       const file = pendingFiles.shift();
