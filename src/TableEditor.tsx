@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Modal } from "./Modal";
+import { ColorPicker } from "./ColorPicker";
 import { type Column, type Schema, type Table, COLUMN_TYPES, NAME, foreignKeysOf, newColumn, referencesTo, removeTable, replaceTable, tableById } from "./model";
 
 interface Props {
@@ -57,6 +58,7 @@ export function TableEditor({ schema, tableId, onSave, onOpenRelation, onClose }
     <div className="form-grid" onKeyDown={(event) => { if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) save(); }}>
       <label>Name<input value={draft.name} spellCheck={false} onChange={(e) => setDraft({ ...draft, name: e.target.value })} autoFocus /></label>
       <label>Description<input value={draft.comment} placeholder="What one row represents" onChange={(e) => setDraft({ ...draft, comment: e.target.value })} /></label>
+      <div className="field">Highlight<ColorPicker value={draft.color} onChange={(color) => setDraft((t) => ({ ...t, color }))} /></div>
     </div>
 
     <table className="columns">

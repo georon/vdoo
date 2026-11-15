@@ -1,0 +1,1255 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Employees",
+  "tables": [
+    {
+      "id": "t_hr_employee",
+      "name": "hr_employee",
+      "columns": [
+        {
+          "id": "hr_employee.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_employee.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Employee Name (computed, stored)"
+        },
+        {
+          "id": "hr_employee.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "User (computed, stored)"
+        },
+        {
+          "id": "hr_employee.work_contact_id",
+          "name": "work_contact_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Contact"
+        },
+        {
+          "id": "hr_employee.resource_id",
+          "name": "resource_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Resource"
+        },
+        {
+          "id": "hr_employee.current_version_id",
+          "name": "current_version_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Current version (computed, stored)"
+        },
+        {
+          "id": "hr_employee.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Manager"
+        },
+        {
+          "id": "hr_employee.coach_id",
+          "name": "coach_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Coach (computed, stored)"
+        },
+        {
+          "id": "hr_employee.work_email",
+          "name": "work_email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Email (computed, stored)"
+        },
+        {
+          "id": "hr_employee.work_phone",
+          "name": "work_phone",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Phone (computed, stored)"
+        },
+        {
+          "id": "hr_employee.mobile_phone",
+          "name": "mobile_phone",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Mobile"
+        },
+        {
+          "id": "hr_employee.birthday",
+          "name": "birthday",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Birthday"
+        },
+        {
+          "id": "hr_employee.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        },
+        {
+          "id": "hr_employee.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active (computed, stored)"
+        }
+      ],
+      "comment": "hr.employee — Employee; delegates to hr.version via version_id"
+    },
+    {
+      "id": "t_hr_version",
+      "name": "hr_version",
+      "columns": [
+        {
+          "id": "hr_version.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_version.employee_id",
+          "name": "employee_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Employee"
+        },
+        {
+          "id": "hr_version.date_version",
+          "name": "date_version",
+          "type": "date",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Date version"
+        },
+        {
+          "id": "hr_version.contract_date_start",
+          "name": "contract_date_start",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contract Start Date"
+        },
+        {
+          "id": "hr_version.contract_date_end",
+          "name": "contract_date_end",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contract End Date"
+        },
+        {
+          "id": "hr_version.department_id",
+          "name": "department_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Department"
+        },
+        {
+          "id": "hr_version.job_id",
+          "name": "job_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Job"
+        },
+        {
+          "id": "hr_version.job_title",
+          "name": "job_title",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Job Title (computed, stored)"
+        },
+        {
+          "id": "hr_version.work_location_id",
+          "name": "work_location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Location"
+        },
+        {
+          "id": "hr_version.address_id",
+          "name": "address_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Address"
+        },
+        {
+          "id": "hr_version.resource_calendar_id",
+          "name": "resource_calendar_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Working Hours"
+        },
+        {
+          "id": "hr_version.employee_type",
+          "name": "employee_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Employee Type (employee | worker | student | trainee | contractor | freelance)"
+        },
+        {
+          "id": "hr_version.contract_type_id",
+          "name": "contract_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contract Type"
+        },
+        {
+          "id": "hr_version.wage",
+          "name": "wage",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Wage"
+        },
+        {
+          "id": "hr_version.departure_reason_id",
+          "name": "departure_reason_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Departure Reason"
+        },
+        {
+          "id": "hr_version.departure_date",
+          "name": "departure_date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Departure Date"
+        },
+        {
+          "id": "hr_version.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        },
+        {
+          "id": "hr_version.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "hr.version — Version"
+    },
+    {
+      "id": "t_hr_department",
+      "name": "hr_department",
+      "columns": [
+        {
+          "id": "hr_department.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_department.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Department Name (translated: one value per language)"
+        },
+        {
+          "id": "hr_department.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent Department"
+        },
+        {
+          "id": "hr_department.manager_id",
+          "name": "manager_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Manager"
+        },
+        {
+          "id": "hr_department.master_department_id",
+          "name": "master_department_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Master Department (computed, stored)"
+        },
+        {
+          "id": "hr_department.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "hr_department.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "hr.department — Department"
+    },
+    {
+      "id": "t_hr_job",
+      "name": "hr_job",
+      "columns": [
+        {
+          "id": "hr_job.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_job.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Job Position (translated: one value per language)"
+        },
+        {
+          "id": "hr_job.department_id",
+          "name": "department_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Department"
+        },
+        {
+          "id": "hr_job.contract_type_id",
+          "name": "contract_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Employment Type"
+        },
+        {
+          "id": "hr_job.no_of_recruitment",
+          "name": "no_of_recruitment",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Target"
+        },
+        {
+          "id": "hr_job.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "hr_job.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "hr.job — Job Position"
+    },
+    {
+      "id": "t_hr_employee_category",
+      "name": "hr_employee_category",
+      "columns": [
+        {
+          "id": "hr_employee_category.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_employee_category.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tag Name"
+        },
+        {
+          "id": "hr_employee_category.color",
+          "name": "color",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Color Index"
+        }
+      ],
+      "comment": "hr.employee.category — Employee Category"
+    },
+    {
+      "id": "t_hr_work_location",
+      "name": "hr_work_location",
+      "columns": [
+        {
+          "id": "hr_work_location.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_work_location.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Work Location"
+        },
+        {
+          "id": "hr_work_location.location_type",
+          "name": "location_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Location type (Odoo's label is \"Cover Image\") (home | office | other)"
+        },
+        {
+          "id": "hr_work_location.address_id",
+          "name": "address_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Work Address"
+        },
+        {
+          "id": "hr_work_location.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "hr_work_location.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "hr.work.location — Work Location"
+    },
+    {
+      "id": "t_hr_contract_type",
+      "name": "hr_contract_type",
+      "columns": [
+        {
+          "id": "hr_contract_type.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_contract_type.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "hr_contract_type.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Code (computed, stored)"
+        },
+        {
+          "id": "hr_contract_type.country_id",
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Country → res_country (not in this diagram)"
+        }
+      ],
+      "comment": "hr.contract.type — Contract Type"
+    },
+    {
+      "id": "t_hr_departure_reason",
+      "name": "hr_departure_reason",
+      "columns": [
+        {
+          "id": "hr_departure_reason.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "hr_departure_reason.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Reason (translated: one value per language)"
+        }
+      ],
+      "comment": "hr.departure.reason — Departure Reason"
+    },
+    {
+      "id": "t_resource_resource",
+      "name": "resource_resource",
+      "columns": [
+        {
+          "id": "resource_resource.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "resource_resource.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "resource_resource.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "User"
+        },
+        {
+          "id": "resource_resource.calendar_id",
+          "name": "calendar_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Working Time"
+        },
+        {
+          "id": "resource_resource.resource_type",
+          "name": "resource_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (user | material)"
+        },
+        {
+          "id": "resource_resource.time_efficiency",
+          "name": "time_efficiency",
+          "type": "float8",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Efficiency Factor"
+        },
+        {
+          "id": "resource_resource.tz",
+          "name": "tz",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Timezone"
+        },
+        {
+          "id": "resource_resource.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "resource.resource — Resources"
+    },
+    {
+      "id": "t_resource_calendar",
+      "name": "resource_calendar",
+      "columns": [
+        {
+          "id": "resource_calendar.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "resource_calendar.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "resource_calendar.hours_per_day",
+          "name": "hours_per_day",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Average Hour per Day (computed, stored)"
+        },
+        {
+          "id": "resource_calendar.flexible_hours",
+          "name": "flexible_hours",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Flexible Hours (computed, stored)"
+        },
+        {
+          "id": "resource_calendar.tz",
+          "name": "tz",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Timezone"
+        },
+        {
+          "id": "resource_calendar.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "resource.calendar — Resource Working Time"
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        }
+      ],
+      "comment": "res.users — User; delegates to res.partner via partner_id; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_employee_category_rel",
+      "name": "employee_category_rel",
+      "comment": "many2many hr.employee.category_ids ↔ hr.employee.category (Tags)",
+      "columns": [
+        {
+          "id": "employee_category_rel.employee_id",
+          "name": "employee_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "hr.employee id"
+        },
+        {
+          "id": "employee_category_rel.category_id",
+          "name": "category_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "hr.employee.category id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_hr_employee_user_id",
+      "parent": "t_res_users",
+      "child": "t_hr_employee",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "hr_employee.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_employee_work_contact_id",
+      "parent": "t_res_partner",
+      "child": "t_hr_employee",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "work_contact_id",
+      "columns": [
+        {
+          "fk": "hr_employee.work_contact_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_employee_resource_id",
+      "parent": "t_resource_resource",
+      "child": "t_hr_employee",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "resource_id",
+      "columns": [
+        {
+          "fk": "hr_employee.resource_id",
+          "ref": "resource_resource.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_employee_current_version_id",
+      "parent": "t_hr_version",
+      "child": "t_hr_employee",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "current_version_id",
+      "columns": [
+        {
+          "fk": "hr_employee.current_version_id",
+          "ref": "hr_version.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_employee_parent_id",
+      "parent": "t_hr_employee",
+      "child": "t_hr_employee",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "hr_employee.parent_id",
+          "ref": "hr_employee.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_employee_coach_id",
+      "parent": "t_hr_employee",
+      "child": "t_hr_employee",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "coach_id",
+      "columns": [
+        {
+          "fk": "hr_employee.coach_id",
+          "ref": "hr_employee.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_employee_id",
+      "parent": "t_hr_employee",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "employee_id",
+      "columns": [
+        {
+          "fk": "hr_version.employee_id",
+          "ref": "hr_employee.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_department_id",
+      "parent": "t_hr_department",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "department_id",
+      "columns": [
+        {
+          "fk": "hr_version.department_id",
+          "ref": "hr_department.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_job_id",
+      "parent": "t_hr_job",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "job_id",
+      "columns": [
+        {
+          "fk": "hr_version.job_id",
+          "ref": "hr_job.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_work_location_id",
+      "parent": "t_hr_work_location",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "work_location_id",
+      "columns": [
+        {
+          "fk": "hr_version.work_location_id",
+          "ref": "hr_work_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_address_id",
+      "parent": "t_res_partner",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "address_id",
+      "columns": [
+        {
+          "fk": "hr_version.address_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_resource_calendar_id",
+      "parent": "t_resource_calendar",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "resource_calendar_id",
+      "columns": [
+        {
+          "fk": "hr_version.resource_calendar_id",
+          "ref": "resource_calendar.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_contract_type_id",
+      "parent": "t_hr_contract_type",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "contract_type_id",
+      "columns": [
+        {
+          "fk": "hr_version.contract_type_id",
+          "ref": "hr_contract_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_version_departure_reason_id",
+      "parent": "t_hr_departure_reason",
+      "child": "t_hr_version",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "departure_reason_id",
+      "columns": [
+        {
+          "fk": "hr_version.departure_reason_id",
+          "ref": "hr_departure_reason.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_department_parent_id",
+      "parent": "t_hr_department",
+      "child": "t_hr_department",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "hr_department.parent_id",
+          "ref": "hr_department.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_department_manager_id",
+      "parent": "t_hr_employee",
+      "child": "t_hr_department",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "manager_id",
+      "columns": [
+        {
+          "fk": "hr_department.manager_id",
+          "ref": "hr_employee.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_department_master_department_id",
+      "parent": "t_hr_department",
+      "child": "t_hr_department",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "master_department_id",
+      "columns": [
+        {
+          "fk": "hr_department.master_department_id",
+          "ref": "hr_department.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_job_department_id",
+      "parent": "t_hr_department",
+      "child": "t_hr_job",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "department_id",
+      "columns": [
+        {
+          "fk": "hr_job.department_id",
+          "ref": "hr_department.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_job_contract_type_id",
+      "parent": "t_hr_contract_type",
+      "child": "t_hr_job",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "contract_type_id",
+      "columns": [
+        {
+          "fk": "hr_job.contract_type_id",
+          "ref": "hr_contract_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_hr_work_location_address_id",
+      "parent": "t_res_partner",
+      "child": "t_hr_work_location",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "address_id",
+      "columns": [
+        {
+          "fk": "hr_work_location.address_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_resource_resource_user_id",
+      "parent": "t_res_users",
+      "child": "t_resource_resource",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "resource_resource.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_resource_resource_calendar_id",
+      "parent": "t_resource_calendar",
+      "child": "t_resource_resource",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "calendar_id",
+      "columns": [
+        {
+          "fk": "resource_resource.calendar_id",
+          "ref": "resource_calendar.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_employee_category_rel_employee_id",
+      "parent": "t_hr_employee",
+      "child": "t_employee_category_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "employee_id",
+      "columns": [
+        {
+          "fk": "employee_category_rel.employee_id",
+          "ref": "hr_employee.id"
+        }
+      ]
+    },
+    {
+      "id": "r_employee_category_rel_category_id",
+      "parent": "t_hr_employee_category",
+      "child": "t_employee_category_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "category_id",
+      "columns": [
+        {
+          "fk": "employee_category_rel.category_id",
+          "ref": "hr_employee_category.id"
+        }
+      ]
+    }
+  ]
+}

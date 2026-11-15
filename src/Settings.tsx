@@ -10,8 +10,21 @@ export function Settings({ onClose }: { onClose: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [signingIn, setSigningIn] = useState(false);
   useEffect(() => { void ai?.status().then(setStatus).catch(() => setError("Couldn't check AI connections.")); }, [ai]);
+  const files = window.vdooDesktop?.files;
+  const [defaultDir, setDefaultDir] = useState<string | null>(null);
+  useEffect(() => { void files?.defaultDir().then(setDefaultDir).catch(() => {}); }, [files]);
 
   return <Modal title="Settings" onClose={onClose}>
+    <section className="settings">
+      <h3>Files</h3>
+      {!files ? <p className="hint">The default directory is available in the desktop app.</p> : <div className="settings-row">
+        <div className="settings-label"><span>Default directory</span>
+          <small className="settings-path" title={defaultDir ?? undefined}>{defaultDir ?? "Not set. Open and Save start in the folder you have open, or where your system suggests."}</small>
+          {defaultDir && <small>Open file, Open folder and Save start here.</small>}</div>
+        <button className="btn ghost" onClick={async () => setDefaultDir(await files.chooseDefaultDir())}>{defaultDir ? "Change…" : "Choose…"}</button>
+        {defaultDir && <button className="btn ghost" onClick={async () => setDefaultDir(await files.clearDefaultDir())}>Clear</button>}
+      </div>}
+    </section>
     <section className="settings">
       <h3>Ask AI</h3>
       {!ai ? <p className="hint">Ask AI is available in the desktop app.</p> : <>

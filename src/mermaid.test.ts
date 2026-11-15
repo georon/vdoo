@@ -104,6 +104,61 @@ erDiagram
     expect(schema.tables[0].columns[1].comment).toBe("Full title");
   });
 
+  it("matches Odoo-style keys: prefixed table names, and labels that name the column", () => {
+    const schema = fromMermaid(`erDiagram
+  res_partner {
+    serial id PK
+  }
+  res_users {
+    serial id PK
+  }
+  sale_order {
+    serial id PK
+    int partner_id FK
+    int partner_invoice_id FK
+    int user_id FK
+  }
+  sale_order_line {
+    serial id PK
+    int order_id FK
+  }
+  res_partner ||..o{ sale_order : partner_id
+  res_partner ||..o{ sale_order : "invoice address (partner_invoice_id)"
+  res_users |o..o{ sale_order : salesperson
+  sale_order ||--o{ sale_order_line : lines
+`);
+    const col = (table: string, id: string) => schema.tables.find((t) => t.name === table)!.columns.find((c) => c.id === id)!.name;
+    const keys = schema.relations.map((r) => r.columns.map((p) => col(schema.tables.find((t) => t.id === r.child)!.name, p.fk)));
+    expect(keys).toEqual([["partner_id"], ["partner_invoice_id"], ["user_id"], ["order_id"]]);
+  });
+
+  it("keeps keys it can't infer when the text is applied again", () => {
+    let schema = emptySchema("Odd");
+    const account = { ...newTable(schema, "ledger") };
+    const entry = { ...newTable(schema, "entry"), columns: [...newTable(schema, "entry").columns, newColumn({ name: "debit_account", type: "int" }), newColumn({ name: "credit_account", type: "int" })] };
+    schema = { ...schema, tables: [account, entry], relations: [
+      { id: "r1", parent: account.id, child: entry.id, parentCard: "one", childCard: "zeroOrMany", identifying: false, label: "debit", columns: [{ fk: entry.columns[1].id, ref: account.columns[0].id }] },
+      { id: "r2", parent: account.id, child: entry.id, parentCard: "one", childCard: "zeroOrMany", identifying: false, label: "credit", columns: [{ fk: entry.columns[2].id, ref: account.columns[0].id }] },
+    ] };
+    const again = fromMermaid(toMermaid(schema).text, schema);
+    expect(again.relations.map((r) => [r.id, r.label, r.columns])).toEqual(schema.relations.map((r) => [r.id, r.label, r.columns]));
+  });
+
+  it("keeps table highlights through files and Mermaid text", async () => {
+    const base = shop();
+    const schema = { ...base, tables: base.tables.map((t, i) => (i === 0 ? { ...t, color: "#4dabf7" } : t)) };
+    expect(deserialize(serialize(schema)).tables.map((t) => t.color)).toEqual(["#4dabf7", ""]);
+    expect(deserialize(serialize(schema).replace("#4dabf7", "javascript:x")).tables[0].color).toBe("");
+    const { text } = toMermaid(schema);
+    expect(text).toContain("style customer fill:#4dabf747");
+    await expect(mermaid.parse(text)).resolves.toBeTruthy();
+    expect(fromMermaid(text).tables.map((t) => t.color)).toEqual(["#4dabf7", ""]);
+    // text without any style line (an AI answer) keeps the highlights; text with style lines decides them
+    const plain = toMermaid(base).text;
+    expect(fromMermaid(plain, schema).tables.map((t) => t.color)).toEqual(["#4dabf7", ""]);
+    expect(fromMermaid(plain + "  style orders fill:#40c05747\n", schema).tables.map((t) => t.color)).toEqual(["", "#40c057"]);
+  });
+
   it("points at the line it can't read", () => {
     expect(() => fromMermaid("erDiagram\n  A {\n    not valid at all here\n  }")).toThrow(/Line 3/);
     expect(() => fromMermaid("graph TD\n A-->B")).toThrow(/starts with erDiagram/);

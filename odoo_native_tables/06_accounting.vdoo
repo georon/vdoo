@@ -1,0 +1,2216 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Accounting and invoicing",
+  "tables": [
+    {
+      "id": "t_account_move",
+      "name": "account_move",
+      "columns": [
+        {
+          "id": "account_move.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_move.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Number (computed, stored)"
+        },
+        {
+          "id": "account_move.move_type",
+          "name": "move_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (entry | out_invoice | out_refund | in_invoice | in_refund | out_receipt | in_receipt)"
+        },
+        {
+          "id": "account_move.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Status (draft | posted | cancel)"
+        },
+        {
+          "id": "account_move.journal_id",
+          "name": "journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal (computed, stored)"
+        },
+        {
+          "id": "account_move.date",
+          "name": "date",
+          "type": "date",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Date (computed, stored)"
+        },
+        {
+          "id": "account_move.invoice_date",
+          "name": "invoice_date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Invoice/Bill Date"
+        },
+        {
+          "id": "account_move.invoice_date_due",
+          "name": "invoice_date_due",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Due Date (computed, stored)"
+        },
+        {
+          "id": "account_move.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Partner"
+        },
+        {
+          "id": "account_move.commercial_partner_id",
+          "name": "commercial_partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Commercial Entity (computed, stored)"
+        },
+        {
+          "id": "account_move.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency (computed, stored) → res_currency (not in this diagram)"
+        },
+        {
+          "id": "account_move.invoice_payment_term_id",
+          "name": "invoice_payment_term_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Payment Terms (computed, stored)"
+        },
+        {
+          "id": "account_move.fiscal_position_id",
+          "name": "fiscal_position_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Fiscal Position (computed, stored)"
+        },
+        {
+          "id": "account_move.amount_untaxed",
+          "name": "amount_untaxed",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Untaxed Amount (computed, stored)"
+        },
+        {
+          "id": "account_move.amount_tax",
+          "name": "amount_tax",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Tax (computed, stored)"
+        },
+        {
+          "id": "account_move.amount_total",
+          "name": "amount_total",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Total (computed, stored)"
+        },
+        {
+          "id": "account_move.amount_residual",
+          "name": "amount_residual",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Amount Due (computed, stored)"
+        },
+        {
+          "id": "account_move.payment_state",
+          "name": "payment_state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Payment Status (not_paid | in_payment | paid | partial | reversed | blocked | invoicing_legacy; computed, stored)"
+        },
+        {
+          "id": "account_move.reversed_entry_id",
+          "name": "reversed_entry_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reversal of"
+        },
+        {
+          "id": "account_move.origin_payment_id",
+          "name": "origin_payment_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Payment"
+        },
+        {
+          "id": "account_move.statement_line_id",
+          "name": "statement_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Statement Line"
+        },
+        {
+          "id": "account_move.invoice_origin",
+          "name": "invoice_origin",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Origin"
+        },
+        {
+          "id": "account_move.ref",
+          "name": "ref",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "account_move.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "account.move — Journal Entry"
+    },
+    {
+      "id": "t_account_move_line",
+      "name": "account_move_line",
+      "columns": [
+        {
+          "id": "account_move_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_move_line.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal Entry"
+        },
+        {
+          "id": "account_move_line.journal_id",
+          "name": "journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Journal (computed, stored)"
+        },
+        {
+          "id": "account_move_line.account_id",
+          "name": "account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Account (computed, stored)"
+        },
+        {
+          "id": "account_move_line.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Partner (computed, stored)"
+        },
+        {
+          "id": "account_move_line.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Label (computed, stored)"
+        },
+        {
+          "id": "account_move_line.display_type",
+          "name": "display_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Display type (product | cogs | tax | discount | rounding | payment_term | line_section | line_subsection | line_note | epd | non_deductible_product_total | non_deductible_product | non_deductible_tax; computed, stored)"
+        },
+        {
+          "id": "account_move_line.debit",
+          "name": "debit",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Debit (computed, stored)"
+        },
+        {
+          "id": "account_move_line.credit",
+          "name": "credit",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Credit (computed, stored)"
+        },
+        {
+          "id": "account_move_line.balance",
+          "name": "balance",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Balance (computed, stored)"
+        },
+        {
+          "id": "account_move_line.amount_currency",
+          "name": "amount_currency",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Amount in Currency (computed, stored)"
+        },
+        {
+          "id": "account_move_line.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency (computed, stored) → res_currency (not in this diagram)"
+        },
+        {
+          "id": "account_move_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "account_move_line.quantity",
+          "name": "quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity (computed, stored)"
+        },
+        {
+          "id": "account_move_line.price_unit",
+          "name": "price_unit",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Unit Price (computed, stored)"
+        },
+        {
+          "id": "account_move_line.price_subtotal",
+          "name": "price_subtotal",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Subtotal (computed, stored)"
+        },
+        {
+          "id": "account_move_line.tax_line_id",
+          "name": "tax_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Originator Tax (computed, stored)"
+        },
+        {
+          "id": "account_move_line.tax_repartition_line_id",
+          "name": "tax_repartition_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Originator Tax Distribution Line"
+        },
+        {
+          "id": "account_move_line.date",
+          "name": "date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Date (computed, stored)"
+        },
+        {
+          "id": "account_move_line.date_maturity",
+          "name": "date_maturity",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Due Date"
+        },
+        {
+          "id": "account_move_line.reconciled",
+          "name": "reconciled",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reconciled (computed, stored)"
+        },
+        {
+          "id": "account_move_line.amount_residual",
+          "name": "amount_residual",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Residual Amount (computed, stored)"
+        },
+        {
+          "id": "account_move_line.full_reconcile_id",
+          "name": "full_reconcile_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Matching"
+        },
+        {
+          "id": "account_move_line.payment_id",
+          "name": "payment_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Originator Payment (computed, stored)"
+        },
+        {
+          "id": "account_move_line.statement_line_id",
+          "name": "statement_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Originator Statement Line (computed, stored)"
+        },
+        {
+          "id": "account_move_line.analytic_distribution",
+          "name": "analytic_distribution",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Analytic Distribution (computed, stored)"
+        },
+        {
+          "id": "account_move_line.parent_state",
+          "name": "parent_state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent state (computed, stored)"
+        }
+      ],
+      "comment": "account.move.line — Journal Item"
+    },
+    {
+      "id": "t_account_account",
+      "name": "account_account",
+      "columns": [
+        {
+          "id": "account_account.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_account.code_store",
+          "name": "code_store",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Code store (company-dependent: one value per company)"
+        },
+        {
+          "id": "account_account.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Account Name (translated: one value per language)"
+        },
+        {
+          "id": "account_account.account_type",
+          "name": "account_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (asset_receivable | asset_cash | asset_current | asset_non_current | asset_prepayments | asset_fixed | liability_payable | liability_credit_card | liability_current | liability_non_current | equity | equity_unaffected | income | income_other | expense | expense_other | expense_depreciation | expense_direct_cost | off_balance; computed, stored)"
+        },
+        {
+          "id": "account_account.reconcile",
+          "name": "reconcile",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Allow Reconciliation (computed, stored)"
+        },
+        {
+          "id": "account_account.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Account Currency → res_currency (not in this diagram)"
+        },
+        {
+          "id": "account_account.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "account.account — Account"
+    },
+    {
+      "id": "t_account_journal",
+      "name": "account_journal",
+      "columns": [
+        {
+          "id": "account_journal.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_journal.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal Name (translated: one value per language)"
+        },
+        {
+          "id": "account_journal.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Sequence Prefix (computed, stored)"
+        },
+        {
+          "id": "account_journal.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (sale | purchase | cash | bank | credit | general)"
+        },
+        {
+          "id": "account_journal.default_account_id",
+          "name": "default_account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Default Account"
+        },
+        {
+          "id": "account_journal.suspense_account_id",
+          "name": "suspense_account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Suspense Account (computed, stored)"
+        },
+        {
+          "id": "account_journal.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Currency → res_currency (not in this diagram)"
+        },
+        {
+          "id": "account_journal.bank_account_id",
+          "name": "bank_account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Bank Account → res_partner_bank (not in this diagram)"
+        },
+        {
+          "id": "account_journal.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "account.journal — Journal"
+    },
+    {
+      "id": "t_account_tax",
+      "name": "account_tax",
+      "columns": [
+        {
+          "id": "account_tax.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_tax.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Name (translated: one value per language)"
+        },
+        {
+          "id": "account_tax.type_tax_use",
+          "name": "type_tax_use",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Type (sale | purchase | none)"
+        },
+        {
+          "id": "account_tax.amount_type",
+          "name": "amount_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Computation (group | fixed | percent | division)"
+        },
+        {
+          "id": "account_tax.amount",
+          "name": "amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Amount"
+        },
+        {
+          "id": "account_tax.price_include_override",
+          "name": "price_include_override",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Included in Price (tax_included | tax_excluded)"
+        },
+        {
+          "id": "account_tax.tax_group_id",
+          "name": "tax_group_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Group (computed, stored)"
+        },
+        {
+          "id": "account_tax.country_id",
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Country (computed, stored) → res_country (not in this diagram)"
+        },
+        {
+          "id": "account_tax.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "account.tax — Tax"
+    },
+    {
+      "id": "t_account_tax_group",
+      "name": "account_tax_group",
+      "columns": [
+        {
+          "id": "account_tax_group.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_tax_group.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "account_tax_group.country_id",
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Country (computed, stored) → res_country (not in this diagram)"
+        },
+        {
+          "id": "account_tax_group.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "account.tax.group — Tax Group"
+    },
+    {
+      "id": "t_account_tax_repartition_line",
+      "name": "account_tax_repartition_line",
+      "columns": [
+        {
+          "id": "account_tax_repartition_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_tax_repartition_line.tax_id",
+          "name": "tax_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Tax"
+        },
+        {
+          "id": "account_tax_repartition_line.repartition_type",
+          "name": "repartition_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Based On (base | tax)"
+        },
+        {
+          "id": "account_tax_repartition_line.document_type",
+          "name": "document_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related to (invoice | refund)"
+        },
+        {
+          "id": "account_tax_repartition_line.factor_percent",
+          "name": "factor_percent",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "%"
+        },
+        {
+          "id": "account_tax_repartition_line.account_id",
+          "name": "account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Account"
+        }
+      ],
+      "comment": "account.tax.repartition.line — Tax Repartition Line"
+    },
+    {
+      "id": "t_account_payment",
+      "name": "account_payment",
+      "columns": [
+        {
+          "id": "account_payment.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_payment.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Number (computed, stored)"
+        },
+        {
+          "id": "account_payment.payment_type",
+          "name": "payment_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Payment Type (outbound | inbound)"
+        },
+        {
+          "id": "account_payment.partner_type",
+          "name": "partner_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Partner type (customer | supplier)"
+        },
+        {
+          "id": "account_payment.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Customer/Vendor"
+        },
+        {
+          "id": "account_payment.amount",
+          "name": "amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Amount"
+        },
+        {
+          "id": "account_payment.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Currency (computed, stored) → res_currency (not in this diagram)"
+        },
+        {
+          "id": "account_payment.date",
+          "name": "date",
+          "type": "date",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Date"
+        },
+        {
+          "id": "account_payment.journal_id",
+          "name": "journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal (computed, stored)"
+        },
+        {
+          "id": "account_payment.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Journal Entry"
+        },
+        {
+          "id": "account_payment.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "State (draft | in_process | paid | canceled | rejected; computed, stored)"
+        },
+        {
+          "id": "account_payment.outstanding_account_id",
+          "name": "outstanding_account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Outstanding Account (computed, stored)"
+        },
+        {
+          "id": "account_payment.destination_account_id",
+          "name": "destination_account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Destination Account (computed, stored)"
+        },
+        {
+          "id": "account_payment.memo",
+          "name": "memo",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Memo"
+        },
+        {
+          "id": "account_payment.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "account.payment — Payments"
+    },
+    {
+      "id": "t_account_payment_term",
+      "name": "account_payment_term",
+      "columns": [
+        {
+          "id": "account_payment_term.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_payment_term.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Payment Terms (translated: one value per language)"
+        },
+        {
+          "id": "account_payment_term.early_discount",
+          "name": "early_discount",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Early Discount"
+        },
+        {
+          "id": "account_payment_term.discount_percentage",
+          "name": "discount_percentage",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Discount %"
+        },
+        {
+          "id": "account_payment_term.discount_days",
+          "name": "discount_days",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Discount Days"
+        }
+      ],
+      "comment": "account.payment.term — Payment Terms"
+    },
+    {
+      "id": "t_account_payment_term_line",
+      "name": "account_payment_term_line",
+      "columns": [
+        {
+          "id": "account_payment_term_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_payment_term_line.payment_id",
+          "name": "payment_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Payment Terms"
+        },
+        {
+          "id": "account_payment_term_line.value",
+          "name": "value",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Value (percent | fixed)"
+        },
+        {
+          "id": "account_payment_term_line.value_amount",
+          "name": "value_amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Due (computed, stored)"
+        },
+        {
+          "id": "account_payment_term_line.delay_type",
+          "name": "delay_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Delay type (days_after | days_after_end_of_month | days_after_end_of_next_month | days_end_of_month_on_the)"
+        },
+        {
+          "id": "account_payment_term_line.nb_days",
+          "name": "nb_days",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Days (computed, stored)"
+        }
+      ],
+      "comment": "account.payment.term.line — Payment Terms Line"
+    },
+    {
+      "id": "t_account_partial_reconcile",
+      "name": "account_partial_reconcile",
+      "columns": [
+        {
+          "id": "account_partial_reconcile.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_partial_reconcile.debit_move_id",
+          "name": "debit_move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Debit move"
+        },
+        {
+          "id": "account_partial_reconcile.credit_move_id",
+          "name": "credit_move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Credit move"
+        },
+        {
+          "id": "account_partial_reconcile.amount",
+          "name": "amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Amount"
+        },
+        {
+          "id": "account_partial_reconcile.debit_amount_currency",
+          "name": "debit_amount_currency",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Debit amount currency"
+        },
+        {
+          "id": "account_partial_reconcile.credit_amount_currency",
+          "name": "credit_amount_currency",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Credit amount currency"
+        },
+        {
+          "id": "account_partial_reconcile.full_reconcile_id",
+          "name": "full_reconcile_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Full Reconcile"
+        },
+        {
+          "id": "account_partial_reconcile.exchange_move_id",
+          "name": "exchange_move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Exchange move"
+        },
+        {
+          "id": "account_partial_reconcile.max_date",
+          "name": "max_date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Max Date of Matched Lines (computed, stored)"
+        }
+      ],
+      "comment": "account.partial.reconcile — Partial Reconcile"
+    },
+    {
+      "id": "t_account_full_reconcile",
+      "name": "account_full_reconcile",
+      "columns": [
+        {
+          "id": "account_full_reconcile.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        }
+      ],
+      "comment": "account.full.reconcile — Full Reconcile"
+    },
+    {
+      "id": "t_account_bank_statement_line",
+      "name": "account_bank_statement_line",
+      "columns": [
+        {
+          "id": "account_bank_statement_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_bank_statement_line.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal Entry"
+        },
+        {
+          "id": "account_bank_statement_line.journal_id",
+          "name": "journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal (computed, stored)"
+        },
+        {
+          "id": "account_bank_statement_line.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Partner"
+        },
+        {
+          "id": "account_bank_statement_line.payment_ref",
+          "name": "payment_ref",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Label"
+        },
+        {
+          "id": "account_bank_statement_line.amount",
+          "name": "amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Amount"
+        },
+        {
+          "id": "account_bank_statement_line.amount_currency",
+          "name": "amount_currency",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Amount in Currency (computed, stored)"
+        },
+        {
+          "id": "account_bank_statement_line.foreign_currency_id",
+          "name": "foreign_currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Foreign Currency → res_currency (not in this diagram)"
+        },
+        {
+          "id": "account_bank_statement_line.is_reconciled",
+          "name": "is_reconciled",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is Reconciled (computed, stored)"
+        }
+      ],
+      "comment": "account.bank.statement.line — Bank Statement Line; delegates to account.move via move_id"
+    },
+    {
+      "id": "t_account_fiscal_position",
+      "name": "account_fiscal_position",
+      "columns": [
+        {
+          "id": "account_fiscal_position.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_fiscal_position.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Fiscal Position (translated: one value per language)"
+        },
+        {
+          "id": "account_fiscal_position.country_id",
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Country → res_country (not in this diagram)"
+        },
+        {
+          "id": "account_fiscal_position.auto_apply",
+          "name": "auto_apply",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Detect Automatically"
+        },
+        {
+          "id": "account_fiscal_position.vat_required",
+          "name": "vat_required",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "VAT required"
+        },
+        {
+          "id": "account_fiscal_position.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "account.fiscal.position — Fiscal Position"
+    },
+    {
+      "id": "t_account_analytic_account",
+      "name": "account_analytic_account",
+      "columns": [
+        {
+          "id": "account_analytic_account.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_analytic_account.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Analytic Account (translated: one value per language)"
+        },
+        {
+          "id": "account_analytic_account.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "account_analytic_account.plan_id",
+          "name": "plan_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Plan"
+        },
+        {
+          "id": "account_analytic_account.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Customer"
+        },
+        {
+          "id": "account_analytic_account.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "account.analytic.account — Analytic Account"
+    },
+    {
+      "id": "t_account_analytic_plan",
+      "name": "account_analytic_plan",
+      "columns": [
+        {
+          "id": "account_analytic_plan.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_analytic_plan.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "account_analytic_plan.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent"
+        }
+      ],
+      "comment": "account.analytic.plan — Analytic Plans"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template → product_template (not in this diagram)"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_account_move_line_account_tax_rel",
+      "name": "account_move_line_account_tax_rel",
+      "comment": "many2many account.move.line.tax_ids ↔ account.tax (Taxes)",
+      "columns": [
+        {
+          "id": "account_move_line_account_tax_rel.account_move_line_id",
+          "name": "account_move_line_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "account.move.line id"
+        },
+        {
+          "id": "account_move_line_account_tax_rel.account_tax_id",
+          "name": "account_tax_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "account.tax id"
+        }
+      ]
+    },
+    {
+      "id": "t_account_account_res_company_rel",
+      "name": "account_account_res_company_rel",
+      "comment": "many2many account.account.company_ids ↔ res.company (Companies)",
+      "columns": [
+        {
+          "id": "account_account_res_company_rel.account_account_id",
+          "name": "account_account_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "account.account id"
+        },
+        {
+          "id": "account_account_res_company_rel.res_company_id",
+          "name": "res_company_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.company id → res_company (not in this diagram)"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_account_move_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_account_move",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "journal_id",
+      "columns": [
+        {
+          "fk": "account_move.journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "account_move.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_commercial_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "commercial_partner_id",
+      "columns": [
+        {
+          "fk": "account_move.commercial_partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_invoice_payment_term_id",
+      "parent": "t_account_payment_term",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "invoice_payment_term_id",
+      "columns": [
+        {
+          "fk": "account_move.invoice_payment_term_id",
+          "ref": "account_payment_term.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_fiscal_position_id",
+      "parent": "t_account_fiscal_position",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "fiscal_position_id",
+      "columns": [
+        {
+          "fk": "account_move.fiscal_position_id",
+          "ref": "account_fiscal_position.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_reversed_entry_id",
+      "parent": "t_account_move",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "reversed_entry_id",
+      "columns": [
+        {
+          "fk": "account_move.reversed_entry_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_origin_payment_id",
+      "parent": "t_account_payment",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "origin_payment_id",
+      "columns": [
+        {
+          "fk": "account_move.origin_payment_id",
+          "ref": "account_payment.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_statement_line_id",
+      "parent": "t_account_bank_statement_line",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "statement_line_id",
+      "columns": [
+        {
+          "fk": "account_move.statement_line_id",
+          "ref": "account_bank_statement_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_move_id",
+      "parent": "t_account_move",
+      "child": "t_account_move_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "move_id",
+      "columns": [
+        {
+          "fk": "account_move_line.move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "journal_id",
+      "columns": [
+        {
+          "fk": "account_move_line.journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_account_id",
+      "parent": "t_account_account",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "account_id",
+      "columns": [
+        {
+          "fk": "account_move_line.account_id",
+          "ref": "account_account.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "account_move_line.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "account_move_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_tax_line_id",
+      "parent": "t_account_tax",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "tax_line_id",
+      "columns": [
+        {
+          "fk": "account_move_line.tax_line_id",
+          "ref": "account_tax.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_tax_repartition_line_id",
+      "parent": "t_account_tax_repartition_line",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "tax_repartition_line_id",
+      "columns": [
+        {
+          "fk": "account_move_line.tax_repartition_line_id",
+          "ref": "account_tax_repartition_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_full_reconcile_id",
+      "parent": "t_account_full_reconcile",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "full_reconcile_id",
+      "columns": [
+        {
+          "fk": "account_move_line.full_reconcile_id",
+          "ref": "account_full_reconcile.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_payment_id",
+      "parent": "t_account_payment",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "payment_id",
+      "columns": [
+        {
+          "fk": "account_move_line.payment_id",
+          "ref": "account_payment.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_statement_line_id",
+      "parent": "t_account_bank_statement_line",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "statement_line_id",
+      "columns": [
+        {
+          "fk": "account_move_line.statement_line_id",
+          "ref": "account_bank_statement_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_journal_default_account_id",
+      "parent": "t_account_account",
+      "child": "t_account_journal",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "default_account_id",
+      "columns": [
+        {
+          "fk": "account_journal.default_account_id",
+          "ref": "account_account.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_journal_suspense_account_id",
+      "parent": "t_account_account",
+      "child": "t_account_journal",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "suspense_account_id",
+      "columns": [
+        {
+          "fk": "account_journal.suspense_account_id",
+          "ref": "account_account.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_tax_tax_group_id",
+      "parent": "t_account_tax_group",
+      "child": "t_account_tax",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "tax_group_id",
+      "columns": [
+        {
+          "fk": "account_tax.tax_group_id",
+          "ref": "account_tax_group.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_tax_repartition_line_tax_id",
+      "parent": "t_account_tax",
+      "child": "t_account_tax_repartition_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "tax_id",
+      "columns": [
+        {
+          "fk": "account_tax_repartition_line.tax_id",
+          "ref": "account_tax.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_tax_repartition_line_account_id",
+      "parent": "t_account_account",
+      "child": "t_account_tax_repartition_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "account_id",
+      "columns": [
+        {
+          "fk": "account_tax_repartition_line.account_id",
+          "ref": "account_account.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_payment_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_account_payment",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "account_payment.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_payment_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_account_payment",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "journal_id",
+      "columns": [
+        {
+          "fk": "account_payment.journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_payment_move_id",
+      "parent": "t_account_move",
+      "child": "t_account_payment",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "move_id",
+      "columns": [
+        {
+          "fk": "account_payment.move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_payment_outstanding_account_id",
+      "parent": "t_account_account",
+      "child": "t_account_payment",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "outstanding_account_id",
+      "columns": [
+        {
+          "fk": "account_payment.outstanding_account_id",
+          "ref": "account_account.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_payment_destination_account_id",
+      "parent": "t_account_account",
+      "child": "t_account_payment",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "destination_account_id",
+      "columns": [
+        {
+          "fk": "account_payment.destination_account_id",
+          "ref": "account_account.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_payment_term_line_payment_id",
+      "parent": "t_account_payment_term",
+      "child": "t_account_payment_term_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "payment_id",
+      "columns": [
+        {
+          "fk": "account_payment_term_line.payment_id",
+          "ref": "account_payment_term.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_partial_reconcile_debit_move_id",
+      "parent": "t_account_move_line",
+      "child": "t_account_partial_reconcile",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "debit_move_id",
+      "columns": [
+        {
+          "fk": "account_partial_reconcile.debit_move_id",
+          "ref": "account_move_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_partial_reconcile_credit_move_id",
+      "parent": "t_account_move_line",
+      "child": "t_account_partial_reconcile",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "credit_move_id",
+      "columns": [
+        {
+          "fk": "account_partial_reconcile.credit_move_id",
+          "ref": "account_move_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_partial_reconcile_full_reconcile_id",
+      "parent": "t_account_full_reconcile",
+      "child": "t_account_partial_reconcile",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "full_reconcile_id",
+      "columns": [
+        {
+          "fk": "account_partial_reconcile.full_reconcile_id",
+          "ref": "account_full_reconcile.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_partial_reconcile_exchange_move_id",
+      "parent": "t_account_move",
+      "child": "t_account_partial_reconcile",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "exchange_move_id",
+      "columns": [
+        {
+          "fk": "account_partial_reconcile.exchange_move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_bank_statement_line_move_id",
+      "parent": "t_account_move",
+      "child": "t_account_bank_statement_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "move_id",
+      "columns": [
+        {
+          "fk": "account_bank_statement_line.move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_bank_statement_line_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_account_bank_statement_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "journal_id",
+      "columns": [
+        {
+          "fk": "account_bank_statement_line.journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_bank_statement_line_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_account_bank_statement_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "account_bank_statement_line.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_analytic_account_plan_id",
+      "parent": "t_account_analytic_plan",
+      "child": "t_account_analytic_account",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "plan_id",
+      "columns": [
+        {
+          "fk": "account_analytic_account.plan_id",
+          "ref": "account_analytic_plan.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_analytic_account_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_account_analytic_account",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "account_analytic_account.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_analytic_plan_parent_id",
+      "parent": "t_account_analytic_plan",
+      "child": "t_account_analytic_plan",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "account_analytic_plan.parent_id",
+          "ref": "account_analytic_plan.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_account_tax_rel_account_move_line_id",
+      "parent": "t_account_move_line",
+      "child": "t_account_move_line_account_tax_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "account_move_line_id",
+      "columns": [
+        {
+          "fk": "account_move_line_account_tax_rel.account_move_line_id",
+          "ref": "account_move_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_account_tax_rel_account_tax_id",
+      "parent": "t_account_tax",
+      "child": "t_account_move_line_account_tax_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "account_tax_id",
+      "columns": [
+        {
+          "fk": "account_move_line_account_tax_rel.account_tax_id",
+          "ref": "account_tax.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_account_res_company_rel_account_account_id",
+      "parent": "t_account_account",
+      "child": "t_account_account_res_company_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "account_account_id",
+      "columns": [
+        {
+          "fk": "account_account_res_company_rel.account_account_id",
+          "ref": "account_account.id"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1254 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Website and eCommerce",
+  "tables": [
+    {
+      "id": "t_website",
+      "name": "website",
+      "columns": [
+        {
+          "id": "website.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "website.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Website Name"
+        },
+        {
+          "id": "website.domain",
+          "name": "domain",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website Domain"
+        },
+        {
+          "id": "website.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "website.default_lang_id",
+          "name": "default_lang_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Default Language → res_lang (not in this diagram)"
+        },
+        {
+          "id": "website.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Public User"
+        },
+        {
+          "id": "website.salesperson_id",
+          "name": "salesperson_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Salesperson"
+        },
+        {
+          "id": "website.salesteam_id",
+          "name": "salesteam_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales Team → crm_team (not in this diagram)"
+        },
+        {
+          "id": "website.shop_ppg",
+          "name": "shop_ppg",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Number of products in the grid on the shop"
+        }
+      ],
+      "comment": "website — Website"
+    },
+    {
+      "id": "t_website_page",
+      "name": "website_page",
+      "columns": [
+        {
+          "id": "website_page.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "website_page.url",
+          "name": "url",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Page URL"
+        },
+        {
+          "id": "website_page.view_id",
+          "name": "view_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "View → ir_ui_view (not in this diagram)"
+        },
+        {
+          "id": "website_page.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website (computed, stored)"
+        },
+        {
+          "id": "website_page.website_indexed",
+          "name": "website_indexed",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is Indexed"
+        },
+        {
+          "id": "website_page.date_publish",
+          "name": "date_publish",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Publishing Date"
+        }
+      ],
+      "comment": "website.page — Page; delegates to ir.ui.view via view_id"
+    },
+    {
+      "id": "t_website_menu",
+      "name": "website_menu",
+      "columns": [
+        {
+          "id": "website_menu.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "website_menu.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Menu (translated: one value per language)"
+        },
+        {
+          "id": "website_menu.url",
+          "name": "url",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Url (computed, stored)"
+        },
+        {
+          "id": "website_menu.page_id",
+          "name": "page_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Page"
+        },
+        {
+          "id": "website_menu.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent Menu"
+        },
+        {
+          "id": "website_menu.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website"
+        },
+        {
+          "id": "website_menu.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "website.menu — Website Menu"
+    },
+    {
+      "id": "t_website_visitor",
+      "name": "website_visitor",
+      "columns": [
+        {
+          "id": "website_visitor.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "website_visitor.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website"
+        },
+        {
+          "id": "website_visitor.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contact (computed, stored)"
+        },
+        {
+          "id": "website_visitor.country_id",
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Country → res_country (not in this diagram)"
+        },
+        {
+          "id": "website_visitor.visit_count",
+          "name": "visit_count",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "# Visits"
+        },
+        {
+          "id": "website_visitor.last_connection_datetime",
+          "name": "last_connection_datetime",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Last Connection"
+        },
+        {
+          "id": "website_visitor.access_token",
+          "name": "access_token",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Access token"
+        }
+      ],
+      "comment": "website.visitor — Website Visitor"
+    },
+    {
+      "id": "t_product_template",
+      "name": "product_template",
+      "columns": [
+        {
+          "id": "product_template.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_template.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "product_template.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website"
+        },
+        {
+          "id": "product_template.is_published",
+          "name": "is_published",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is Published"
+        },
+        {
+          "id": "product_template.website_sequence",
+          "name": "website_sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website Sequence"
+        },
+        {
+          "id": "product_template.website_ribbon_id",
+          "name": "website_ribbon_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Ribbon"
+        },
+        {
+          "id": "product_template.list_price",
+          "name": "list_price",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales Price"
+        },
+        {
+          "id": "product_template.compare_list_price",
+          "name": "compare_list_price",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Compare to Price"
+        },
+        {
+          "id": "product_template.sale_ok",
+          "name": "sale_ok",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales"
+        }
+      ],
+      "comment": "product.template — Product"
+    },
+    {
+      "id": "t_product_public_category",
+      "name": "product_public_category",
+      "columns": [
+        {
+          "id": "product_public_category.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_public_category.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "product_public_category.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent"
+        },
+        {
+          "id": "product_public_category.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website"
+        },
+        {
+          "id": "product_public_category.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "product.public.category — Website Product Category"
+    },
+    {
+      "id": "t_product_ribbon",
+      "name": "product_ribbon",
+      "columns": [
+        {
+          "id": "product_ribbon.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_ribbon.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Ribbon Name (translated: one value per language)"
+        },
+        {
+          "id": "product_ribbon.position",
+          "name": "position",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Position (left | right)"
+        },
+        {
+          "id": "product_ribbon.bg_color",
+          "name": "bg_color",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Background Color"
+        },
+        {
+          "id": "product_ribbon.text_color",
+          "name": "text_color",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Text Color"
+        }
+      ],
+      "comment": "product.ribbon — Product ribbon"
+    },
+    {
+      "id": "t_product_image",
+      "name": "product_image",
+      "columns": [
+        {
+          "id": "product_image.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_image.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "product_image.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product Template"
+        },
+        {
+          "id": "product_image.product_variant_id",
+          "name": "product_variant_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product Variant"
+        },
+        {
+          "id": "product_image.video_url",
+          "name": "video_url",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Video URL"
+        },
+        {
+          "id": "product_image.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "product.image — Product Image"
+    },
+    {
+      "id": "t_product_pricelist",
+      "name": "product_pricelist",
+      "columns": [
+        {
+          "id": "product_pricelist.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_pricelist.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Pricelist Name (translated: one value per language)"
+        },
+        {
+          "id": "product_pricelist.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website"
+        },
+        {
+          "id": "product_pricelist.selectable",
+          "name": "selectable",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Selectable"
+        },
+        {
+          "id": "product_pricelist.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency → res_currency (not in this diagram)"
+        }
+      ],
+      "comment": "product.pricelist — Pricelist"
+    },
+    {
+      "id": "t_sale_order",
+      "name": "sale_order",
+      "columns": [
+        {
+          "id": "sale_order.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "sale_order.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "sale_order.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (draft | sent | sale | cancel)"
+        },
+        {
+          "id": "sale_order.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website"
+        },
+        {
+          "id": "sale_order.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Customer"
+        },
+        {
+          "id": "sale_order.pricelist_id",
+          "name": "pricelist_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Pricelist (computed, stored)"
+        },
+        {
+          "id": "sale_order.amount_total",
+          "name": "amount_total",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Total (computed, stored)"
+        },
+        {
+          "id": "sale_order.cart_recovery_email_sent",
+          "name": "cart_recovery_email_sent",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Cart recovery email already sent"
+        }
+      ],
+      "comment": "sale.order — Sales Order"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        }
+      ],
+      "comment": "res.users — User; delegates to res.partner via partner_id; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_sale_order_line",
+      "name": "sale_order_line",
+      "columns": [
+        {
+          "id": "sale_order_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "sale_order_line.order_id",
+          "name": "order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "sale_order_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "sale_order_line.product_uom_qty",
+          "name": "product_uom_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity (computed, stored)"
+        },
+        {
+          "id": "sale_order_line.price_unit",
+          "name": "price_unit",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit Price (computed, stored)"
+        }
+      ],
+      "comment": "sale.order.line — Sales Order Line; reference copy, details in 03_sales"
+    },
+    {
+      "id": "t_product_public_category_product_template_rel",
+      "name": "product_public_category_product_template_rel",
+      "comment": "many2many product.template.public_categ_ids ↔ product.public.category (Website Product Category)",
+      "columns": [
+        {
+          "id": "product_public_category_product_template_rel.product_template_id",
+          "name": "product_template_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.template id"
+        },
+        {
+          "id": "product_public_category_product_template_rel.product_public_category_id",
+          "name": "product_public_category_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.public.category id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_website_user_id",
+      "parent": "t_res_users",
+      "child": "t_website",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "website.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_website_salesperson_id",
+      "parent": "t_res_users",
+      "child": "t_website",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "salesperson_id",
+      "columns": [
+        {
+          "fk": "website.salesperson_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_website_page_website_id",
+      "parent": "t_website",
+      "child": "t_website_page",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "website_page.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_website_menu_page_id",
+      "parent": "t_website_page",
+      "child": "t_website_menu",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "page_id",
+      "columns": [
+        {
+          "fk": "website_menu.page_id",
+          "ref": "website_page.id"
+        }
+      ]
+    },
+    {
+      "id": "r_website_menu_parent_id",
+      "parent": "t_website_menu",
+      "child": "t_website_menu",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "website_menu.parent_id",
+          "ref": "website_menu.id"
+        }
+      ]
+    },
+    {
+      "id": "r_website_menu_website_id",
+      "parent": "t_website",
+      "child": "t_website_menu",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "website_menu.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_website_visitor_website_id",
+      "parent": "t_website",
+      "child": "t_website_visitor",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "website_visitor.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_website_visitor_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_website_visitor",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "website_visitor.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_website_id",
+      "parent": "t_website",
+      "child": "t_product_template",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "product_template.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_website_ribbon_id",
+      "parent": "t_product_ribbon",
+      "child": "t_product_template",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_ribbon_id",
+      "columns": [
+        {
+          "fk": "product_template.website_ribbon_id",
+          "ref": "product_ribbon.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_public_category_parent_id",
+      "parent": "t_product_public_category",
+      "child": "t_product_public_category",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "product_public_category.parent_id",
+          "ref": "product_public_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_public_category_website_id",
+      "parent": "t_website",
+      "child": "t_product_public_category",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "product_public_category.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_image_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_image",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_image.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_image_product_variant_id",
+      "parent": "t_product_product",
+      "child": "t_product_image",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_variant_id",
+      "columns": [
+        {
+          "fk": "product_image.product_variant_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_pricelist_website_id",
+      "parent": "t_website",
+      "child": "t_product_pricelist",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "product_pricelist.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_website_id",
+      "parent": "t_website",
+      "child": "t_sale_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "sale_order.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_sale_order",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "sale_order.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_pricelist_id",
+      "parent": "t_product_pricelist",
+      "child": "t_sale_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "pricelist_id",
+      "columns": [
+        {
+          "fk": "sale_order.pricelist_id",
+          "ref": "product_pricelist.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_product_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_product",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_product.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_line_order_id",
+      "parent": "t_sale_order",
+      "child": "t_sale_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "order_id",
+      "columns": [
+        {
+          "fk": "sale_order_line.order_id",
+          "ref": "sale_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_sale_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "sale_order_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_public_category_product_template_rel_product_template_id",
+      "parent": "t_product_template",
+      "child": "t_product_public_category_product_template_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_template_id",
+      "columns": [
+        {
+          "fk": "product_public_category_product_template_rel.product_template_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_public_category_product_template_rel_product_public_category_id",
+      "parent": "t_product_public_category",
+      "child": "t_product_public_category_product_template_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_public_category_id",
+      "columns": [
+        {
+          "fk": "product_public_category_product_template_rel.product_public_category_id",
+          "ref": "product_public_category.id"
+        }
+      ]
+    }
+  ]
+}

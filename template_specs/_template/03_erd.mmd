@@ -1,0 +1,33 @@
+%% eb_<module> — Entity Relationship Diagram
+%% Render: VS Code Mermaid preview, GitHub, or mermaid.live
+%% Show Odoo model names; include core models (res.users, res.partner) the module links to.
+
+erDiagram
+    RES_USERS ||--o{ EB_MODULE_ENTITY : "member_id"
+    EB_MODULE_ENTITY ||--o{ EB_MODULE_ENTITY_LINE : "line_ids / entity_id"
+    EB_MODULE_ENTITY }o--o{ EB_MODULE_TAG : "tag_ids"
+
+    RES_USERS {
+        int id PK
+        char login
+    }
+
+    EB_MODULE_ENTITY {
+        int id PK
+        char name
+        text description
+        int member_id FK "res.users"
+        selection state
+        float total "computed, stored"
+    }
+
+    EB_MODULE_ENTITY_LINE {
+        int id PK
+        int entity_id FK
+        float amount
+    }
+
+    EB_MODULE_TAG {
+        int id PK
+        char name
+    }

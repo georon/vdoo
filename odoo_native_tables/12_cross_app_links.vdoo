@@ -1,0 +1,1352 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Cross-app links",
+  "tables": [
+    {
+      "id": "t_crm_lead",
+      "name": "crm_lead",
+      "columns": [
+        {
+          "id": "crm_lead.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "crm_lead.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Opportunity (computed, stored)"
+        },
+        {
+          "id": "crm_lead.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contact"
+        }
+      ],
+      "comment": "crm.lead — Lead"
+    },
+    {
+      "id": "t_sale_order",
+      "name": "sale_order",
+      "columns": [
+        {
+          "id": "sale_order.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "sale_order.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "sale_order.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Customer"
+        },
+        {
+          "id": "sale_order.opportunity_id",
+          "name": "opportunity_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Opportunity"
+        },
+        {
+          "id": "sale_order.warehouse_id",
+          "name": "warehouse_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Warehouse (computed, stored)"
+        },
+        {
+          "id": "sale_order.website_id",
+          "name": "website_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Website"
+        }
+      ],
+      "comment": "sale.order — Sales Order"
+    },
+    {
+      "id": "t_sale_order_line",
+      "name": "sale_order_line",
+      "columns": [
+        {
+          "id": "sale_order_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "sale_order_line.order_id",
+          "name": "order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "sale_order_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        }
+      ],
+      "comment": "sale.order.line — Sales Order Line"
+    },
+    {
+      "id": "t_purchase_order",
+      "name": "purchase_order",
+      "columns": [
+        {
+          "id": "purchase_order.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "purchase_order.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "purchase_order.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Vendor"
+        },
+        {
+          "id": "purchase_order.picking_type_id",
+          "name": "picking_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Deliver To"
+        }
+      ],
+      "comment": "purchase.order — Purchase Order"
+    },
+    {
+      "id": "t_purchase_order_line",
+      "name": "purchase_order_line",
+      "columns": [
+        {
+          "id": "purchase_order_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "purchase_order_line.order_id",
+          "name": "order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "purchase_order_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        }
+      ],
+      "comment": "purchase.order.line — Purchase Order Line"
+    },
+    {
+      "id": "t_stock_picking",
+      "name": "stock_picking",
+      "columns": [
+        {
+          "id": "stock_picking.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_picking.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "stock_picking.sale_id",
+          "name": "sale_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales Order (computed, stored)"
+        },
+        {
+          "id": "stock_picking.pos_order_id",
+          "name": "pos_order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Pos order"
+        },
+        {
+          "id": "stock_picking.picking_type_id",
+          "name": "picking_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation Type"
+        }
+      ],
+      "comment": "stock.picking — Transfer"
+    },
+    {
+      "id": "t_stock_move",
+      "name": "stock_move",
+      "columns": [
+        {
+          "id": "stock_move.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_move.picking_id",
+          "name": "picking_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Transfer"
+        },
+        {
+          "id": "stock_move.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "stock_move.sale_line_id",
+          "name": "sale_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sale Line"
+        },
+        {
+          "id": "stock_move.purchase_line_id",
+          "name": "purchase_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Purchase Order Line"
+        },
+        {
+          "id": "stock_move.production_id",
+          "name": "production_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Production Order for finished products"
+        },
+        {
+          "id": "stock_move.raw_material_production_id",
+          "name": "raw_material_production_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Production Order for components"
+        },
+        {
+          "id": "stock_move.account_move_id",
+          "name": "account_move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "stock_move_id"
+        }
+      ],
+      "comment": "stock.move — Stock Move"
+    },
+    {
+      "id": "t_mrp_production",
+      "name": "mrp_production",
+      "columns": [
+        {
+          "id": "mrp_production.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_production.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "mrp_production.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product (computed, stored)"
+        },
+        {
+          "id": "mrp_production.sale_line_id",
+          "name": "sale_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Origin sale order line"
+        }
+      ],
+      "comment": "mrp.production — Manufacturing Order"
+    },
+    {
+      "id": "t_account_move",
+      "name": "account_move",
+      "columns": [
+        {
+          "id": "account_move.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_move.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Number (computed, stored)"
+        },
+        {
+          "id": "account_move.move_type",
+          "name": "move_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (entry | out_invoice | out_refund | in_invoice | in_refund | out_receipt | in_receipt)"
+        },
+        {
+          "id": "account_move.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Partner"
+        }
+      ],
+      "comment": "account.move — Journal Entry"
+    },
+    {
+      "id": "t_account_move_line",
+      "name": "account_move_line",
+      "columns": [
+        {
+          "id": "account_move_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_move_line.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal Entry"
+        },
+        {
+          "id": "account_move_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "account_move_line.purchase_line_id",
+          "name": "purchase_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Purchase Order Line"
+        }
+      ],
+      "comment": "account.move.line — Journal Item"
+    },
+    {
+      "id": "t_project_project",
+      "name": "project_project",
+      "columns": [
+        {
+          "id": "project_project.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_project.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "project_project.sale_line_id",
+          "name": "sale_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales Order Item (computed, stored)"
+        }
+      ],
+      "comment": "project.project — Project"
+    },
+    {
+      "id": "t_project_task",
+      "name": "project_task",
+      "columns": [
+        {
+          "id": "project_task.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_task.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Title"
+        },
+        {
+          "id": "project_task.project_id",
+          "name": "project_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Project (computed, stored)"
+        },
+        {
+          "id": "project_task.sale_line_id",
+          "name": "sale_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales Order Item (computed, stored)"
+        }
+      ],
+      "comment": "project.task — Task"
+    },
+    {
+      "id": "t_pos_order",
+      "name": "pos_order",
+      "columns": [
+        {
+          "id": "pos_order.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_order.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Ref"
+        },
+        {
+          "id": "pos_order.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Customer"
+        },
+        {
+          "id": "pos_order.account_move",
+          "name": "account_move",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Invoice"
+        }
+      ],
+      "comment": "pos.order — Point of Sale Orders"
+    },
+    {
+      "id": "t_pos_order_line",
+      "name": "pos_order_line",
+      "columns": [
+        {
+          "id": "pos_order_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_order_line.order_id",
+          "name": "order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Ref"
+        },
+        {
+          "id": "pos_order_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "pos_order_line.sale_order_line_id",
+          "name": "sale_order_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Source Sale Order Line"
+        }
+      ],
+      "comment": "pos.order.line — Point of Sale Order Lines"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_stock_warehouse",
+      "name": "stock_warehouse",
+      "columns": [
+        {
+          "id": "stock_warehouse.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_warehouse.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Warehouse"
+        }
+      ],
+      "comment": "stock.warehouse — Warehouse; reference copy, details in 05_inventory_setup"
+    },
+    {
+      "id": "t_stock_picking_type",
+      "name": "stock_picking_type",
+      "columns": [
+        {
+          "id": "stock_picking_type.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_picking_type.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation Type (translated: one value per language)"
+        },
+        {
+          "id": "stock_picking_type.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type of Operation (incoming | outgoing | internal | mrp_operation)"
+        }
+      ],
+      "comment": "stock.picking.type — Picking Type; reference copy, details in 05_inventory_setup"
+    },
+    {
+      "id": "t_website",
+      "name": "website",
+      "columns": [
+        {
+          "id": "website.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "website.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Website Name"
+        }
+      ],
+      "comment": "website — Website; reference copy, details in 11_website_ecommerce"
+    },
+    {
+      "id": "t_sale_order_line_invoice_rel",
+      "name": "sale_order_line_invoice_rel",
+      "comment": "many2many sale.order.line.invoice_lines ↔ account.move.line (Invoice Lines)",
+      "columns": [
+        {
+          "id": "sale_order_line_invoice_rel.order_line_id",
+          "name": "order_line_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "sale.order.line id"
+        },
+        {
+          "id": "sale_order_line_invoice_rel.invoice_line_id",
+          "name": "invoice_line_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "account.move.line id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_crm_lead_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "crm_lead.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_sale_order",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "sale_order.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_opportunity_id",
+      "parent": "t_crm_lead",
+      "child": "t_sale_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "opportunity_id",
+      "columns": [
+        {
+          "fk": "sale_order.opportunity_id",
+          "ref": "crm_lead.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_warehouse_id",
+      "parent": "t_stock_warehouse",
+      "child": "t_sale_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "warehouse_id",
+      "columns": [
+        {
+          "fk": "sale_order.warehouse_id",
+          "ref": "stock_warehouse.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_website_id",
+      "parent": "t_website",
+      "child": "t_sale_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "website_id",
+      "columns": [
+        {
+          "fk": "sale_order.website_id",
+          "ref": "website.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_line_order_id",
+      "parent": "t_sale_order",
+      "child": "t_sale_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "order_id",
+      "columns": [
+        {
+          "fk": "sale_order_line.order_id",
+          "ref": "sale_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_sale_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "sale_order_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_purchase_order",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "purchase_order.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_picking_type_id",
+      "parent": "t_stock_picking_type",
+      "child": "t_purchase_order",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_type_id",
+      "columns": [
+        {
+          "fk": "purchase_order.picking_type_id",
+          "ref": "stock_picking_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_line_order_id",
+      "parent": "t_purchase_order",
+      "child": "t_purchase_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "order_id",
+      "columns": [
+        {
+          "fk": "purchase_order_line.order_id",
+          "ref": "purchase_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_purchase_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "purchase_order_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_sale_id",
+      "parent": "t_sale_order",
+      "child": "t_stock_picking",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "sale_id",
+      "columns": [
+        {
+          "fk": "stock_picking.sale_id",
+          "ref": "sale_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_pos_order_id",
+      "parent": "t_pos_order",
+      "child": "t_stock_picking",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "pos_order_id",
+      "columns": [
+        {
+          "fk": "stock_picking.pos_order_id",
+          "ref": "pos_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_picking_type_id",
+      "parent": "t_stock_picking_type",
+      "child": "t_stock_picking",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_type_id",
+      "columns": [
+        {
+          "fk": "stock_picking.picking_type_id",
+          "ref": "stock_picking_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_picking_id",
+      "parent": "t_stock_picking",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_id",
+      "columns": [
+        {
+          "fk": "stock_move.picking_id",
+          "ref": "stock_picking.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_product_id",
+      "parent": "t_product_product",
+      "child": "t_stock_move",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "stock_move.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_sale_line_id",
+      "parent": "t_sale_order_line",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "sale_line_id",
+      "columns": [
+        {
+          "fk": "stock_move.sale_line_id",
+          "ref": "sale_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_purchase_line_id",
+      "parent": "t_purchase_order_line",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "purchase_line_id",
+      "columns": [
+        {
+          "fk": "stock_move.purchase_line_id",
+          "ref": "purchase_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_production_id",
+      "parent": "t_mrp_production",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "production_id",
+      "columns": [
+        {
+          "fk": "stock_move.production_id",
+          "ref": "mrp_production.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_raw_material_production_id",
+      "parent": "t_mrp_production",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "raw_material_production_id",
+      "columns": [
+        {
+          "fk": "stock_move.raw_material_production_id",
+          "ref": "mrp_production.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_account_move_id",
+      "parent": "t_account_move",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "account_move_id",
+      "columns": [
+        {
+          "fk": "stock_move.account_move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_production_product_id",
+      "parent": "t_product_product",
+      "child": "t_mrp_production",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "mrp_production.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_production_sale_line_id",
+      "parent": "t_sale_order_line",
+      "child": "t_mrp_production",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "sale_line_id",
+      "columns": [
+        {
+          "fk": "mrp_production.sale_line_id",
+          "ref": "sale_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_account_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "account_move.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_move_id",
+      "parent": "t_account_move",
+      "child": "t_account_move_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "move_id",
+      "columns": [
+        {
+          "fk": "account_move_line.move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "account_move_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_purchase_line_id",
+      "parent": "t_purchase_order_line",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "purchase_line_id",
+      "columns": [
+        {
+          "fk": "account_move_line.purchase_line_id",
+          "ref": "purchase_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_project_sale_line_id",
+      "parent": "t_sale_order_line",
+      "child": "t_project_project",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "sale_line_id",
+      "columns": [
+        {
+          "fk": "project_project.sale_line_id",
+          "ref": "sale_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_project_id",
+      "parent": "t_project_project",
+      "child": "t_project_task",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "project_id",
+      "columns": [
+        {
+          "fk": "project_task.project_id",
+          "ref": "project_project.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_sale_line_id",
+      "parent": "t_sale_order_line",
+      "child": "t_project_task",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "sale_line_id",
+      "columns": [
+        {
+          "fk": "project_task.sale_line_id",
+          "ref": "sale_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_pos_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "pos_order.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_account_move",
+      "parent": "t_account_move",
+      "child": "t_pos_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "account_move",
+      "columns": [
+        {
+          "fk": "pos_order.account_move",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_line_order_id",
+      "parent": "t_pos_order",
+      "child": "t_pos_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "order_id",
+      "columns": [
+        {
+          "fk": "pos_order_line.order_id",
+          "ref": "pos_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_pos_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "pos_order_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_line_sale_order_line_id",
+      "parent": "t_sale_order_line",
+      "child": "t_pos_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "sale_order_line_id",
+      "columns": [
+        {
+          "fk": "pos_order_line.sale_order_line_id",
+          "ref": "sale_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_line_invoice_rel_order_line_id",
+      "parent": "t_sale_order_line",
+      "child": "t_sale_order_line_invoice_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "order_line_id",
+      "columns": [
+        {
+          "fk": "sale_order_line_invoice_rel.order_line_id",
+          "ref": "sale_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_sale_order_line_invoice_rel_invoice_line_id",
+      "parent": "t_account_move_line",
+      "child": "t_sale_order_line_invoice_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "invoice_line_id",
+      "columns": [
+        {
+          "fk": "sale_order_line_invoice_rel.invoice_line_id",
+          "ref": "account_move_line.id"
+        }
+      ]
+    }
+  ]
+}

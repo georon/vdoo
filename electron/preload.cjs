@@ -9,12 +9,24 @@ const subscribe = (channel, callback) => {
 
 contextBridge.exposeInMainWorld("vdooDesktop", {
   pendingFile: () => ipcRenderer.invoke("vdoo:pending-file"),
-  open: () => ipcRenderer.invoke("vdoo:open"),
   save: (request) => ipcRenderer.invoke("vdoo:save", request),
   openLink: (url) => ipcRenderer.invoke("vdoo:open-link", url),
   close: () => ipcRenderer.invoke("vdoo:close"),
   onOpenFile: (callback) => subscribe("vdoo:open-file", callback),
   onCloseRequested: (callback) => subscribe("vdoo:close-requested", callback),
+  edit: (command) => ipcRenderer.invoke("vdoo:edit", command),
+  exportPdf: (request) => ipcRenderer.invoke("vdoo:export-pdf", request),
+  files: {
+    workspace: () => ipcRenderer.invoke("vdoo:files-workspace"),
+    chooseFolder: () => ipcRenderer.invoke("vdoo:files-choose-folder"),
+    list: (dir) => ipcRenderer.invoke("vdoo:files-list", dir),
+    pick: () => ipcRenderer.invoke("vdoo:files-pick"),
+    read: (file) => ipcRenderer.invoke("vdoo:files-read", file),
+    write: (request) => ipcRenderer.invoke("vdoo:files-write", request),
+    defaultDir: () => ipcRenderer.invoke("vdoo:files-default-dir"),
+    chooseDefaultDir: () => ipcRenderer.invoke("vdoo:files-choose-default-dir"),
+    clearDefaultDir: () => ipcRenderer.invoke("vdoo:files-clear-default-dir"),
+  },
   ai: {
     status: () => ipcRenderer.invoke("vdoo:ai-status"),
     signInChatGPT: () => ipcRenderer.invoke("vdoo:ai-chatgpt-signin"),

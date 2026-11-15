@@ -14,6 +14,8 @@ export interface Table {
   id: string;
   name: string;
   comment: string;
+  /** Highlight colour in the diagram as #rrggbb, or "" for none. It is drawn see-through. */
+  color: string;
   columns: Column[];
 }
 
@@ -50,6 +52,16 @@ export const CARDINALITY: Record<Cardinality, string> = {
   oneOrMany: "One or more",
 };
 
+/** The highlight palette: light colours that stay readable under text in both the light and the dark theme. */
+export const TABLE_COLORS: { name: string; hex: string }[] = [
+  { name: "Red", hex: "#ff6b6b" }, { name: "Orange", hex: "#ff922b" }, { name: "Yellow", hex: "#fcc419" }, { name: "Lime", hex: "#94d82d" },
+  { name: "Green", hex: "#40c057" }, { name: "Teal", hex: "#20c997" }, { name: "Cyan", hex: "#22b8cf" }, { name: "Blue", hex: "#4dabf7" },
+  { name: "Indigo", hex: "#748ffc" }, { name: "Purple", hex: "#b197fc" }, { name: "Pink", hex: "#f783ac" }, { name: "Grey", hex: "#adb5bd" },
+];
+export const isTableColor = (value: unknown): value is string => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
+/** How see-through a highlight is drawn, as the alpha byte of #rrggbbaa. */
+export const TABLE_COLOR_ALPHA = "47";
+
 export const COLUMN_TYPES = ["int", "bigint", "smallint", "serial", "uuid", "varchar(255)", "text", "char(1)", "boolean",
   "date", "time", "timestamp", "timestamptz", "decimal(10,2)", "numeric", "float", "double", "json", "jsonb", "blob", "bytea"];
 
@@ -67,7 +79,7 @@ export function newColumn(partial: Partial<Column> = {}): Column {
 export function newTable(schema: Schema, base = "table"): Table {
   let name = base, n = 1;
   while (schema.tables.some((t) => t.name.toLowerCase() === name.toLowerCase())) name = `${base}_${++n}`;
-  return { id: newId(), name, comment: "", columns: [newColumn({ name: "id", type: "int", pk: true, nullable: false })] };
+  return { id: newId(), name, comment: "", color: "", columns: [newColumn({ name: "id", type: "int", pk: true, nullable: false })] };
 }
 
 export const tableById = (schema: Schema, id: string) => schema.tables.find((t) => t.id === id);
@@ -182,7 +194,7 @@ export function deserialize(text: string): Schema {
   const data = JSON.parse(text);
   if (!data || data.format !== "vdoo" || !Array.isArray(data.tables) || !Array.isArray(data.relations)) throw new Error("This isn't a vdoo schema file.");
   const tables: Table[] = data.tables.map((t: Record<string, unknown>) => ({
-    id: str(t.id, newId()), name: str(t.name, "table"), comment: str(t.comment),
+    id: str(t.id, newId()), name: str(t.name, "table"), comment: str(t.comment), color: isTableColor(t.color) ? t.color.toLowerCase() : "",
     columns: (Array.isArray(t.columns) ? t.columns : []).map((c: Record<string, unknown>) => ({
       id: str(c.id, newId()), name: str(c.name, "column"), type: str(c.type, "varchar(255)"),
       pk: c.pk === true, nullable: c.nullable !== false, unique: c.unique === true, comment: str(c.comment),

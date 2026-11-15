@@ -1,0 +1,1637 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Manufacturing",
+  "tables": [
+    {
+      "id": "t_mrp_production",
+      "name": "mrp_production",
+      "columns": [
+        {
+          "id": "mrp_production.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_production.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "mrp_production.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "State (draft | confirmed | progress | to_close | done | cancel; computed, stored)"
+        },
+        {
+          "id": "mrp_production.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product (computed, stored)"
+        },
+        {
+          "id": "mrp_production.product_qty",
+          "name": "product_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity To Produce (computed, stored)"
+        },
+        {
+          "id": "mrp_production.product_uom_id",
+          "name": "product_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit (computed, stored)"
+        },
+        {
+          "id": "mrp_production.qty_producing",
+          "name": "qty_producing",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity Producing"
+        },
+        {
+          "id": "mrp_production.bom_id",
+          "name": "bom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Bill of Material (computed, stored)"
+        },
+        {
+          "id": "mrp_production.picking_type_id",
+          "name": "picking_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation Type (computed, stored)"
+        },
+        {
+          "id": "mrp_production.location_src_id",
+          "name": "location_src_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Components Location (computed, stored) → stock_location (not in this diagram)"
+        },
+        {
+          "id": "mrp_production.location_dest_id",
+          "name": "location_dest_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Finished Products Location (computed, stored) → stock_location (not in this diagram)"
+        },
+        {
+          "id": "mrp_production.production_group_id",
+          "name": "production_group_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Production Group"
+        },
+        {
+          "id": "mrp_production.date_start",
+          "name": "date_start",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Start"
+        },
+        {
+          "id": "mrp_production.date_finished",
+          "name": "date_finished",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "End (computed, stored)"
+        },
+        {
+          "id": "mrp_production.date_deadline",
+          "name": "date_deadline",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Deadline (computed, stored)"
+        },
+        {
+          "id": "mrp_production.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Responsible → res_users (not in this diagram)"
+        },
+        {
+          "id": "mrp_production.origin",
+          "name": "origin",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Source"
+        },
+        {
+          "id": "mrp_production.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "mrp.production — Manufacturing Order"
+    },
+    {
+      "id": "t_mrp_production_group",
+      "name": "mrp_production_group",
+      "columns": [
+        {
+          "id": "mrp_production_group.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_production_group.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        }
+      ],
+      "comment": "mrp.production.group — Production Group"
+    },
+    {
+      "id": "t_mrp_bom",
+      "name": "mrp_bom",
+      "columns": [
+        {
+          "id": "mrp_bom.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_bom.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "mrp_bom.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product Variant"
+        },
+        {
+          "id": "mrp_bom.product_qty",
+          "name": "product_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity"
+        },
+        {
+          "id": "mrp_bom.product_uom_id",
+          "name": "product_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit"
+        },
+        {
+          "id": "mrp_bom.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "BoM Type (normal | phantom)"
+        },
+        {
+          "id": "mrp_bom.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "mrp_bom.picking_type_id",
+          "name": "picking_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Operation Type"
+        },
+        {
+          "id": "mrp_bom.consumption",
+          "name": "consumption",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Flexible Consumption (flexible | warning | strict)"
+        },
+        {
+          "id": "mrp_bom.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "mrp_bom.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "mrp.bom — Bill of Material"
+    },
+    {
+      "id": "t_mrp_bom_line",
+      "name": "mrp_bom_line",
+      "columns": [
+        {
+          "id": "mrp_bom_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_bom_line.bom_id",
+          "name": "bom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Parent BoM"
+        },
+        {
+          "id": "mrp_bom_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Component"
+        },
+        {
+          "id": "mrp_bom_line.product_qty",
+          "name": "product_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity"
+        },
+        {
+          "id": "mrp_bom_line.product_uom_id",
+          "name": "product_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit"
+        },
+        {
+          "id": "mrp_bom_line.operation_id",
+          "name": "operation_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Consumed in Operation"
+        },
+        {
+          "id": "mrp_bom_line.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "mrp.bom.line — Bill of Material Line"
+    },
+    {
+      "id": "t_mrp_bom_byproduct",
+      "name": "mrp_bom_byproduct",
+      "columns": [
+        {
+          "id": "mrp_bom_byproduct.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_bom_byproduct.bom_id",
+          "name": "bom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "BoM"
+        },
+        {
+          "id": "mrp_bom_byproduct.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "By-product"
+        },
+        {
+          "id": "mrp_bom_byproduct.product_qty",
+          "name": "product_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity"
+        },
+        {
+          "id": "mrp_bom_byproduct.product_uom_id",
+          "name": "product_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit (computed, stored)"
+        },
+        {
+          "id": "mrp_bom_byproduct.operation_id",
+          "name": "operation_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Produced in Operation"
+        },
+        {
+          "id": "mrp_bom_byproduct.cost_share",
+          "name": "cost_share",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Cost Share (%)"
+        }
+      ],
+      "comment": "mrp.bom.byproduct — Byproduct"
+    },
+    {
+      "id": "t_mrp_workcenter",
+      "name": "mrp_workcenter",
+      "columns": [
+        {
+          "id": "mrp_workcenter.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_workcenter.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Center (computed, stored)"
+        },
+        {
+          "id": "mrp_workcenter.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Code"
+        },
+        {
+          "id": "mrp_workcenter.resource_id",
+          "name": "resource_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Resource → resource_resource (not in this diagram)"
+        },
+        {
+          "id": "mrp_workcenter.resource_calendar_id",
+          "name": "resource_calendar_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Working Hours (computed, stored) → resource_calendar (not in this diagram)"
+        },
+        {
+          "id": "mrp_workcenter.costs_hour",
+          "name": "costs_hour",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Cost per hour"
+        },
+        {
+          "id": "mrp_workcenter.time_efficiency",
+          "name": "time_efficiency",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Time Efficiency (computed, stored)"
+        },
+        {
+          "id": "mrp_workcenter.oee_target",
+          "name": "oee_target",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "OEE Target"
+        },
+        {
+          "id": "mrp_workcenter.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        },
+        {
+          "id": "mrp_workcenter.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active (computed, stored)"
+        }
+      ],
+      "comment": "mrp.workcenter — Work Center"
+    },
+    {
+      "id": "t_mrp_routing_workcenter",
+      "name": "mrp_routing_workcenter",
+      "columns": [
+        {
+          "id": "mrp_routing_workcenter.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_routing_workcenter.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation"
+        },
+        {
+          "id": "mrp_routing_workcenter.bom_id",
+          "name": "bom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Bill of Material"
+        },
+        {
+          "id": "mrp_routing_workcenter.workcenter_id",
+          "name": "workcenter_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Work Center"
+        },
+        {
+          "id": "mrp_routing_workcenter.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "mrp_routing_workcenter.time_mode",
+          "name": "time_mode",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Duration Computation (manual | auto)"
+        },
+        {
+          "id": "mrp_routing_workcenter.time_cycle_manual",
+          "name": "time_cycle_manual",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Manual Duration"
+        }
+      ],
+      "comment": "mrp.routing.workcenter — Work Center Usage"
+    },
+    {
+      "id": "t_mrp_workorder",
+      "name": "mrp_workorder",
+      "columns": [
+        {
+          "id": "mrp_workorder.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_workorder.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Work Order"
+        },
+        {
+          "id": "mrp_workorder.production_id",
+          "name": "production_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Manufacturing Order"
+        },
+        {
+          "id": "mrp_workorder.workcenter_id",
+          "name": "workcenter_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Work Center"
+        },
+        {
+          "id": "mrp_workorder.operation_id",
+          "name": "operation_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Operation"
+        },
+        {
+          "id": "mrp_workorder.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (blocked | ready | progress | done | cancel; computed, stored)"
+        },
+        {
+          "id": "mrp_workorder.qty_produced",
+          "name": "qty_produced",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity Done"
+        },
+        {
+          "id": "mrp_workorder.date_start",
+          "name": "date_start",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Start (computed, stored)"
+        },
+        {
+          "id": "mrp_workorder.date_finished",
+          "name": "date_finished",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "End (computed, stored)"
+        },
+        {
+          "id": "mrp_workorder.duration_expected",
+          "name": "duration_expected",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Expected Duration (computed, stored)"
+        },
+        {
+          "id": "mrp_workorder.duration",
+          "name": "duration",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Real Duration (computed, stored)"
+        }
+      ],
+      "comment": "mrp.workorder — Work Order"
+    },
+    {
+      "id": "t_stock_move",
+      "name": "stock_move",
+      "columns": [
+        {
+          "id": "stock_move.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_move.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "stock_move.product_uom_qty",
+          "name": "product_uom_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Demand"
+        },
+        {
+          "id": "stock_move.quantity",
+          "name": "quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity (computed, stored)"
+        },
+        {
+          "id": "stock_move.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (draft | waiting | confirmed | partially_available | assigned | done | cancel)"
+        },
+        {
+          "id": "stock_move.raw_material_production_id",
+          "name": "raw_material_production_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Production Order for components"
+        },
+        {
+          "id": "stock_move.production_id",
+          "name": "production_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Production Order for finished products"
+        },
+        {
+          "id": "stock_move.bom_line_id",
+          "name": "bom_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "BoM Line"
+        },
+        {
+          "id": "stock_move.byproduct_id",
+          "name": "byproduct_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "By-products"
+        },
+        {
+          "id": "stock_move.operation_id",
+          "name": "operation_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Operation To Consume"
+        },
+        {
+          "id": "stock_move.workorder_id",
+          "name": "workorder_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Work Order To Consume"
+        },
+        {
+          "id": "stock_move.unbuild_id",
+          "name": "unbuild_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Disassembly Order"
+        },
+        {
+          "id": "stock_move.location_id",
+          "name": "location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Source Location (computed, stored) → stock_location (not in this diagram)"
+        },
+        {
+          "id": "stock_move.location_dest_id",
+          "name": "location_dest_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Intermediate Location (computed, stored) → stock_location (not in this diagram)"
+        }
+      ],
+      "comment": "stock.move — Stock Move"
+    },
+    {
+      "id": "t_mrp_unbuild",
+      "name": "mrp_unbuild",
+      "columns": [
+        {
+          "id": "mrp_unbuild.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "mrp_unbuild.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "mrp_unbuild.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product (computed, stored)"
+        },
+        {
+          "id": "mrp_unbuild.bom_id",
+          "name": "bom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Bill of Material (computed, stored)"
+        },
+        {
+          "id": "mrp_unbuild.mo_id",
+          "name": "mo_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Manufacturing Order"
+        },
+        {
+          "id": "mrp_unbuild.product_qty",
+          "name": "product_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity (computed, stored)"
+        },
+        {
+          "id": "mrp_unbuild.product_uom_id",
+          "name": "product_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit (computed, stored)"
+        },
+        {
+          "id": "mrp_unbuild.location_id",
+          "name": "location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Source Location (computed, stored) → stock_location (not in this diagram)"
+        },
+        {
+          "id": "mrp_unbuild.location_dest_id",
+          "name": "location_dest_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Destination Location (computed, stored) → stock_location (not in this diagram)"
+        },
+        {
+          "id": "mrp_unbuild.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (draft | done)"
+        },
+        {
+          "id": "mrp_unbuild.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "mrp.unbuild — Unbuild Order"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_product_template",
+      "name": "product_template",
+      "columns": [
+        {
+          "id": "product_template.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_template.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "product_template.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Type (consu | service | combo)"
+        },
+        {
+          "id": "product_template.uom_id",
+          "name": "uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit"
+        }
+      ],
+      "comment": "product.template — Product; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_uom_uom",
+      "name": "uom_uom",
+      "columns": [
+        {
+          "id": "uom_uom.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "uom_uom.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit Name (translated: one value per language)"
+        }
+      ],
+      "comment": "uom.uom — Product Unit of Measure; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_stock_picking_type",
+      "name": "stock_picking_type",
+      "columns": [
+        {
+          "id": "stock_picking_type.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_picking_type.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation Type (translated: one value per language)"
+        },
+        {
+          "id": "stock_picking_type.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type of Operation (incoming | outgoing | internal | mrp_operation)"
+        }
+      ],
+      "comment": "stock.picking.type — Picking Type; reference copy, details in 05_inventory_setup"
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_mrp_production_product_id",
+      "parent": "t_product_product",
+      "child": "t_mrp_production",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "mrp_production.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_production_product_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_mrp_production",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_uom_id",
+      "columns": [
+        {
+          "fk": "mrp_production.product_uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_production_bom_id",
+      "parent": "t_mrp_bom",
+      "child": "t_mrp_production",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "bom_id",
+      "columns": [
+        {
+          "fk": "mrp_production.bom_id",
+          "ref": "mrp_bom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_production_picking_type_id",
+      "parent": "t_stock_picking_type",
+      "child": "t_mrp_production",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_type_id",
+      "columns": [
+        {
+          "fk": "mrp_production.picking_type_id",
+          "ref": "stock_picking_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_production_production_group_id",
+      "parent": "t_mrp_production_group",
+      "child": "t_mrp_production",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "production_group_id",
+      "columns": [
+        {
+          "fk": "mrp_production.production_group_id",
+          "ref": "mrp_production_group.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_mrp_bom",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "mrp_bom.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_product_id",
+      "parent": "t_product_product",
+      "child": "t_mrp_bom",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "mrp_bom.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_product_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_mrp_bom",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_uom_id",
+      "columns": [
+        {
+          "fk": "mrp_bom.product_uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_picking_type_id",
+      "parent": "t_stock_picking_type",
+      "child": "t_mrp_bom",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_type_id",
+      "columns": [
+        {
+          "fk": "mrp_bom.picking_type_id",
+          "ref": "stock_picking_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_line_bom_id",
+      "parent": "t_mrp_bom",
+      "child": "t_mrp_bom_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "bom_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_line.bom_id",
+          "ref": "mrp_bom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_mrp_bom_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_line_product_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_mrp_bom_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_uom_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_line.product_uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_line_operation_id",
+      "parent": "t_mrp_routing_workcenter",
+      "child": "t_mrp_bom_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "operation_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_line.operation_id",
+          "ref": "mrp_routing_workcenter.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_byproduct_bom_id",
+      "parent": "t_mrp_bom",
+      "child": "t_mrp_bom_byproduct",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "bom_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_byproduct.bom_id",
+          "ref": "mrp_bom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_byproduct_product_id",
+      "parent": "t_product_product",
+      "child": "t_mrp_bom_byproduct",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_byproduct.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_byproduct_product_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_mrp_bom_byproduct",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_uom_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_byproduct.product_uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_bom_byproduct_operation_id",
+      "parent": "t_mrp_routing_workcenter",
+      "child": "t_mrp_bom_byproduct",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "operation_id",
+      "columns": [
+        {
+          "fk": "mrp_bom_byproduct.operation_id",
+          "ref": "mrp_routing_workcenter.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_routing_workcenter_bom_id",
+      "parent": "t_mrp_bom",
+      "child": "t_mrp_routing_workcenter",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "bom_id",
+      "columns": [
+        {
+          "fk": "mrp_routing_workcenter.bom_id",
+          "ref": "mrp_bom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_routing_workcenter_workcenter_id",
+      "parent": "t_mrp_workcenter",
+      "child": "t_mrp_routing_workcenter",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "workcenter_id",
+      "columns": [
+        {
+          "fk": "mrp_routing_workcenter.workcenter_id",
+          "ref": "mrp_workcenter.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_workorder_production_id",
+      "parent": "t_mrp_production",
+      "child": "t_mrp_workorder",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "production_id",
+      "columns": [
+        {
+          "fk": "mrp_workorder.production_id",
+          "ref": "mrp_production.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_workorder_workcenter_id",
+      "parent": "t_mrp_workcenter",
+      "child": "t_mrp_workorder",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "workcenter_id",
+      "columns": [
+        {
+          "fk": "mrp_workorder.workcenter_id",
+          "ref": "mrp_workcenter.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_workorder_operation_id",
+      "parent": "t_mrp_routing_workcenter",
+      "child": "t_mrp_workorder",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "operation_id",
+      "columns": [
+        {
+          "fk": "mrp_workorder.operation_id",
+          "ref": "mrp_routing_workcenter.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_product_id",
+      "parent": "t_product_product",
+      "child": "t_stock_move",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "stock_move.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_raw_material_production_id",
+      "parent": "t_mrp_production",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "raw_material_production_id",
+      "columns": [
+        {
+          "fk": "stock_move.raw_material_production_id",
+          "ref": "mrp_production.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_production_id",
+      "parent": "t_mrp_production",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "production_id",
+      "columns": [
+        {
+          "fk": "stock_move.production_id",
+          "ref": "mrp_production.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_bom_line_id",
+      "parent": "t_mrp_bom_line",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "bom_line_id",
+      "columns": [
+        {
+          "fk": "stock_move.bom_line_id",
+          "ref": "mrp_bom_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_byproduct_id",
+      "parent": "t_mrp_bom_byproduct",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "byproduct_id",
+      "columns": [
+        {
+          "fk": "stock_move.byproduct_id",
+          "ref": "mrp_bom_byproduct.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_operation_id",
+      "parent": "t_mrp_routing_workcenter",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "operation_id",
+      "columns": [
+        {
+          "fk": "stock_move.operation_id",
+          "ref": "mrp_routing_workcenter.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_workorder_id",
+      "parent": "t_mrp_workorder",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "workorder_id",
+      "columns": [
+        {
+          "fk": "stock_move.workorder_id",
+          "ref": "mrp_workorder.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_unbuild_id",
+      "parent": "t_mrp_unbuild",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "unbuild_id",
+      "columns": [
+        {
+          "fk": "stock_move.unbuild_id",
+          "ref": "mrp_unbuild.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_unbuild_product_id",
+      "parent": "t_product_product",
+      "child": "t_mrp_unbuild",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "mrp_unbuild.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_unbuild_bom_id",
+      "parent": "t_mrp_bom",
+      "child": "t_mrp_unbuild",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "bom_id",
+      "columns": [
+        {
+          "fk": "mrp_unbuild.bom_id",
+          "ref": "mrp_bom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_unbuild_mo_id",
+      "parent": "t_mrp_production",
+      "child": "t_mrp_unbuild",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "mo_id",
+      "columns": [
+        {
+          "fk": "mrp_unbuild.mo_id",
+          "ref": "mrp_production.id"
+        }
+      ]
+    },
+    {
+      "id": "r_mrp_unbuild_product_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_mrp_unbuild",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_uom_id",
+      "columns": [
+        {
+          "fk": "mrp_unbuild.product_uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_product_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_product",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_product.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_product_template",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "uom_id",
+      "columns": [
+        {
+          "fk": "product_template.uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    }
+  ]
+}

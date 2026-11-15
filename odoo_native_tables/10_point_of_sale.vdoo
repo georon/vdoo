@@ -1,0 +1,1614 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Point of Sale",
+  "tables": [
+    {
+      "id": "t_pos_config",
+      "name": "pos_config",
+      "columns": [
+        {
+          "id": "pos_config.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_config.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Point of Sale"
+        },
+        {
+          "id": "pos_config.picking_type_id",
+          "name": "picking_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation Type → stock_picking_type (not in this diagram)"
+        },
+        {
+          "id": "pos_config.journal_id",
+          "name": "journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Point of Sale Journal"
+        },
+        {
+          "id": "pos_config.invoice_journal_id",
+          "name": "invoice_journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Invoice Journal"
+        },
+        {
+          "id": "pos_config.pricelist_id",
+          "name": "pricelist_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Default Pricelist → product_pricelist (not in this diagram)"
+        },
+        {
+          "id": "pos_config.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Currency (computed, stored) → res_currency (not in this diagram)"
+        },
+        {
+          "id": "pos_config.iface_tax_included",
+          "name": "iface_tax_included",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Display (subtotal | total)"
+        },
+        {
+          "id": "pos_config.module_pos_restaurant",
+          "name": "module_pos_restaurant",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Bar/Restaurant"
+        },
+        {
+          "id": "pos_config.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "pos_config.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "pos.config — Point of Sale Configuration"
+    },
+    {
+      "id": "t_pos_session",
+      "name": "pos_session",
+      "columns": [
+        {
+          "id": "pos_session.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_session.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Session ID"
+        },
+        {
+          "id": "pos_session.config_id",
+          "name": "config_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Point of Sale"
+        },
+        {
+          "id": "pos_session.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Opened By"
+        },
+        {
+          "id": "pos_session.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Status"
+        },
+        {
+          "id": "pos_session.start_at",
+          "name": "start_at",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Opening Date"
+        },
+        {
+          "id": "pos_session.stop_at",
+          "name": "stop_at",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Closing Date"
+        },
+        {
+          "id": "pos_session.cash_journal_id",
+          "name": "cash_journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Cash Journal (computed, stored)"
+        },
+        {
+          "id": "pos_session.cash_register_balance_start",
+          "name": "cash_register_balance_start",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Starting Balance"
+        },
+        {
+          "id": "pos_session.cash_register_balance_end_real",
+          "name": "cash_register_balance_end_real",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Ending Balance"
+        },
+        {
+          "id": "pos_session.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Journal Entry"
+        }
+      ],
+      "comment": "pos.session — Point of Sale Session"
+    },
+    {
+      "id": "t_pos_order",
+      "name": "pos_order",
+      "columns": [
+        {
+          "id": "pos_order.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_order.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Ref"
+        },
+        {
+          "id": "pos_order.pos_reference",
+          "name": "pos_reference",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Receipt Number"
+        },
+        {
+          "id": "pos_order.session_id",
+          "name": "session_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Session"
+        },
+        {
+          "id": "pos_order.config_id",
+          "name": "config_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Point of Sale (computed, stored)"
+        },
+        {
+          "id": "pos_order.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Customer"
+        },
+        {
+          "id": "pos_order.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Employee"
+        },
+        {
+          "id": "pos_order.date_order",
+          "name": "date_order",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Date"
+        },
+        {
+          "id": "pos_order.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (draft | cancel | paid | done)"
+        },
+        {
+          "id": "pos_order.amount_total",
+          "name": "amount_total",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Total"
+        },
+        {
+          "id": "pos_order.amount_tax",
+          "name": "amount_tax",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Taxes"
+        },
+        {
+          "id": "pos_order.amount_paid",
+          "name": "amount_paid",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Paid"
+        },
+        {
+          "id": "pos_order.amount_return",
+          "name": "amount_return",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Returned"
+        },
+        {
+          "id": "pos_order.pricelist_id",
+          "name": "pricelist_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Pricelist → product_pricelist (not in this diagram)"
+        },
+        {
+          "id": "pos_order.fiscal_position_id",
+          "name": "fiscal_position_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Fiscal Position → account_fiscal_position (not in this diagram)"
+        },
+        {
+          "id": "pos_order.account_move",
+          "name": "account_move",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Invoice"
+        },
+        {
+          "id": "pos_order.to_invoice",
+          "name": "to_invoice",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "To invoice"
+        },
+        {
+          "id": "pos_order.is_refund",
+          "name": "is_refund",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is Refund"
+        },
+        {
+          "id": "pos_order.uuid",
+          "name": "uuid",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Uuid"
+        },
+        {
+          "id": "pos_order.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "pos.order — Point of Sale Orders"
+    },
+    {
+      "id": "t_pos_order_line",
+      "name": "pos_order_line",
+      "columns": [
+        {
+          "id": "pos_order_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_order_line.order_id",
+          "name": "order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Ref"
+        },
+        {
+          "id": "pos_order_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "pos_order_line.full_product_name",
+          "name": "full_product_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Full Product Name"
+        },
+        {
+          "id": "pos_order_line.qty",
+          "name": "qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity"
+        },
+        {
+          "id": "pos_order_line.price_unit",
+          "name": "price_unit",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Unit Price"
+        },
+        {
+          "id": "pos_order_line.discount",
+          "name": "discount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Discount (%)"
+        },
+        {
+          "id": "pos_order_line.price_subtotal",
+          "name": "price_subtotal",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Excl."
+        },
+        {
+          "id": "pos_order_line.price_subtotal_incl",
+          "name": "price_subtotal_incl",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Incl."
+        },
+        {
+          "id": "pos_order_line.refunded_orderline_id",
+          "name": "refunded_orderline_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Refunded Order Line"
+        },
+        {
+          "id": "pos_order_line.combo_parent_id",
+          "name": "combo_parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Combo Parent"
+        },
+        {
+          "id": "pos_order_line.uuid",
+          "name": "uuid",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Uuid"
+        }
+      ],
+      "comment": "pos.order.line — Point of Sale Order Lines"
+    },
+    {
+      "id": "t_pos_payment",
+      "name": "pos_payment",
+      "columns": [
+        {
+          "id": "pos_payment.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_payment.pos_order_id",
+          "name": "pos_order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order"
+        },
+        {
+          "id": "pos_payment.session_id",
+          "name": "session_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Session (computed, stored)"
+        },
+        {
+          "id": "pos_payment.payment_method_id",
+          "name": "payment_method_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Payment Method"
+        },
+        {
+          "id": "pos_payment.amount",
+          "name": "amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Amount"
+        },
+        {
+          "id": "pos_payment.payment_date",
+          "name": "payment_date",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Date"
+        },
+        {
+          "id": "pos_payment.is_change",
+          "name": "is_change",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is this payment change?"
+        },
+        {
+          "id": "pos_payment.card_type",
+          "name": "card_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Type of card used"
+        },
+        {
+          "id": "pos_payment.transaction_id",
+          "name": "transaction_id",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Payment Transaction ID"
+        },
+        {
+          "id": "pos_payment.account_move_id",
+          "name": "account_move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Account move"
+        }
+      ],
+      "comment": "pos.payment — Point of Sale Payments"
+    },
+    {
+      "id": "t_pos_payment_method",
+      "name": "pos_payment_method",
+      "columns": [
+        {
+          "id": "pos_payment_method.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_payment_method.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Method (translated: one value per language)"
+        },
+        {
+          "id": "pos_payment_method.payment_method_type",
+          "name": "payment_method_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Integration"
+        },
+        {
+          "id": "pos_payment_method.journal_id",
+          "name": "journal_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Journal"
+        },
+        {
+          "id": "pos_payment_method.receivable_account_id",
+          "name": "receivable_account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Intermediary Account → account_account (not in this diagram)"
+        },
+        {
+          "id": "pos_payment_method.outstanding_account_id",
+          "name": "outstanding_account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Outstanding Account → account_account (not in this diagram)"
+        },
+        {
+          "id": "pos_payment_method.is_cash_count",
+          "name": "is_cash_count",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Cash (computed, stored)"
+        },
+        {
+          "id": "pos_payment_method.use_payment_terminal",
+          "name": "use_payment_terminal",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Use a Payment Terminal"
+        },
+        {
+          "id": "pos_payment_method.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "pos_payment_method.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "pos.payment.method — Point of Sale Payment Methods"
+    },
+    {
+      "id": "t_pos_category",
+      "name": "pos_category",
+      "columns": [
+        {
+          "id": "pos_category.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "pos_category.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Category Name (translated: one value per language)"
+        },
+        {
+          "id": "pos_category.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent Category"
+        },
+        {
+          "id": "pos_category.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "pos.category — Point of Sale Category"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        }
+      ],
+      "comment": "res.users — User; delegates to res.partner via partner_id; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_product_template",
+      "name": "product_template",
+      "columns": [
+        {
+          "id": "product_template.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_template.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "product_template.available_in_pos",
+          "name": "available_in_pos",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Available in POS"
+        }
+      ],
+      "comment": "product.template — Product; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_account_move",
+      "name": "account_move",
+      "columns": [
+        {
+          "id": "account_move.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_move.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Number (computed, stored)"
+        },
+        {
+          "id": "account_move.move_type",
+          "name": "move_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (entry | out_invoice | out_refund | in_invoice | in_refund | out_receipt | in_receipt)"
+        }
+      ],
+      "comment": "account.move — Journal Entry; reference copy, details in 06_accounting"
+    },
+    {
+      "id": "t_account_journal",
+      "name": "account_journal",
+      "columns": [
+        {
+          "id": "account_journal.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_journal.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal Name (translated: one value per language)"
+        },
+        {
+          "id": "account_journal.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (sale | purchase | cash | bank | credit | general)"
+        }
+      ],
+      "comment": "account.journal — Journal; reference copy, details in 06_accounting"
+    },
+    {
+      "id": "t_stock_picking",
+      "name": "stock_picking",
+      "columns": [
+        {
+          "id": "stock_picking.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_picking.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "stock_picking.pos_order_id",
+          "name": "pos_order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Pos order"
+        },
+        {
+          "id": "stock_picking.pos_session_id",
+          "name": "pos_session_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Pos session"
+        }
+      ],
+      "comment": "stock.picking — Transfer; reference copy, details in 05_inventory_operations"
+    },
+    {
+      "id": "t_account_tax",
+      "name": "account_tax",
+      "columns": [
+        {
+          "id": "account_tax.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_tax.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Name (translated: one value per language)"
+        },
+        {
+          "id": "account_tax.amount",
+          "name": "amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Amount"
+        }
+      ],
+      "comment": "account.tax — Tax; reference copy, details in 06_accounting"
+    },
+    {
+      "id": "t_pos_config_pos_payment_method_rel",
+      "name": "pos_config_pos_payment_method_rel",
+      "comment": "many2many pos.config.payment_method_ids ↔ pos.payment.method (Payment Methods)",
+      "columns": [
+        {
+          "id": "pos_config_pos_payment_method_rel.pos_config_id",
+          "name": "pos_config_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "pos.config id"
+        },
+        {
+          "id": "pos_config_pos_payment_method_rel.pos_payment_method_id",
+          "name": "pos_payment_method_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "pos.payment.method id"
+        }
+      ]
+    },
+    {
+      "id": "t_pos_category_product_template_rel",
+      "name": "pos_category_product_template_rel",
+      "comment": "many2many product.template.pos_categ_ids ↔ pos.category (Point of Sale Category)",
+      "columns": [
+        {
+          "id": "pos_category_product_template_rel.product_template_id",
+          "name": "product_template_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.template id"
+        },
+        {
+          "id": "pos_category_product_template_rel.pos_category_id",
+          "name": "pos_category_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "pos.category id"
+        }
+      ]
+    },
+    {
+      "id": "t_account_tax_pos_order_line_rel",
+      "name": "account_tax_pos_order_line_rel",
+      "comment": "many2many pos.order.line.tax_ids ↔ account.tax (Taxes)",
+      "columns": [
+        {
+          "id": "account_tax_pos_order_line_rel.pos_order_line_id",
+          "name": "pos_order_line_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "pos.order.line id"
+        },
+        {
+          "id": "account_tax_pos_order_line_rel.account_tax_id",
+          "name": "account_tax_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "account.tax id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_pos_config_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_pos_config",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "journal_id",
+      "columns": [
+        {
+          "fk": "pos_config.journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_config_invoice_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_pos_config",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "invoice_journal_id",
+      "columns": [
+        {
+          "fk": "pos_config.invoice_journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_session_config_id",
+      "parent": "t_pos_config",
+      "child": "t_pos_session",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "config_id",
+      "columns": [
+        {
+          "fk": "pos_session.config_id",
+          "ref": "pos_config.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_session_user_id",
+      "parent": "t_res_users",
+      "child": "t_pos_session",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "pos_session.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_session_cash_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_pos_session",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "cash_journal_id",
+      "columns": [
+        {
+          "fk": "pos_session.cash_journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_session_move_id",
+      "parent": "t_account_move",
+      "child": "t_pos_session",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "move_id",
+      "columns": [
+        {
+          "fk": "pos_session.move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_session_id",
+      "parent": "t_pos_session",
+      "child": "t_pos_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "session_id",
+      "columns": [
+        {
+          "fk": "pos_order.session_id",
+          "ref": "pos_session.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_config_id",
+      "parent": "t_pos_config",
+      "child": "t_pos_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "config_id",
+      "columns": [
+        {
+          "fk": "pos_order.config_id",
+          "ref": "pos_config.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_pos_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "pos_order.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_user_id",
+      "parent": "t_res_users",
+      "child": "t_pos_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "pos_order.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_account_move",
+      "parent": "t_account_move",
+      "child": "t_pos_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "account_move",
+      "columns": [
+        {
+          "fk": "pos_order.account_move",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_line_order_id",
+      "parent": "t_pos_order",
+      "child": "t_pos_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "order_id",
+      "columns": [
+        {
+          "fk": "pos_order_line.order_id",
+          "ref": "pos_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_pos_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "pos_order_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_line_refunded_orderline_id",
+      "parent": "t_pos_order_line",
+      "child": "t_pos_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "refunded_orderline_id",
+      "columns": [
+        {
+          "fk": "pos_order_line.refunded_orderline_id",
+          "ref": "pos_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_order_line_combo_parent_id",
+      "parent": "t_pos_order_line",
+      "child": "t_pos_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "combo_parent_id",
+      "columns": [
+        {
+          "fk": "pos_order_line.combo_parent_id",
+          "ref": "pos_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_payment_pos_order_id",
+      "parent": "t_pos_order",
+      "child": "t_pos_payment",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "pos_order_id",
+      "columns": [
+        {
+          "fk": "pos_payment.pos_order_id",
+          "ref": "pos_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_payment_session_id",
+      "parent": "t_pos_session",
+      "child": "t_pos_payment",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "session_id",
+      "columns": [
+        {
+          "fk": "pos_payment.session_id",
+          "ref": "pos_session.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_payment_payment_method_id",
+      "parent": "t_pos_payment_method",
+      "child": "t_pos_payment",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "payment_method_id",
+      "columns": [
+        {
+          "fk": "pos_payment.payment_method_id",
+          "ref": "pos_payment_method.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_payment_account_move_id",
+      "parent": "t_account_move",
+      "child": "t_pos_payment",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "account_move_id",
+      "columns": [
+        {
+          "fk": "pos_payment.account_move_id",
+          "ref": "account_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_payment_method_journal_id",
+      "parent": "t_account_journal",
+      "child": "t_pos_payment_method",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "journal_id",
+      "columns": [
+        {
+          "fk": "pos_payment_method.journal_id",
+          "ref": "account_journal.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_category_parent_id",
+      "parent": "t_pos_category",
+      "child": "t_pos_category",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "pos_category.parent_id",
+          "ref": "pos_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_product_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_product",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_product.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_pos_order_id",
+      "parent": "t_pos_order",
+      "child": "t_stock_picking",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "pos_order_id",
+      "columns": [
+        {
+          "fk": "stock_picking.pos_order_id",
+          "ref": "pos_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_pos_session_id",
+      "parent": "t_pos_session",
+      "child": "t_stock_picking",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "pos_session_id",
+      "columns": [
+        {
+          "fk": "stock_picking.pos_session_id",
+          "ref": "pos_session.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_config_pos_payment_method_rel_pos_config_id",
+      "parent": "t_pos_config",
+      "child": "t_pos_config_pos_payment_method_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "pos_config_id",
+      "columns": [
+        {
+          "fk": "pos_config_pos_payment_method_rel.pos_config_id",
+          "ref": "pos_config.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_config_pos_payment_method_rel_pos_payment_method_id",
+      "parent": "t_pos_payment_method",
+      "child": "t_pos_config_pos_payment_method_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "pos_payment_method_id",
+      "columns": [
+        {
+          "fk": "pos_config_pos_payment_method_rel.pos_payment_method_id",
+          "ref": "pos_payment_method.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_category_product_template_rel_product_template_id",
+      "parent": "t_product_template",
+      "child": "t_pos_category_product_template_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_template_id",
+      "columns": [
+        {
+          "fk": "pos_category_product_template_rel.product_template_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_pos_category_product_template_rel_pos_category_id",
+      "parent": "t_pos_category",
+      "child": "t_pos_category_product_template_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "pos_category_id",
+      "columns": [
+        {
+          "fk": "pos_category_product_template_rel.pos_category_id",
+          "ref": "pos_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_tax_pos_order_line_rel_pos_order_line_id",
+      "parent": "t_pos_order_line",
+      "child": "t_account_tax_pos_order_line_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "pos_order_line_id",
+      "columns": [
+        {
+          "fk": "account_tax_pos_order_line_rel.pos_order_line_id",
+          "ref": "pos_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_tax_pos_order_line_rel_account_tax_id",
+      "parent": "t_account_tax",
+      "child": "t_account_tax_pos_order_line_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "account_tax_id",
+      "columns": [
+        {
+          "fk": "account_tax_pos_order_line_rel.account_tax_id",
+          "ref": "account_tax.id"
+        }
+      ]
+    }
+  ]
+}

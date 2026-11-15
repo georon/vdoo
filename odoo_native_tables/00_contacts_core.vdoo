@@ -1,0 +1,1251 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "00_contacts_core",
+  "tables": [
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "comment": "res.partner — Contact",
+      "color": "#40c057",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.complete_name",
+          "name": "complete_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Complete name (computed, stored)"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Address Type (contact | invoice | delivery | other)"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.commercial_partner_id",
+          "name": "commercial_partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Commercial Entity (computed, stored)"
+        },
+        {
+          "id": "res_partner.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company"
+        },
+        {
+          "id": "res_partner.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Salesperson (computed, stored)"
+        },
+        {
+          "id": "res_partner.ref",
+          "name": "ref",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "res_partner.vat",
+          "name": "vat",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Tax ID"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        },
+        {
+          "id": "res_partner.phone",
+          "name": "phone",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Phone"
+        },
+        {
+          "id": "res_partner.street",
+          "name": "street",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Street"
+        },
+        {
+          "id": "res_partner.city",
+          "name": "city",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "City"
+        },
+        {
+          "id": "res_partner.zip",
+          "name": "zip",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Zip"
+        },
+        {
+          "id": "res_partner.state_id",
+          "name": "state_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "State"
+        },
+        {
+          "id": "res_partner.country_id",
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Country"
+        },
+        {
+          "id": "res_partner.lang",
+          "name": "lang",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Language (computed, stored)"
+        },
+        {
+          "id": "res_partner.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "comment": "res.users — User; delegates to res.partner via partner_id",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company"
+        },
+        {
+          "id": "res_users.share",
+          "name": "share",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Share User (computed, stored)"
+        },
+        {
+          "id": "res_users.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_res_company",
+      "name": "res_company",
+      "comment": "res.company — Companies",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_company.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_company.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company Name (computed, stored)"
+        },
+        {
+          "id": "res_company.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Partner"
+        },
+        {
+          "id": "res_company.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent Company"
+        },
+        {
+          "id": "res_company.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency"
+        },
+        {
+          "id": "res_company.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_res_groups",
+      "name": "res_groups",
+      "comment": "res.groups — Access Groups",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_groups.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_groups.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "res_groups.privilege_id",
+          "name": "privilege_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Privilege"
+        },
+        {
+          "id": "res_groups.share",
+          "name": "share",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Share Group"
+        }
+      ]
+    },
+    {
+      "id": "t_res_groups_privilege",
+      "name": "res_groups_privilege",
+      "comment": "res.groups.privilege — Privileges",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_groups_privilege.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_groups_privilege.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "res_groups_privilege.category_id",
+          "name": "category_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Category → ir_module_category (not in this diagram)"
+        },
+        {
+          "id": "res_groups_privilege.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ]
+    },
+    {
+      "id": "t_res_currency",
+      "name": "res_currency",
+      "comment": "res.currency — Currency",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_currency.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_currency.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency"
+        },
+        {
+          "id": "res_currency.symbol",
+          "name": "symbol",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Symbol"
+        },
+        {
+          "id": "res_currency.rounding",
+          "name": "rounding",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Rounding Factor"
+        },
+        {
+          "id": "res_currency.decimal_places",
+          "name": "decimal_places",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Decimal places (computed, stored)"
+        },
+        {
+          "id": "res_currency.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_res_country",
+      "name": "res_country",
+      "comment": "res.country — Country",
+      "color": "#ff922b",
+      "columns": [
+        {
+          "id": "res_country.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_country.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Country Name (translated: one value per language)"
+        },
+        {
+          "id": "res_country.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Country Code"
+        },
+        {
+          "id": "res_country.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Currency"
+        }
+      ]
+    },
+    {
+      "id": "t_res_country_state",
+      "name": "res_country_state",
+      "comment": "res.country.state — Country state",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_country_state.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_country_state.country_id",
+          "name": "country_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Country"
+        },
+        {
+          "id": "res_country_state.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "State Name"
+        },
+        {
+          "id": "res_country_state.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "State Code"
+        }
+      ]
+    },
+    {
+      "id": "t_res_partner_category",
+      "name": "res_partner_category",
+      "comment": "res.partner.category — Partner Tags",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_partner_category.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner_category.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "res_partner_category.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Category"
+        },
+        {
+          "id": "res_partner_category.color",
+          "name": "color",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Color"
+        },
+        {
+          "id": "res_partner_category.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ]
+    },
+    {
+      "id": "t_res_partner_bank",
+      "name": "res_partner_bank",
+      "comment": "res.partner.bank — Bank Accounts",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_partner_bank.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner_bank.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Account Holder"
+        },
+        {
+          "id": "res_partner_bank.acc_number",
+          "name": "acc_number",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Account Number"
+        },
+        {
+          "id": "res_partner_bank.bank_id",
+          "name": "bank_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Bank"
+        },
+        {
+          "id": "res_partner_bank.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Currency"
+        },
+        {
+          "id": "res_partner_bank.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored)"
+        },
+        {
+          "id": "res_partner_bank.allow_out_payment",
+          "name": "allow_out_payment",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Send Money"
+        }
+      ]
+    },
+    {
+      "id": "t_res_bank",
+      "name": "res_bank",
+      "comment": "res.bank — Bank",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_bank.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_bank.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_bank.bic",
+          "name": "bic",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Bank Identifier Code"
+        },
+        {
+          "id": "res_bank.country",
+          "name": "country",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Country"
+        }
+      ]
+    },
+    {
+      "id": "t_res_partner_res_partner_category_rel",
+      "name": "res_partner_res_partner_category_rel",
+      "comment": "many2many res.partner.category_id ↔ res.partner.category (Tags)",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_partner_res_partner_category_rel.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.partner id"
+        },
+        {
+          "id": "res_partner_res_partner_category_rel.category_id",
+          "name": "category_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.partner.category id"
+        }
+      ]
+    },
+    {
+      "id": "t_res_groups_users_rel",
+      "name": "res_groups_users_rel",
+      "comment": "many2many res.users.group_ids ↔ res.groups (Groups)",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_groups_users_rel.uid",
+          "name": "uid",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.users id"
+        },
+        {
+          "id": "res_groups_users_rel.gid",
+          "name": "gid",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.groups id"
+        }
+      ]
+    },
+    {
+      "id": "t_res_company_users_rel",
+      "name": "res_company_users_rel",
+      "comment": "many2many res.users.company_ids ↔ res.company (Companies)",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_company_users_rel.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.users id"
+        },
+        {
+          "id": "res_company_users_rel.cid",
+          "name": "cid",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.company id"
+        }
+      ]
+    },
+    {
+      "id": "t_res_groups_implied_rel",
+      "name": "res_groups_implied_rel",
+      "comment": "many2many res.groups.implied_ids ↔ res.groups (Implied Groups)",
+      "color": "",
+      "columns": [
+        {
+          "id": "res_groups_implied_rel.gid",
+          "name": "gid",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.groups id"
+        },
+        {
+          "id": "res_groups_implied_rel.hid",
+          "name": "hid",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "res.groups id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_commercial_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "commercial_partner_id",
+      "columns": [
+        {
+          "fk": "res_partner.commercial_partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_company_id",
+      "parent": "t_res_company",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "company_id",
+      "columns": [
+        {
+          "fk": "res_partner.company_id",
+          "ref": "res_company.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_user_id",
+      "parent": "t_res_users",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "res_partner.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_state_id",
+      "parent": "t_res_country_state",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "state_id",
+      "columns": [
+        {
+          "fk": "res_partner.state_id",
+          "ref": "res_country_state.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_country_id",
+      "parent": "t_res_country",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "country_id",
+      "columns": [
+        {
+          "fk": "res_partner.country_id",
+          "ref": "res_country.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_company_id",
+      "parent": "t_res_company",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "company_id",
+      "columns": [
+        {
+          "fk": "res_users.company_id",
+          "ref": "res_company.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_company_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_company",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_company.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_company_parent_id",
+      "parent": "t_res_company",
+      "child": "t_res_company",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_company.parent_id",
+          "ref": "res_company.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_company_currency_id",
+      "parent": "t_res_currency",
+      "child": "t_res_company",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "currency_id",
+      "columns": [
+        {
+          "fk": "res_company.currency_id",
+          "ref": "res_currency.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_groups_privilege_id",
+      "parent": "t_res_groups_privilege",
+      "child": "t_res_groups",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "privilege_id",
+      "columns": [
+        {
+          "fk": "res_groups.privilege_id",
+          "ref": "res_groups_privilege.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_country_currency_id",
+      "parent": "t_res_currency",
+      "child": "t_res_country",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "currency_id",
+      "columns": [
+        {
+          "fk": "res_country.currency_id",
+          "ref": "res_currency.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_country_state_country_id",
+      "parent": "t_res_country",
+      "child": "t_res_country_state",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "country_id",
+      "columns": [
+        {
+          "fk": "res_country_state.country_id",
+          "ref": "res_country.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_category_parent_id",
+      "parent": "t_res_partner_category",
+      "child": "t_res_partner_category",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner_category.parent_id",
+          "ref": "res_partner_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_bank_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner_bank",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_partner_bank.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_bank_bank_id",
+      "parent": "t_res_bank",
+      "child": "t_res_partner_bank",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "bank_id",
+      "columns": [
+        {
+          "fk": "res_partner_bank.bank_id",
+          "ref": "res_bank.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_bank_currency_id",
+      "parent": "t_res_currency",
+      "child": "t_res_partner_bank",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "currency_id",
+      "columns": [
+        {
+          "fk": "res_partner_bank.currency_id",
+          "ref": "res_currency.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_bank_company_id",
+      "parent": "t_res_company",
+      "child": "t_res_partner_bank",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "company_id",
+      "columns": [
+        {
+          "fk": "res_partner_bank.company_id",
+          "ref": "res_company.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_bank_country",
+      "parent": "t_res_country",
+      "child": "t_res_bank",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "country",
+      "columns": [
+        {
+          "fk": "res_bank.country",
+          "ref": "res_country.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_res_partner_category_rel_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner_res_partner_category_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_partner_res_partner_category_rel.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_res_partner_category_rel_category_id",
+      "parent": "t_res_partner_category",
+      "child": "t_res_partner_res_partner_category_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "category_id",
+      "columns": [
+        {
+          "fk": "res_partner_res_partner_category_rel.category_id",
+          "ref": "res_partner_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_groups_users_rel_uid",
+      "parent": "t_res_users",
+      "child": "t_res_groups_users_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "uid",
+      "columns": [
+        {
+          "fk": "res_groups_users_rel.uid",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_groups_users_rel_gid",
+      "parent": "t_res_groups",
+      "child": "t_res_groups_users_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "gid",
+      "columns": [
+        {
+          "fk": "res_groups_users_rel.gid",
+          "ref": "res_groups.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_company_users_rel_user_id",
+      "parent": "t_res_users",
+      "child": "t_res_company_users_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "res_company_users_rel.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_company_users_rel_cid",
+      "parent": "t_res_company",
+      "child": "t_res_company_users_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "cid",
+      "columns": [
+        {
+          "fk": "res_company_users_rel.cid",
+          "ref": "res_company.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_groups_implied_rel_gid",
+      "parent": "t_res_groups",
+      "child": "t_res_groups_implied_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "gid",
+      "columns": [
+        {
+          "fk": "res_groups_implied_rel.gid",
+          "ref": "res_groups.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_groups_implied_rel_hid",
+      "parent": "t_res_groups",
+      "child": "t_res_groups_implied_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "hid",
+      "columns": [
+        {
+          "fk": "res_groups_implied_rel.hid",
+          "ref": "res_groups.id"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1104 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Purchase",
+  "tables": [
+    {
+      "id": "t_purchase_order",
+      "name": "purchase_order",
+      "columns": [
+        {
+          "id": "purchase_order.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "purchase_order.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "purchase_order.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (draft | sent | to approve | purchase | cancel)"
+        },
+        {
+          "id": "purchase_order.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Vendor"
+        },
+        {
+          "id": "purchase_order.partner_ref",
+          "name": "partner_ref",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Vendor Reference"
+        },
+        {
+          "id": "purchase_order.dest_address_id",
+          "name": "dest_address_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Dropship Address"
+        },
+        {
+          "id": "purchase_order.date_order",
+          "name": "date_order",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Deadline"
+        },
+        {
+          "id": "purchase_order.date_approve",
+          "name": "date_approve",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Confirmation Date"
+        },
+        {
+          "id": "purchase_order.date_planned",
+          "name": "date_planned",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Expected Arrival (computed, stored)"
+        },
+        {
+          "id": "purchase_order.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Buyer"
+        },
+        {
+          "id": "purchase_order.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency (computed, stored) → res_currency (not in this diagram)"
+        },
+        {
+          "id": "purchase_order.payment_term_id",
+          "name": "payment_term_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Payment Terms"
+        },
+        {
+          "id": "purchase_order.fiscal_position_id",
+          "name": "fiscal_position_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Fiscal Position → account_fiscal_position (not in this diagram)"
+        },
+        {
+          "id": "purchase_order.incoterm_id",
+          "name": "incoterm_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Incoterm → account_incoterms (not in this diagram)"
+        },
+        {
+          "id": "purchase_order.amount_untaxed",
+          "name": "amount_untaxed",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Untaxed Amount (computed, stored)"
+        },
+        {
+          "id": "purchase_order.amount_tax",
+          "name": "amount_tax",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Taxes (computed, stored)"
+        },
+        {
+          "id": "purchase_order.amount_total",
+          "name": "amount_total",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Total (computed, stored)"
+        },
+        {
+          "id": "purchase_order.invoice_status",
+          "name": "invoice_status",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Billing Status (no | to invoice | invoiced; computed, stored)"
+        },
+        {
+          "id": "purchase_order.origin",
+          "name": "origin",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Source"
+        },
+        {
+          "id": "purchase_order.locked",
+          "name": "locked",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Locked"
+        },
+        {
+          "id": "purchase_order.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "purchase.order — Purchase Order"
+    },
+    {
+      "id": "t_purchase_order_line",
+      "name": "purchase_order_line",
+      "columns": [
+        {
+          "id": "purchase_order_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "purchase_order_line.order_id",
+          "name": "order_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Order Reference"
+        },
+        {
+          "id": "purchase_order_line.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "purchase_order_line.display_type",
+          "name": "display_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Display type (line_section | line_subsection | line_note)"
+        },
+        {
+          "id": "purchase_order_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "purchase_order_line.name",
+          "name": "name",
+          "type": "text",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Description (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.product_qty",
+          "name": "product_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity"
+        },
+        {
+          "id": "purchase_order_line.product_uom_id",
+          "name": "product_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Unit"
+        },
+        {
+          "id": "purchase_order_line.price_unit",
+          "name": "price_unit",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit Price (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.discount",
+          "name": "discount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Discount (%) (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.price_subtotal",
+          "name": "price_subtotal",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Subtotal (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.price_total",
+          "name": "price_total",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Total (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.date_planned",
+          "name": "date_planned",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Expected Arrival (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.qty_received_method",
+          "name": "qty_received_method",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Received Qty Method (manual; computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.qty_received",
+          "name": "qty_received",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Received Qty (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.qty_invoiced",
+          "name": "qty_invoiced",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Billed Qty (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.qty_to_invoice",
+          "name": "qty_to_invoice",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "To Invoice Quantity (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.analytic_distribution",
+          "name": "analytic_distribution",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Analytic Distribution (computed, stored)"
+        },
+        {
+          "id": "purchase_order_line.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "purchase.order.line — Purchase Order Line"
+    },
+    {
+      "id": "t_product_supplierinfo",
+      "name": "product_supplierinfo",
+      "columns": [
+        {
+          "id": "product_supplierinfo.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_supplierinfo.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Vendor"
+        },
+        {
+          "id": "product_supplierinfo.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template (computed, stored)"
+        },
+        {
+          "id": "product_supplierinfo.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product Variant (computed, stored)"
+        },
+        {
+          "id": "product_supplierinfo.product_name",
+          "name": "product_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Vendor Product Name"
+        },
+        {
+          "id": "product_supplierinfo.product_code",
+          "name": "product_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Vendor Product Code"
+        },
+        {
+          "id": "product_supplierinfo.min_qty",
+          "name": "min_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Quantity"
+        },
+        {
+          "id": "product_supplierinfo.price",
+          "name": "price",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Unit Price"
+        },
+        {
+          "id": "product_supplierinfo.discount",
+          "name": "discount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Discount (%)"
+        },
+        {
+          "id": "product_supplierinfo.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency → res_currency (not in this diagram)"
+        },
+        {
+          "id": "product_supplierinfo.delay",
+          "name": "delay",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Lead Time"
+        },
+        {
+          "id": "product_supplierinfo.date_start",
+          "name": "date_start",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Start Date"
+        },
+        {
+          "id": "product_supplierinfo.date_end",
+          "name": "date_end",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "End Date"
+        },
+        {
+          "id": "product_supplierinfo.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "product.supplierinfo — Supplier Pricelist"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        }
+      ],
+      "comment": "res.users — User; delegates to res.partner via partner_id; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_product_template",
+      "name": "product_template",
+      "columns": [
+        {
+          "id": "product_template.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_template.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "product_template.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Type (consu | service | combo)"
+        },
+        {
+          "id": "product_template.uom_id",
+          "name": "uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit"
+        }
+      ],
+      "comment": "product.template — Product; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_uom_uom",
+      "name": "uom_uom",
+      "columns": [
+        {
+          "id": "uom_uom.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "uom_uom.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit Name (translated: one value per language)"
+        }
+      ],
+      "comment": "uom.uom — Product Unit of Measure; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_account_payment_term",
+      "name": "account_payment_term",
+      "columns": [
+        {
+          "id": "account_payment_term.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_payment_term.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Payment Terms (translated: one value per language)"
+        }
+      ],
+      "comment": "account.payment.term — Payment Terms; reference copy, details in 06_accounting"
+    },
+    {
+      "id": "t_account_tax",
+      "name": "account_tax",
+      "columns": [
+        {
+          "id": "account_tax.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_tax.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Name (translated: one value per language)"
+        },
+        {
+          "id": "account_tax.amount",
+          "name": "amount",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Amount"
+        },
+        {
+          "id": "account_tax.type_tax_use",
+          "name": "type_tax_use",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tax Type (sale | purchase | none)"
+        }
+      ],
+      "comment": "account.tax — Tax; reference copy, details in 06_accounting"
+    },
+    {
+      "id": "t_account_move_line",
+      "name": "account_move_line",
+      "columns": [
+        {
+          "id": "account_move_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_move_line.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Journal Entry → account_move (not in this diagram)"
+        },
+        {
+          "id": "account_move_line.purchase_line_id",
+          "name": "purchase_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Purchase Order Line"
+        },
+        {
+          "id": "account_move_line.quantity",
+          "name": "quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity (computed, stored)"
+        },
+        {
+          "id": "account_move_line.price_subtotal",
+          "name": "price_subtotal",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Subtotal (computed, stored)"
+        }
+      ],
+      "comment": "account.move.line — Journal Item; reference copy, details in 06_accounting"
+    },
+    {
+      "id": "t_account_tax_purchase_order_line_rel",
+      "name": "account_tax_purchase_order_line_rel",
+      "comment": "many2many purchase.order.line.tax_ids ↔ account.tax (Taxes)",
+      "columns": [
+        {
+          "id": "account_tax_purchase_order_line_rel.purchase_order_line_id",
+          "name": "purchase_order_line_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "purchase.order.line id"
+        },
+        {
+          "id": "account_tax_purchase_order_line_rel.account_tax_id",
+          "name": "account_tax_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "account.tax id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_purchase_order_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_purchase_order",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "purchase_order.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_dest_address_id",
+      "parent": "t_res_partner",
+      "child": "t_purchase_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "dest_address_id",
+      "columns": [
+        {
+          "fk": "purchase_order.dest_address_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_user_id",
+      "parent": "t_res_users",
+      "child": "t_purchase_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "purchase_order.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_payment_term_id",
+      "parent": "t_account_payment_term",
+      "child": "t_purchase_order",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "payment_term_id",
+      "columns": [
+        {
+          "fk": "purchase_order.payment_term_id",
+          "ref": "account_payment_term.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_line_order_id",
+      "parent": "t_purchase_order",
+      "child": "t_purchase_order_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "order_id",
+      "columns": [
+        {
+          "fk": "purchase_order_line.order_id",
+          "ref": "purchase_order.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_purchase_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "purchase_order_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_purchase_order_line_product_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_purchase_order_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_uom_id",
+      "columns": [
+        {
+          "fk": "purchase_order_line.product_uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_supplierinfo_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_product_supplierinfo",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "product_supplierinfo.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_supplierinfo_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_supplierinfo",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_supplierinfo.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_supplierinfo_product_id",
+      "parent": "t_product_product",
+      "child": "t_product_supplierinfo",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "product_supplierinfo.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_product_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_product",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_product.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_product_template",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "uom_id",
+      "columns": [
+        {
+          "fk": "product_template.uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_move_line_purchase_line_id",
+      "parent": "t_purchase_order_line",
+      "child": "t_account_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "purchase_line_id",
+      "columns": [
+        {
+          "fk": "account_move_line.purchase_line_id",
+          "ref": "purchase_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_tax_purchase_order_line_rel_purchase_order_line_id",
+      "parent": "t_purchase_order_line",
+      "child": "t_account_tax_purchase_order_line_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "purchase_order_line_id",
+      "columns": [
+        {
+          "fk": "account_tax_purchase_order_line_rel.purchase_order_line_id",
+          "ref": "purchase_order_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_account_tax_purchase_order_line_rel_account_tax_id",
+      "parent": "t_account_tax",
+      "child": "t_account_tax_purchase_order_line_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "account_tax_id",
+      "columns": [
+        {
+          "fk": "account_tax_purchase_order_line_rel.account_tax_id",
+          "ref": "account_tax.id"
+        }
+      ]
+    }
+  ]
+}

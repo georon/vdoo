@@ -1,0 +1,1009 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "CRM",
+  "tables": [
+    {
+      "id": "t_crm_lead",
+      "name": "crm_lead",
+      "columns": [
+        {
+          "id": "crm_lead.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "crm_lead.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Opportunity (computed, stored)"
+        },
+        {
+          "id": "crm_lead.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type (lead | opportunity)"
+        },
+        {
+          "id": "crm_lead.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contact"
+        },
+        {
+          "id": "crm_lead.contact_name",
+          "name": "contact_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contact Name (computed, stored)"
+        },
+        {
+          "id": "crm_lead.partner_name",
+          "name": "partner_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company Name (computed, stored)"
+        },
+        {
+          "id": "crm_lead.email_from",
+          "name": "email_from",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email (computed, stored)"
+        },
+        {
+          "id": "crm_lead.phone",
+          "name": "phone",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Phone (computed, stored)"
+        },
+        {
+          "id": "crm_lead.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Salesperson"
+        },
+        {
+          "id": "crm_lead.team_id",
+          "name": "team_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales Team (computed, stored)"
+        },
+        {
+          "id": "crm_lead.stage_id",
+          "name": "stage_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Stage (computed, stored)"
+        },
+        {
+          "id": "crm_lead.probability",
+          "name": "probability",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Probability (computed, stored)"
+        },
+        {
+          "id": "crm_lead.expected_revenue",
+          "name": "expected_revenue",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Expected Revenue"
+        },
+        {
+          "id": "crm_lead.priority",
+          "name": "priority",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Priority"
+        },
+        {
+          "id": "crm_lead.date_deadline",
+          "name": "date_deadline",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Expected Closing"
+        },
+        {
+          "id": "crm_lead.date_closed",
+          "name": "date_closed",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Closed Date"
+        },
+        {
+          "id": "crm_lead.won_status",
+          "name": "won_status",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Won/Lost (won | lost | pending; computed, stored)"
+        },
+        {
+          "id": "crm_lead.lost_reason_id",
+          "name": "lost_reason_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Lost Reason"
+        },
+        {
+          "id": "crm_lead.campaign_id",
+          "name": "campaign_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Campaign"
+        },
+        {
+          "id": "crm_lead.medium_id",
+          "name": "medium_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Medium"
+        },
+        {
+          "id": "crm_lead.source_id",
+          "name": "source_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Source"
+        },
+        {
+          "id": "crm_lead.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        },
+        {
+          "id": "crm_lead.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "crm.lead — Lead"
+    },
+    {
+      "id": "t_crm_stage",
+      "name": "crm_stage",
+      "columns": [
+        {
+          "id": "crm_stage.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "crm_stage.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Stage Name (translated: one value per language)"
+        },
+        {
+          "id": "crm_stage.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "crm_stage.is_won",
+          "name": "is_won",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is Won Stage?"
+        },
+        {
+          "id": "crm_stage.fold",
+          "name": "fold",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Folded in Pipeline"
+        },
+        {
+          "id": "crm_stage.rotting_threshold_days",
+          "name": "rotting_threshold_days",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Days to rot"
+        }
+      ],
+      "comment": "crm.stage — CRM Stages"
+    },
+    {
+      "id": "t_crm_team",
+      "name": "crm_team",
+      "columns": [
+        {
+          "id": "crm_team.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "crm_team.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Sales Team (translated: one value per language)"
+        },
+        {
+          "id": "crm_team.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Team Leader"
+        },
+        {
+          "id": "crm_team.use_leads",
+          "name": "use_leads",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Leads"
+        },
+        {
+          "id": "crm_team.use_opportunities",
+          "name": "use_opportunities",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Pipeline"
+        },
+        {
+          "id": "crm_team.alias_id",
+          "name": "alias_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Alias → mail_alias (not in this diagram)"
+        },
+        {
+          "id": "crm_team.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "crm_team.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "crm.team — Sales Team"
+    },
+    {
+      "id": "t_crm_team_member",
+      "name": "crm_team_member",
+      "columns": [
+        {
+          "id": "crm_team_member.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "crm_team_member.crm_team_id",
+          "name": "crm_team_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Sales Team"
+        },
+        {
+          "id": "crm_team_member.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Salesperson"
+        },
+        {
+          "id": "crm_team_member.assignment_max",
+          "name": "assignment_max",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Average Leads Capacity (on 30 days)"
+        },
+        {
+          "id": "crm_team_member.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "crm.team.member — Sales Team Member"
+    },
+    {
+      "id": "t_crm_lost_reason",
+      "name": "crm_lost_reason",
+      "columns": [
+        {
+          "id": "crm_lost_reason.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "crm_lost_reason.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Description (translated: one value per language)"
+        },
+        {
+          "id": "crm_lost_reason.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "crm.lost.reason — Opp. Lost Reason"
+    },
+    {
+      "id": "t_crm_tag",
+      "name": "crm_tag",
+      "columns": [
+        {
+          "id": "crm_tag.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "crm_tag.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Tag Name (translated: one value per language)"
+        },
+        {
+          "id": "crm_tag.color",
+          "name": "color",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Color"
+        }
+      ],
+      "comment": "crm.tag — CRM Tag"
+    },
+    {
+      "id": "t_utm_campaign",
+      "name": "utm_campaign",
+      "columns": [
+        {
+          "id": "utm_campaign.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "utm_campaign.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Campaign Identifier (computed, stored)"
+        },
+        {
+          "id": "utm_campaign.title",
+          "name": "title",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Campaign Name (translated: one value per language)"
+        },
+        {
+          "id": "utm_campaign.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Responsible"
+        },
+        {
+          "id": "utm_campaign.stage_id",
+          "name": "stage_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Stage → utm_stage (not in this diagram)"
+        },
+        {
+          "id": "utm_campaign.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "utm.campaign — UTM Campaign"
+    },
+    {
+      "id": "t_utm_medium",
+      "name": "utm_medium",
+      "columns": [
+        {
+          "id": "utm_medium.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "utm_medium.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Medium Name"
+        },
+        {
+          "id": "utm_medium.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "utm.medium — UTM Medium"
+    },
+    {
+      "id": "t_utm_source",
+      "name": "utm_source",
+      "columns": [
+        {
+          "id": "utm_source.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "utm_source.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Source Name"
+        }
+      ],
+      "comment": "utm.source — UTM Source"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        }
+      ],
+      "comment": "res.users — User; delegates to res.partner via partner_id; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_crm_tag_rel",
+      "name": "crm_tag_rel",
+      "comment": "many2many crm.lead.tag_ids ↔ crm.tag (Tags)",
+      "columns": [
+        {
+          "id": "crm_tag_rel.lead_id",
+          "name": "lead_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "crm.lead id"
+        },
+        {
+          "id": "crm_tag_rel.tag_id",
+          "name": "tag_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "crm.tag id"
+        }
+      ]
+    },
+    {
+      "id": "t_crm_stage_crm_team_rel",
+      "name": "crm_stage_crm_team_rel",
+      "comment": "many2many crm.stage.team_ids ↔ crm.team (Sales Teams)",
+      "columns": [
+        {
+          "id": "crm_stage_crm_team_rel.crm_stage_id",
+          "name": "crm_stage_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "crm.stage id"
+        },
+        {
+          "id": "crm_stage_crm_team_rel.crm_team_id",
+          "name": "crm_team_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "crm.team id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_crm_lead_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "crm_lead.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_lead_user_id",
+      "parent": "t_res_users",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "crm_lead.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_lead_team_id",
+      "parent": "t_crm_team",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "team_id",
+      "columns": [
+        {
+          "fk": "crm_lead.team_id",
+          "ref": "crm_team.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_lead_stage_id",
+      "parent": "t_crm_stage",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "stage_id",
+      "columns": [
+        {
+          "fk": "crm_lead.stage_id",
+          "ref": "crm_stage.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_lead_lost_reason_id",
+      "parent": "t_crm_lost_reason",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "lost_reason_id",
+      "columns": [
+        {
+          "fk": "crm_lead.lost_reason_id",
+          "ref": "crm_lost_reason.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_lead_campaign_id",
+      "parent": "t_utm_campaign",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "campaign_id",
+      "columns": [
+        {
+          "fk": "crm_lead.campaign_id",
+          "ref": "utm_campaign.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_lead_medium_id",
+      "parent": "t_utm_medium",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "medium_id",
+      "columns": [
+        {
+          "fk": "crm_lead.medium_id",
+          "ref": "utm_medium.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_lead_source_id",
+      "parent": "t_utm_source",
+      "child": "t_crm_lead",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "source_id",
+      "columns": [
+        {
+          "fk": "crm_lead.source_id",
+          "ref": "utm_source.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_team_user_id",
+      "parent": "t_res_users",
+      "child": "t_crm_team",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "crm_team.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_team_member_crm_team_id",
+      "parent": "t_crm_team",
+      "child": "t_crm_team_member",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "crm_team_id",
+      "columns": [
+        {
+          "fk": "crm_team_member.crm_team_id",
+          "ref": "crm_team.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_team_member_user_id",
+      "parent": "t_res_users",
+      "child": "t_crm_team_member",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "crm_team_member.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_utm_campaign_user_id",
+      "parent": "t_res_users",
+      "child": "t_utm_campaign",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "utm_campaign.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_tag_rel_lead_id",
+      "parent": "t_crm_lead",
+      "child": "t_crm_tag_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "lead_id",
+      "columns": [
+        {
+          "fk": "crm_tag_rel.lead_id",
+          "ref": "crm_lead.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_tag_rel_tag_id",
+      "parent": "t_crm_tag",
+      "child": "t_crm_tag_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "tag_id",
+      "columns": [
+        {
+          "fk": "crm_tag_rel.tag_id",
+          "ref": "crm_tag.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_stage_crm_team_rel_crm_stage_id",
+      "parent": "t_crm_stage",
+      "child": "t_crm_stage_crm_team_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "crm_stage_id",
+      "columns": [
+        {
+          "fk": "crm_stage_crm_team_rel.crm_stage_id",
+          "ref": "crm_stage.id"
+        }
+      ]
+    },
+    {
+      "id": "r_crm_stage_crm_team_rel_crm_team_id",
+      "parent": "t_crm_team",
+      "child": "t_crm_stage_crm_team_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "crm_team_id",
+      "columns": [
+        {
+          "fk": "crm_stage_crm_team_rel.crm_team_id",
+          "ref": "crm_team.id"
+        }
+      ]
+    }
+  ]
+}

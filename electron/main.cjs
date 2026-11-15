@@ -1,9 +1,11 @@
 // vdoo desktop shell: one window, the editor served over app://vdoo/, schema files read and written here.
-const { app, BrowserWindow, protocol, net, ipcMain, dialog, shell, Menu } = require("electron");
+const { app, BrowserWindow, protocol, net, ipcMain, dialog, shell, Menu, session } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const { pathToFileURL } = require("node:url");
 const ai = require("./ai.cjs");
+const files = require("./files.cjs");
+const pdf = require("./pdf.cjs");
 const { csp } = require("./csp.cjs");
 
 const DIST = path.join(__dirname, "..", "dist");
@@ -69,6 +71,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 1400, height: 900, minWidth: 720, minHeight: 480, show: false, title: "vdoo",
     backgroundColor: "#16171b",
+    icon: path.join(__dirname, "icon.png"), // window and taskbar icon (Linux, Windows); installers use build/icon.png
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"), contextIsolation: true, sandbox: true,
       ...(TEST_HIDDEN ? { backgroundThrottling: false } : {}),
@@ -126,11 +129,12 @@ else {
       const file = pendingFiles.shift();
       try { return file ? readSchemaFile(file) : null; } catch { return null; }
     });
-    handle("vdoo:open", async () => {
-      const result = await dialog.showOpenDialog(win, { title: "Open schema", properties: ["openFile"],
-        filters: [{ name: "vdoo schema", extensions: ["vdoo"] }, { name: "Mermaid ER diagram", extensions: ["mmd", "mermaid"] }] });
-      if (result.canceled || !result.filePaths[0]) return null;
-      return readSchemaFile(result.filePaths[0]);
+    const fileAccess = files.register(handle, { dialog, getWindow: () => win, statePath: path.join(app.getPath("userData"), "workspace.json") });
+    pdf.register(handle, { dialog, getWindow: () => win, BrowserWindow, session, locale: () => app.getLocale(),
+      startDir: () => fileAccess.folder || fileAccess.startDir() });
+    // The Edit menu acts on whatever has the focus in the page.
+    handle("vdoo:edit", (_event, command) => {
+      if (["undo", "redo", "cut", "copy", "paste", "selectAll"].includes(command)) win?.webContents[command]();
     });
     // Saves to `file` when the page already has one (it came from an open or save dialog), else asks where.
     handle("vdoo:save", async (_event, { text, file, suggestedName, kind }) => {
@@ -144,7 +148,9 @@ else {
       if (!filters) throw new Error("Unknown file type.");
       let target = kind === "vdoo" && typeof file === "string" && SCHEMA_FILE.test(file) && path.isAbsolute(file) ? file : null;
       if (!target) {
-        const result = await dialog.showSaveDialog(win, { title: "Save", defaultPath: String(suggestedName || "schema").replace(/[\\/:*?"<>|]/g, "_"), filters });
+        const name = String(suggestedName || "schema").replace(/[\\/:*?"<>|]/g, "_");
+        const start = fileAccess.folder || fileAccess.startDir();
+        const result = await dialog.showSaveDialog(win, { title: "Save", defaultPath: start ? path.join(start, name) : name, filters });
         if (result.canceled || !result.filePath) return null;
         target = result.filePath;
       }

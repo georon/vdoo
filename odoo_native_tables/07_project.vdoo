@@ -1,0 +1,1306 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Project",
+  "tables": [
+    {
+      "id": "t_project_project",
+      "name": "project_project",
+      "columns": [
+        {
+          "id": "project_project.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_project.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "project_project.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Customer"
+        },
+        {
+          "id": "project_project.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Project Manager"
+        },
+        {
+          "id": "project_project.account_id",
+          "name": "account_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Project Account"
+        },
+        {
+          "id": "project_project.stage_id",
+          "name": "stage_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Stage"
+        },
+        {
+          "id": "project_project.privacy_visibility",
+          "name": "privacy_visibility",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Visibility (followers | invited_users | employees | portal)"
+        },
+        {
+          "id": "project_project.date_start",
+          "name": "date_start",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Start Date"
+        },
+        {
+          "id": "project_project.date",
+          "name": "date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Expiration Date"
+        },
+        {
+          "id": "project_project.allow_milestones",
+          "name": "allow_milestones",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Milestones"
+        },
+        {
+          "id": "project_project.allow_task_dependencies",
+          "name": "allow_task_dependencies",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Task Dependencies"
+        },
+        {
+          "id": "project_project.is_template",
+          "name": "is_template",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is template"
+        },
+        {
+          "id": "project_project.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "project_project.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        },
+        {
+          "id": "project_project.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "project.project — Project"
+    },
+    {
+      "id": "t_project_task",
+      "name": "project_task",
+      "columns": [
+        {
+          "id": "project_task.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_task.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Title"
+        },
+        {
+          "id": "project_task.project_id",
+          "name": "project_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Project (computed, stored)"
+        },
+        {
+          "id": "project_task.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent Task"
+        },
+        {
+          "id": "project_task.stage_id",
+          "name": "stage_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Stage (computed, stored)"
+        },
+        {
+          "id": "project_task.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "State (computed, stored)"
+        },
+        {
+          "id": "project_task.priority",
+          "name": "priority",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Priority (0 | 1 | 2 | 3)"
+        },
+        {
+          "id": "project_task.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Customer (computed, stored)"
+        },
+        {
+          "id": "project_task.milestone_id",
+          "name": "milestone_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Milestone (computed, stored)"
+        },
+        {
+          "id": "project_task.date_deadline",
+          "name": "date_deadline",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Deadline"
+        },
+        {
+          "id": "project_task.date_assign",
+          "name": "date_assign",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Assigning Date"
+        },
+        {
+          "id": "project_task.date_end",
+          "name": "date_end",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Ending Date"
+        },
+        {
+          "id": "project_task.allocated_hours",
+          "name": "allocated_hours",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Allocated Time"
+        },
+        {
+          "id": "project_task.display_in_project",
+          "name": "display_in_project",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Display in project (computed, stored)"
+        },
+        {
+          "id": "project_task.recurrence_id",
+          "name": "recurrence_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Recurrence → project_task_recurrence (not in this diagram)"
+        },
+        {
+          "id": "project_task.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "project_task.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        },
+        {
+          "id": "project_task.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "project.task — Task"
+    },
+    {
+      "id": "t_project_task_type",
+      "name": "project_task_type",
+      "columns": [
+        {
+          "id": "project_task_type.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_task_type.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "project_task_type.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "project_task_type.fold",
+          "name": "fold",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Folded"
+        },
+        {
+          "id": "project_task_type.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Stage Owner (computed, stored)"
+        }
+      ],
+      "comment": "project.task.type — Task Stage"
+    },
+    {
+      "id": "t_project_project_stage",
+      "name": "project_project_stage",
+      "columns": [
+        {
+          "id": "project_project_stage.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_project_stage.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "project_project_stage.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        },
+        {
+          "id": "project_project_stage.fold",
+          "name": "fold",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Folded"
+        }
+      ],
+      "comment": "project.project.stage — Project Stage"
+    },
+    {
+      "id": "t_project_task_user_rel",
+      "name": "project_task_user_rel",
+      "columns": [
+        {
+          "id": "project_task_user_rel.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_task_user_rel.task_id",
+          "name": "task_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Task"
+        },
+        {
+          "id": "project_task_user_rel.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "User"
+        },
+        {
+          "id": "project_task_user_rel.stage_id",
+          "name": "stage_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Stage"
+        }
+      ],
+      "comment": "project.task.stage.personal — Personal Task Stage"
+    },
+    {
+      "id": "t_project_milestone",
+      "name": "project_milestone",
+      "columns": [
+        {
+          "id": "project_milestone.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_milestone.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "project_milestone.project_id",
+          "name": "project_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Project"
+        },
+        {
+          "id": "project_milestone.deadline",
+          "name": "deadline",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Deadline"
+        },
+        {
+          "id": "project_milestone.is_reached",
+          "name": "is_reached",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reached"
+        },
+        {
+          "id": "project_milestone.reached_date",
+          "name": "reached_date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reached date (computed, stored)"
+        }
+      ],
+      "comment": "project.milestone — Project Milestone"
+    },
+    {
+      "id": "t_project_tags",
+      "name": "project_tags",
+      "columns": [
+        {
+          "id": "project_tags.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_tags.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "project_tags.color",
+          "name": "color",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Color"
+        }
+      ],
+      "comment": "project.tags — Project Tags"
+    },
+    {
+      "id": "t_project_update",
+      "name": "project_update",
+      "columns": [
+        {
+          "id": "project_update.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_update.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Title"
+        },
+        {
+          "id": "project_update.project_id",
+          "name": "project_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Project"
+        },
+        {
+          "id": "project_update.status",
+          "name": "status",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Status (on_track | at_risk | off_track | on_hold | done)"
+        },
+        {
+          "id": "project_update.progress",
+          "name": "progress",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Progress"
+        },
+        {
+          "id": "project_update.date",
+          "name": "date",
+          "type": "date",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Date"
+        },
+        {
+          "id": "project_update.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Author"
+        }
+      ],
+      "comment": "project.update — Project Update"
+    },
+    {
+      "id": "t_project_collaborator",
+      "name": "project_collaborator",
+      "columns": [
+        {
+          "id": "project_collaborator.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "project_collaborator.project_id",
+          "name": "project_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Project Shared"
+        },
+        {
+          "id": "project_collaborator.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Collaborator"
+        },
+        {
+          "id": "project_collaborator.limited_access",
+          "name": "limited_access",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Limited Access"
+        }
+      ],
+      "comment": "project.collaborator — Collaborators in project shared"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_res_users",
+      "name": "res_users",
+      "columns": [
+        {
+          "id": "res_users.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_users.login",
+          "name": "login",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Login"
+        },
+        {
+          "id": "res_users.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Related Partner"
+        }
+      ],
+      "comment": "res.users — User; delegates to res.partner via partner_id; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_account_analytic_account",
+      "name": "account_analytic_account",
+      "columns": [
+        {
+          "id": "account_analytic_account.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "account_analytic_account.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Analytic Account (translated: one value per language)"
+        },
+        {
+          "id": "account_analytic_account.plan_id",
+          "name": "plan_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Plan → account_analytic_plan (not in this diagram)"
+        }
+      ],
+      "comment": "account.analytic.account — Analytic Account; reference copy, details in 06_accounting"
+    },
+    {
+      "id": "t_project_tags_project_task_rel",
+      "name": "project_tags_project_task_rel",
+      "comment": "many2many project.task.tag_ids ↔ project.tags (Tags)",
+      "columns": [
+        {
+          "id": "project_tags_project_task_rel.project_task_id",
+          "name": "project_task_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.task id"
+        },
+        {
+          "id": "project_tags_project_task_rel.project_tags_id",
+          "name": "project_tags_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.tags id"
+        }
+      ]
+    },
+    {
+      "id": "t_task_dependencies_rel",
+      "name": "task_dependencies_rel",
+      "comment": "many2many project.task.depend_on_ids ↔ project.task (Blocked By)",
+      "columns": [
+        {
+          "id": "task_dependencies_rel.task_id",
+          "name": "task_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.task id"
+        },
+        {
+          "id": "task_dependencies_rel.depends_on_id",
+          "name": "depends_on_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.task id"
+        }
+      ]
+    },
+    {
+      "id": "t_project_task_type_rel",
+      "name": "project_task_type_rel",
+      "comment": "many2many project.project.type_ids ↔ project.task.type (Tasks Stages)",
+      "columns": [
+        {
+          "id": "project_task_type_rel.project_id",
+          "name": "project_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.project id"
+        },
+        {
+          "id": "project_task_type_rel.type_id",
+          "name": "type_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.task.type id"
+        }
+      ]
+    },
+    {
+      "id": "t_project_project_project_tags_rel",
+      "name": "project_project_project_tags_rel",
+      "comment": "many2many project.project.tag_ids ↔ project.tags (Tags)",
+      "columns": [
+        {
+          "id": "project_project_project_tags_rel.project_project_id",
+          "name": "project_project_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.project id"
+        },
+        {
+          "id": "project_project_project_tags_rel.project_tags_id",
+          "name": "project_tags_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "project.tags id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_project_project_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_project_project",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "project_project.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_project_user_id",
+      "parent": "t_res_users",
+      "child": "t_project_project",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "project_project.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_project_account_id",
+      "parent": "t_account_analytic_account",
+      "child": "t_project_project",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "account_id",
+      "columns": [
+        {
+          "fk": "project_project.account_id",
+          "ref": "account_analytic_account.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_project_stage_id",
+      "parent": "t_project_project_stage",
+      "child": "t_project_project",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "stage_id",
+      "columns": [
+        {
+          "fk": "project_project.stage_id",
+          "ref": "project_project_stage.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_project_id",
+      "parent": "t_project_project",
+      "child": "t_project_task",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "project_id",
+      "columns": [
+        {
+          "fk": "project_task.project_id",
+          "ref": "project_project.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_parent_id",
+      "parent": "t_project_task",
+      "child": "t_project_task",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "project_task.parent_id",
+          "ref": "project_task.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_stage_id",
+      "parent": "t_project_task_type",
+      "child": "t_project_task",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "stage_id",
+      "columns": [
+        {
+          "fk": "project_task.stage_id",
+          "ref": "project_task_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_project_task",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "project_task.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_milestone_id",
+      "parent": "t_project_milestone",
+      "child": "t_project_task",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "milestone_id",
+      "columns": [
+        {
+          "fk": "project_task.milestone_id",
+          "ref": "project_milestone.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_type_user_id",
+      "parent": "t_res_users",
+      "child": "t_project_task_type",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "project_task_type.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_user_rel_task_id",
+      "parent": "t_project_task",
+      "child": "t_project_task_user_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "task_id",
+      "columns": [
+        {
+          "fk": "project_task_user_rel.task_id",
+          "ref": "project_task.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_user_rel_user_id",
+      "parent": "t_res_users",
+      "child": "t_project_task_user_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "project_task_user_rel.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_user_rel_stage_id",
+      "parent": "t_project_task_type",
+      "child": "t_project_task_user_rel",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "stage_id",
+      "columns": [
+        {
+          "fk": "project_task_user_rel.stage_id",
+          "ref": "project_task_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_milestone_project_id",
+      "parent": "t_project_project",
+      "child": "t_project_milestone",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "project_id",
+      "columns": [
+        {
+          "fk": "project_milestone.project_id",
+          "ref": "project_project.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_update_project_id",
+      "parent": "t_project_project",
+      "child": "t_project_update",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "project_id",
+      "columns": [
+        {
+          "fk": "project_update.project_id",
+          "ref": "project_project.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_update_user_id",
+      "parent": "t_res_users",
+      "child": "t_project_update",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "user_id",
+      "columns": [
+        {
+          "fk": "project_update.user_id",
+          "ref": "res_users.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_collaborator_project_id",
+      "parent": "t_project_project",
+      "child": "t_project_collaborator",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "project_id",
+      "columns": [
+        {
+          "fk": "project_collaborator.project_id",
+          "ref": "project_project.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_collaborator_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_project_collaborator",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "project_collaborator.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_users_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_res_users",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "res_users.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_tags_project_task_rel_project_task_id",
+      "parent": "t_project_task",
+      "child": "t_project_tags_project_task_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "project_task_id",
+      "columns": [
+        {
+          "fk": "project_tags_project_task_rel.project_task_id",
+          "ref": "project_task.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_tags_project_task_rel_project_tags_id",
+      "parent": "t_project_tags",
+      "child": "t_project_tags_project_task_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "project_tags_id",
+      "columns": [
+        {
+          "fk": "project_tags_project_task_rel.project_tags_id",
+          "ref": "project_tags.id"
+        }
+      ]
+    },
+    {
+      "id": "r_task_dependencies_rel_task_id",
+      "parent": "t_project_task",
+      "child": "t_task_dependencies_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "task_id",
+      "columns": [
+        {
+          "fk": "task_dependencies_rel.task_id",
+          "ref": "project_task.id"
+        }
+      ]
+    },
+    {
+      "id": "r_task_dependencies_rel_depends_on_id",
+      "parent": "t_project_task",
+      "child": "t_task_dependencies_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "depends_on_id",
+      "columns": [
+        {
+          "fk": "task_dependencies_rel.depends_on_id",
+          "ref": "project_task.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_type_rel_project_id",
+      "parent": "t_project_project",
+      "child": "t_project_task_type_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "project_id",
+      "columns": [
+        {
+          "fk": "project_task_type_rel.project_id",
+          "ref": "project_project.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_task_type_rel_type_id",
+      "parent": "t_project_task_type",
+      "child": "t_project_task_type_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "type_id",
+      "columns": [
+        {
+          "fk": "project_task_type_rel.type_id",
+          "ref": "project_task_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_project_project_tags_rel_project_project_id",
+      "parent": "t_project_project",
+      "child": "t_project_project_project_tags_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "project_project_id",
+      "columns": [
+        {
+          "fk": "project_project_project_tags_rel.project_project_id",
+          "ref": "project_project.id"
+        }
+      ]
+    },
+    {
+      "id": "r_project_project_project_tags_rel_project_tags_id",
+      "parent": "t_project_tags",
+      "child": "t_project_project_project_tags_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "project_tags_id",
+      "columns": [
+        {
+          "fk": "project_project_project_tags_rel.project_tags_id",
+          "ref": "project_tags.id"
+        }
+      ]
+    }
+  ]
+}

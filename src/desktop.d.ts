@@ -2,13 +2,39 @@ interface SchemaFile { path: string; name: string; text: string }
 
 interface VdooDesktop {
   pendingFile(): Promise<SchemaFile | null>;
-  open(): Promise<SchemaFile | null>;
   save(request: { text: string; file?: string | null; suggestedName: string; kind: "vdoo" | "mermaid" | "sql" | "svg" }): Promise<{ path: string; name: string } | null>;
   openLink(url: string): Promise<void>;
   close(): Promise<void>;
   onOpenFile(callback: (file: SchemaFile) => void): () => void;
   onCloseRequested(callback: () => void): () => void;
+  /** Runs an Edit menu command on whatever has the focus. */
+  edit(command: EditCommand): Promise<void>;
+  /** Renders a self-contained HTML page to PDF and saves it where the user picks. Null when the dialog is cancelled. */
+  exportPdf(request: { html: string; suggestedName: string }): Promise<{ path: string; name: string } | null>;
+  files: VdooFiles;
   ai: VdooAi;
+}
+
+type EditCommand = "undo" | "redo" | "cut" | "copy" | "paste" | "selectAll";
+
+interface DirEntry { name: string; path: string; isDir: boolean }
+
+/** Only folders and files the user picked in a dialog can be listed, read or written. */
+interface VdooFiles {
+  /** The folder that was open last time, if it still exists. */
+  workspace(): Promise<string | null>;
+  chooseFolder(): Promise<string | null>;
+  list(dir: string): Promise<DirEntry[]>;
+  /** Shows the Open dialog; returns the chosen paths (none when cancelled). */
+  pick(): Promise<string[]>;
+  read(file: string): Promise<SchemaFile | { error: string }>;
+  /** Saves to `file`, or asks where when there is none. Null when the dialog is cancelled. */
+  write(request: { text: string; file?: string | null; suggestedName: string }): Promise<{ path: string; name: string } | null>;
+  /** Where the Open and Save dialogs start (Settings › Default directory), or null when not set. */
+  defaultDir(): Promise<string | null>;
+  /** Asks for the default directory; returns the one now in effect (unchanged when cancelled). */
+  chooseDefaultDir(): Promise<string | null>;
+  clearDefaultDir(): Promise<null>;
 }
 
 interface AiStatus {

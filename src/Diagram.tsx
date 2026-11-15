@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
 import type { Schema } from "./model";
 import { toMermaid } from "./mermaid";
@@ -30,16 +30,24 @@ interface Props {
   onTable: (id: string) => void;
   onRelation: (id: string) => void;
   onSvg?: (svg: string) => void;
+  /** Show column comments in the drawing (they make tables much wider). */
+  comments?: boolean;
+  /** Changes when another schema is opened: the next drawing is fitted to the window if it is larger. */
+  fitKey?: number;
 }
 
 /**
  * Mermaid lays the diagram out. Its SVG names each entity `entity-<name>-<n>` and numbers each relationship line in the
  * order the lines are written, which is how a click is traced back to the table or relationship it belongs to.
  */
-export function Diagram({ schema, selected, onTable, onRelation, onSvg }: Props) {
+export function Diagram({ schema, selected, onTable, onRelation, onSvg, comments = true, fitKey = 0 }: Props) {
   const host = useRef<HTMLDivElement>(null);
+  const scroller = useRef<HTMLDivElement>(null);
   const [error, setError] = useState("");
   const [zoom, setZoom] = useState(1);
+  // The drawing's unscaled size: the scroll area is sized to the scaled drawing so zooming out leaves no empty scroll.
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+  const fitted = useRef(-1);
   const dark = useDarkMode();
   const handlers = useRef({ onTable, onRelation, onSvg });
   handlers.current = { onTable, onRelation, onSvg };
@@ -50,7 +58,7 @@ export function Diagram({ schema, selected, onTable, onRelation, onSvg }: Props)
     if (!schema.tables.length) { el.replaceChildren(); setError(""); return; }
     let current = true;
     setup(dark);
-    const { text, relationOrder } = toMermaid(schema);
+    const { text, relationOrder } = toMermaid(schema, { comments });
     const tableIds = new Map(schema.tables.map((t) => [t.name, t.id]));
     mermaid.render(`vdoo-diagram-${++renders}`, text).then(({ svg }) => {
       if (!current) return;
@@ -58,13 +66,34 @@ export function Diagram({ schema, selected, onTable, onRelation, onSvg }: Props)
       setError("");
       wire(el, tableIds, relationOrder, handlers);
       handlers.current.onSvg?.(svg);
+      const next = { w: el.offsetWidth, h: el.offsetHeight };
+      setSize(next);
+      // A newly opened schema starts at 100%, or smaller when that is what it takes to see all of it.
+      if (fitted.current !== fitKey) { fitted.current = fitKey; setZoom(Math.min(1, fitZoom(next) ?? 1)); }
     }).catch((e: unknown) => {
       if (!current) return;
       setError(e instanceof Error ? e.message.split("\n")[0] : "Mermaid couldn't draw this diagram.");
       document.getElementById(`dvdoo-diagram-${renders}`)?.remove(); // Mermaid leaves its error graphic behind
     });
     return () => { current = false; };
-  }, [schema, dark]);
+  }, [schema, dark, comments, fitKey]);
+
+  /** The zoom that shows the whole drawing in the visible area. */
+  const fitZoom = (natural = size) => {
+    const box = scroller.current;
+    if (!box || !natural?.w || !natural.h) return null;
+    return clamp(Math.min(box.clientWidth / natural.w, box.clientHeight / natural.h));
+  };
+  // Keep the point under the middle of the view in place when zooming with the buttons.
+  const zoomTo = (next: number) => {
+    const box = scroller.current, to = clamp(next);
+    if (box) {
+      const cx = (box.scrollLeft + box.clientWidth / 2) / zoom, cy = (box.scrollTop + box.clientHeight / 2) / zoom;
+      requestAnimationFrame(() => box.scrollTo(cx * to - box.clientWidth / 2, cy * to - box.clientHeight / 2));
+    }
+    setZoom(to);
+  };
+  useLayoutEffect(() => { if (!schema.tables.length) setSize(null); }, [schema.tables.length]);
 
   // Marks the selection without drawing the diagram again.
   useEffect(() => {
@@ -75,24 +104,27 @@ export function Diagram({ schema, selected, onTable, onRelation, onSvg }: Props)
   });
 
   return <div className="diagram-wrap">
-    <div className="diagram-scroll" onWheel={(event) => {
+    <div ref={scroller} className="diagram-scroll" onWheel={(event) => {
       if (!event.ctrlKey) return;
       event.preventDefault();
       setZoom((z) => clamp(z * (event.deltaY < 0 ? 1.1 : 1 / 1.1)));
     }}>
       {!schema.tables.length && <div className="diagram-empty"><p>No tables yet.</p><p>Add a table, paste Mermaid in the Source tab, or ask AI to design one.</p></div>}
-      <div ref={host} className="diagram" style={{ transform: `scale(${zoom})` }} aria-label="ER diagram" role="img" />
+      <div className="diagram-sizer" style={size ? { width: size.w * zoom, height: size.h * zoom } : undefined}>
+        <div ref={host} className="diagram" style={{ transform: `scale(${zoom})` }} aria-label="ER diagram" role="img" />
+      </div>
     </div>
     <div className="zoom" role="group" aria-label="Zoom">
-      <button className="pill-btn" title="Zoom out" aria-label="Zoom out" onClick={() => setZoom((z) => clamp(z / 1.2))}>−</button>
-      <button className="pill-btn zoom-level" title="Reset zoom" onClick={() => setZoom(1)}>{Math.round(zoom * 100)}%</button>
-      <button className="pill-btn" title="Zoom in" aria-label="Zoom in" onClick={() => setZoom((z) => clamp(z * 1.2))}>+</button>
+      <button className="pill-btn" title="Zoom out" aria-label="Zoom out" onClick={() => zoomTo(zoom / 1.2)}>−</button>
+      <button className="pill-btn zoom-level" title="Reset zoom" onClick={() => zoomTo(1)}>{Math.round(zoom * 100)}%</button>
+      <button className="pill-btn" title="Zoom in" aria-label="Zoom in" onClick={() => zoomTo(zoom * 1.2)}>+</button>
+      <button className="pill-btn zoom-level" title="Fit the whole diagram in the window" disabled={!size} onClick={() => { const z = fitZoom(); if (z) zoomTo(z); }}>Fit</button>
     </div>
     {error && <div className="diagram-error" role="alert">{error}</div>}
   </div>;
 }
 
-const clamp = (z: number) => Math.min(4, Math.max(0.2, z));
+const clamp = (z: number) => Math.min(4, Math.max(0.05, z));
 
 type Handlers = React.RefObject<{ onTable: (id: string) => void; onRelation: (id: string) => void }>;
 

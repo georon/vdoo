@@ -1,0 +1,1411 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Inventory: transfers, moves and stock",
+  "tables": [
+    {
+      "id": "t_stock_picking",
+      "name": "stock_picking",
+      "columns": [
+        {
+          "id": "stock_picking.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_picking.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference"
+        },
+        {
+          "id": "stock_picking.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (draft | waiting | confirmed | assigned | done | cancel; computed, stored)"
+        },
+        {
+          "id": "stock_picking.picking_type_id",
+          "name": "picking_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation Type"
+        },
+        {
+          "id": "stock_picking.partner_id",
+          "name": "partner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Contact"
+        },
+        {
+          "id": "stock_picking.location_id",
+          "name": "location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Source Location (computed, stored)"
+        },
+        {
+          "id": "stock_picking.location_dest_id",
+          "name": "location_dest_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Destination Location (computed, stored)"
+        },
+        {
+          "id": "stock_picking.scheduled_date",
+          "name": "scheduled_date",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Scheduled Date (computed, stored)"
+        },
+        {
+          "id": "stock_picking.date_done",
+          "name": "date_done",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Date of Transfer"
+        },
+        {
+          "id": "stock_picking.origin",
+          "name": "origin",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Source Document"
+        },
+        {
+          "id": "stock_picking.backorder_id",
+          "name": "backorder_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Back Order of"
+        },
+        {
+          "id": "stock_picking.return_id",
+          "name": "return_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Return of"
+        },
+        {
+          "id": "stock_picking.move_type",
+          "name": "move_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Shipping Policy (direct | one; computed, stored)"
+        },
+        {
+          "id": "stock_picking.user_id",
+          "name": "user_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Responsible → res_users (not in this diagram)"
+        },
+        {
+          "id": "stock_picking.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "stock.picking — Transfer"
+    },
+    {
+      "id": "t_stock_move",
+      "name": "stock_move",
+      "columns": [
+        {
+          "id": "stock_move.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_move.reference",
+          "name": "reference",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference (computed, stored)"
+        },
+        {
+          "id": "stock_move.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "stock_move.product_uom_qty",
+          "name": "product_uom_qty",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Demand"
+        },
+        {
+          "id": "stock_move.quantity",
+          "name": "quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity (computed, stored)"
+        },
+        {
+          "id": "stock_move.product_uom",
+          "name": "product_uom",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit (computed, stored) → uom_uom (not in this diagram)"
+        },
+        {
+          "id": "stock_move.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Status (draft | waiting | confirmed | partially_available | assigned | done | cancel)"
+        },
+        {
+          "id": "stock_move.picking_id",
+          "name": "picking_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Transfer"
+        },
+        {
+          "id": "stock_move.picking_type_id",
+          "name": "picking_type_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Operation Type (computed, stored)"
+        },
+        {
+          "id": "stock_move.location_id",
+          "name": "location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Source Location (computed, stored)"
+        },
+        {
+          "id": "stock_move.location_dest_id",
+          "name": "location_dest_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Intermediate Location (computed, stored)"
+        },
+        {
+          "id": "stock_move.location_final_id",
+          "name": "location_final_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Final Location"
+        },
+        {
+          "id": "stock_move.date",
+          "name": "date",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Date Scheduled"
+        },
+        {
+          "id": "stock_move.procure_method",
+          "name": "procure_method",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Supply Method (make_to_stock | make_to_order)"
+        },
+        {
+          "id": "stock_move.rule_id",
+          "name": "rule_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Stock Rule → stock_rule (not in this diagram)"
+        },
+        {
+          "id": "stock_move.origin_returned_move_id",
+          "name": "origin_returned_move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Origin return move"
+        },
+        {
+          "id": "stock_move.warehouse_id",
+          "name": "warehouse_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Warehouse → stock_warehouse (not in this diagram)"
+        },
+        {
+          "id": "stock_move.orderpoint_id",
+          "name": "orderpoint_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Original Reordering Rule → stock_warehouse_orderpoint (not in this diagram)"
+        },
+        {
+          "id": "stock_move.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "stock.move — Stock Move"
+    },
+    {
+      "id": "t_stock_move_line",
+      "name": "stock_move_line",
+      "columns": [
+        {
+          "id": "stock_move_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_move_line.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Stock Operation"
+        },
+        {
+          "id": "stock_move_line.picking_id",
+          "name": "picking_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Transfer"
+        },
+        {
+          "id": "stock_move_line.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "stock_move_line.quantity",
+          "name": "quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity (computed, stored)"
+        },
+        {
+          "id": "stock_move_line.product_uom_id",
+          "name": "product_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit (computed, stored) → uom_uom (not in this diagram)"
+        },
+        {
+          "id": "stock_move_line.lot_id",
+          "name": "lot_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Lot/Serial Number"
+        },
+        {
+          "id": "stock_move_line.package_id",
+          "name": "package_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Source Package"
+        },
+        {
+          "id": "stock_move_line.result_package_id",
+          "name": "result_package_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Destination Package"
+        },
+        {
+          "id": "stock_move_line.location_id",
+          "name": "location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "From (computed, stored)"
+        },
+        {
+          "id": "stock_move_line.location_dest_id",
+          "name": "location_dest_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "To (computed, stored)"
+        },
+        {
+          "id": "stock_move_line.state",
+          "name": "state",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "State (computed, stored)"
+        },
+        {
+          "id": "stock_move_line.date",
+          "name": "date",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Date"
+        },
+        {
+          "id": "stock_move_line.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "stock.move.line — Product Moves (Stock Move Line)"
+    },
+    {
+      "id": "t_stock_quant",
+      "name": "stock_quant",
+      "columns": [
+        {
+          "id": "stock_quant.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_quant.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "stock_quant.location_id",
+          "name": "location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Location"
+        },
+        {
+          "id": "stock_quant.lot_id",
+          "name": "lot_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Lot/Serial Number"
+        },
+        {
+          "id": "stock_quant.package_id",
+          "name": "package_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Package"
+        },
+        {
+          "id": "stock_quant.owner_id",
+          "name": "owner_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Owner"
+        },
+        {
+          "id": "stock_quant.quantity",
+          "name": "quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Quantity"
+        },
+        {
+          "id": "stock_quant.reserved_quantity",
+          "name": "reserved_quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Reserved Quantity"
+        },
+        {
+          "id": "stock_quant.inventory_quantity",
+          "name": "inventory_quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Counted"
+        },
+        {
+          "id": "stock_quant.in_date",
+          "name": "in_date",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Incoming Date"
+        }
+      ],
+      "comment": "stock.quant — Quants"
+    },
+    {
+      "id": "t_stock_lot",
+      "name": "stock_lot",
+      "columns": [
+        {
+          "id": "stock_lot.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_lot.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Lot/Serial Number (computed, stored)"
+        },
+        {
+          "id": "stock_lot.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "stock_lot.ref",
+          "name": "ref",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        },
+        {
+          "id": "stock_lot.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "stock.lot — Lot/Serial"
+    },
+    {
+      "id": "t_stock_package",
+      "name": "stock_package",
+      "columns": [
+        {
+          "id": "stock_package.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_package.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Package Reference"
+        },
+        {
+          "id": "stock_package.location_id",
+          "name": "location_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Location (computed, stored)"
+        },
+        {
+          "id": "stock_package.parent_package_id",
+          "name": "parent_package_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Container"
+        },
+        {
+          "id": "stock_package.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company (computed, stored) → res_company (not in this diagram)"
+        }
+      ],
+      "comment": "stock.package — Package"
+    },
+    {
+      "id": "t_stock_reference",
+      "name": "stock_reference",
+      "columns": [
+        {
+          "id": "stock_reference.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_reference.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Reference"
+        }
+      ],
+      "comment": "stock.reference — Reference between stock documents"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template → product_template (not in this diagram)"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id; reference copy, details in 01_products"
+    },
+    {
+      "id": "t_res_partner",
+      "name": "res_partner",
+      "columns": [
+        {
+          "id": "res_partner.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "res_partner.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "res_partner.is_company",
+          "name": "is_company",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Is a Company"
+        },
+        {
+          "id": "res_partner.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Related Company"
+        },
+        {
+          "id": "res_partner.email",
+          "name": "email",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Email"
+        }
+      ],
+      "comment": "res.partner — Contact; reference copy, details in 00_contacts_core"
+    },
+    {
+      "id": "t_stock_location",
+      "name": "stock_location",
+      "columns": [
+        {
+          "id": "stock_location.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_location.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Location Name"
+        },
+        {
+          "id": "stock_location.complete_name",
+          "name": "complete_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Full Location Name (computed, stored)"
+        },
+        {
+          "id": "stock_location.usage",
+          "name": "usage",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Location Type (supplier | view | internal | customer | inventory | production | transit)"
+        }
+      ],
+      "comment": "stock.location — Inventory Locations; reference copy, details in 05_inventory_setup"
+    },
+    {
+      "id": "t_stock_picking_type",
+      "name": "stock_picking_type",
+      "columns": [
+        {
+          "id": "stock_picking_type.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "stock_picking_type.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Operation Type (translated: one value per language)"
+        },
+        {
+          "id": "stock_picking_type.code",
+          "name": "code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Type of Operation (incoming | outgoing | internal)"
+        }
+      ],
+      "comment": "stock.picking.type — Picking Type; reference copy, details in 05_inventory_setup"
+    },
+    {
+      "id": "t_stock_move_move_rel",
+      "name": "stock_move_move_rel",
+      "comment": "many2many stock.move.move_orig_ids ↔ stock.move (Original Move)",
+      "columns": [
+        {
+          "id": "stock_move_move_rel.move_dest_id",
+          "name": "move_dest_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "stock.move id"
+        },
+        {
+          "id": "stock_move_move_rel.move_orig_id",
+          "name": "move_orig_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "stock.move id"
+        }
+      ]
+    },
+    {
+      "id": "t_stock_reference_move_rel",
+      "name": "stock_reference_move_rel",
+      "comment": "many2many stock.move.reference_ids ↔ stock.reference (References)",
+      "columns": [
+        {
+          "id": "stock_reference_move_rel.move_id",
+          "name": "move_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "stock.move id"
+        },
+        {
+          "id": "stock_reference_move_rel.reference_id",
+          "name": "reference_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "stock.reference id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_stock_picking_picking_type_id",
+      "parent": "t_stock_picking_type",
+      "child": "t_stock_picking",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_type_id",
+      "columns": [
+        {
+          "fk": "stock_picking.picking_type_id",
+          "ref": "stock_picking_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_partner_id",
+      "parent": "t_res_partner",
+      "child": "t_stock_picking",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "partner_id",
+      "columns": [
+        {
+          "fk": "stock_picking.partner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_location_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_picking",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_id",
+      "columns": [
+        {
+          "fk": "stock_picking.location_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_location_dest_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_picking",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_dest_id",
+      "columns": [
+        {
+          "fk": "stock_picking.location_dest_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_backorder_id",
+      "parent": "t_stock_picking",
+      "child": "t_stock_picking",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "backorder_id",
+      "columns": [
+        {
+          "fk": "stock_picking.backorder_id",
+          "ref": "stock_picking.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_picking_return_id",
+      "parent": "t_stock_picking",
+      "child": "t_stock_picking",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "return_id",
+      "columns": [
+        {
+          "fk": "stock_picking.return_id",
+          "ref": "stock_picking.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_product_id",
+      "parent": "t_product_product",
+      "child": "t_stock_move",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "stock_move.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_picking_id",
+      "parent": "t_stock_picking",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_id",
+      "columns": [
+        {
+          "fk": "stock_move.picking_id",
+          "ref": "stock_picking.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_picking_type_id",
+      "parent": "t_stock_picking_type",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_type_id",
+      "columns": [
+        {
+          "fk": "stock_move.picking_type_id",
+          "ref": "stock_picking_type.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_location_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_move",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_id",
+      "columns": [
+        {
+          "fk": "stock_move.location_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_location_dest_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_move",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_dest_id",
+      "columns": [
+        {
+          "fk": "stock_move.location_dest_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_location_final_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_final_id",
+      "columns": [
+        {
+          "fk": "stock_move.location_final_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_origin_returned_move_id",
+      "parent": "t_stock_move",
+      "child": "t_stock_move",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "origin_returned_move_id",
+      "columns": [
+        {
+          "fk": "stock_move.origin_returned_move_id",
+          "ref": "stock_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_move_id",
+      "parent": "t_stock_move",
+      "child": "t_stock_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "move_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.move_id",
+          "ref": "stock_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_picking_id",
+      "parent": "t_stock_picking",
+      "child": "t_stock_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "picking_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.picking_id",
+          "ref": "stock_picking.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_product_id",
+      "parent": "t_product_product",
+      "child": "t_stock_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_lot_id",
+      "parent": "t_stock_lot",
+      "child": "t_stock_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "lot_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.lot_id",
+          "ref": "stock_lot.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_package_id",
+      "parent": "t_stock_package",
+      "child": "t_stock_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "package_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.package_id",
+          "ref": "stock_package.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_result_package_id",
+      "parent": "t_stock_package",
+      "child": "t_stock_move_line",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "result_package_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.result_package_id",
+          "ref": "stock_package.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_location_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_move_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.location_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_line_location_dest_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_move_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_dest_id",
+      "columns": [
+        {
+          "fk": "stock_move_line.location_dest_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_quant_product_id",
+      "parent": "t_product_product",
+      "child": "t_stock_quant",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "stock_quant.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_quant_location_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_quant",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_id",
+      "columns": [
+        {
+          "fk": "stock_quant.location_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_quant_lot_id",
+      "parent": "t_stock_lot",
+      "child": "t_stock_quant",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "lot_id",
+      "columns": [
+        {
+          "fk": "stock_quant.lot_id",
+          "ref": "stock_lot.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_quant_package_id",
+      "parent": "t_stock_package",
+      "child": "t_stock_quant",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "package_id",
+      "columns": [
+        {
+          "fk": "stock_quant.package_id",
+          "ref": "stock_package.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_quant_owner_id",
+      "parent": "t_res_partner",
+      "child": "t_stock_quant",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "owner_id",
+      "columns": [
+        {
+          "fk": "stock_quant.owner_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_lot_product_id",
+      "parent": "t_product_product",
+      "child": "t_stock_lot",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "stock_lot.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_package_location_id",
+      "parent": "t_stock_location",
+      "child": "t_stock_package",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "location_id",
+      "columns": [
+        {
+          "fk": "stock_package.location_id",
+          "ref": "stock_location.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_package_parent_package_id",
+      "parent": "t_stock_package",
+      "child": "t_stock_package",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_package_id",
+      "columns": [
+        {
+          "fk": "stock_package.parent_package_id",
+          "ref": "stock_package.id"
+        }
+      ]
+    },
+    {
+      "id": "r_res_partner_parent_id",
+      "parent": "t_res_partner",
+      "child": "t_res_partner",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "res_partner.parent_id",
+          "ref": "res_partner.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_move_rel_move_dest_id",
+      "parent": "t_stock_move",
+      "child": "t_stock_move_move_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "move_dest_id",
+      "columns": [
+        {
+          "fk": "stock_move_move_rel.move_dest_id",
+          "ref": "stock_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_move_move_rel_move_orig_id",
+      "parent": "t_stock_move",
+      "child": "t_stock_move_move_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "move_orig_id",
+      "columns": [
+        {
+          "fk": "stock_move_move_rel.move_orig_id",
+          "ref": "stock_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_reference_move_rel_move_id",
+      "parent": "t_stock_move",
+      "child": "t_stock_reference_move_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "move_id",
+      "columns": [
+        {
+          "fk": "stock_reference_move_rel.move_id",
+          "ref": "stock_move.id"
+        }
+      ]
+    },
+    {
+      "id": "r_stock_reference_move_rel_reference_id",
+      "parent": "t_stock_reference",
+      "child": "t_stock_reference_move_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "reference_id",
+      "columns": [
+        {
+          "fk": "stock_reference_move_rel.reference_id",
+          "ref": "stock_reference.id"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1145 @@
+{
+  "format": "vdoo",
+  "version": 1,
+  "name": "Products, variants, units and pricelists",
+  "tables": [
+    {
+      "id": "t_product_template",
+      "name": "product_template",
+      "columns": [
+        {
+          "id": "product_template.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_template.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "product_template.type",
+          "name": "type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Type (consu | service | combo)"
+        },
+        {
+          "id": "product_template.categ_id",
+          "name": "categ_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product Category"
+        },
+        {
+          "id": "product_template.uom_id",
+          "name": "uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit"
+        },
+        {
+          "id": "product_template.list_price",
+          "name": "list_price",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales Price"
+        },
+        {
+          "id": "product_template.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference (computed, stored)"
+        },
+        {
+          "id": "product_template.sale_ok",
+          "name": "sale_ok",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sales"
+        },
+        {
+          "id": "product_template.purchase_ok",
+          "name": "purchase_ok",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Purchase (computed, stored)"
+        },
+        {
+          "id": "product_template.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "product_template.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "product.template — Product"
+    },
+    {
+      "id": "t_product_product",
+      "name": "product_product",
+      "columns": [
+        {
+          "id": "product_product.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_product.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template"
+        },
+        {
+          "id": "product_product.default_code",
+          "name": "default_code",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Internal Reference"
+        },
+        {
+          "id": "product_product.barcode",
+          "name": "barcode",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Barcode"
+        },
+        {
+          "id": "product_product.standard_price",
+          "name": "standard_price",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Cost (company-dependent: one value per company)"
+        },
+        {
+          "id": "product_product.combination_indices",
+          "name": "combination_indices",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Combination indices (computed, stored)"
+        },
+        {
+          "id": "product_product.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "product.product — Product Variant; delegates to product.template via product_tmpl_id"
+    },
+    {
+      "id": "t_product_category",
+      "name": "product_category",
+      "columns": [
+        {
+          "id": "product_category.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_category.name",
+          "name": "name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name"
+        },
+        {
+          "id": "product_category.complete_name",
+          "name": "complete_name",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Complete Name (computed, stored)"
+        },
+        {
+          "id": "product_category.parent_id",
+          "name": "parent_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Parent Category"
+        }
+      ],
+      "comment": "product.category — Product Category"
+    },
+    {
+      "id": "t_uom_uom",
+      "name": "uom_uom",
+      "columns": [
+        {
+          "id": "uom_uom.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "uom_uom.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Unit Name (translated: one value per language)"
+        },
+        {
+          "id": "uom_uom.relative_factor",
+          "name": "relative_factor",
+          "type": "numeric",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Contains"
+        },
+        {
+          "id": "uom_uom.relative_uom_id",
+          "name": "relative_uom_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Reference Unit"
+        },
+        {
+          "id": "uom_uom.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "uom.uom — Product Unit of Measure"
+    },
+    {
+      "id": "t_product_attribute",
+      "name": "product_attribute",
+      "columns": [
+        {
+          "id": "product_attribute.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_attribute.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Attribute (translated: one value per language)"
+        },
+        {
+          "id": "product_attribute.create_variant",
+          "name": "create_variant",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Variant Creation (always | dynamic | no_variant)"
+        },
+        {
+          "id": "product_attribute.display_type",
+          "name": "display_type",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Display type (radio | pills | select | color | multi | image)"
+        },
+        {
+          "id": "product_attribute.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "product.attribute — Product Attribute"
+    },
+    {
+      "id": "t_product_attribute_value",
+      "name": "product_attribute_value",
+      "columns": [
+        {
+          "id": "product_attribute_value.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_attribute_value.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Value (translated: one value per language)"
+        },
+        {
+          "id": "product_attribute_value.attribute_id",
+          "name": "attribute_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Attribute"
+        },
+        {
+          "id": "product_attribute_value.default_extra_price",
+          "name": "default_extra_price",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Default extra price"
+        },
+        {
+          "id": "product_attribute_value.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "product.attribute.value — Attribute Value"
+    },
+    {
+      "id": "t_product_template_attribute_line",
+      "name": "product_template_attribute_line",
+      "columns": [
+        {
+          "id": "product_template_attribute_line.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_template_attribute_line.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Product Template"
+        },
+        {
+          "id": "product_template_attribute_line.attribute_id",
+          "name": "attribute_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Attribute"
+        },
+        {
+          "id": "product_template_attribute_line.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "product.template.attribute.line — Product Template Attribute Line"
+    },
+    {
+      "id": "t_product_template_attribute_value",
+      "name": "product_template_attribute_value",
+      "columns": [
+        {
+          "id": "product_template_attribute_value.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_template_attribute_value.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product tmpl (computed, stored)"
+        },
+        {
+          "id": "product_template_attribute_value.attribute_id",
+          "name": "attribute_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Attribute (computed, stored)"
+        },
+        {
+          "id": "product_template_attribute_value.attribute_line_id",
+          "name": "attribute_line_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Attribute line"
+        },
+        {
+          "id": "product_template_attribute_value.product_attribute_value_id",
+          "name": "product_attribute_value_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Attribute Value"
+        },
+        {
+          "id": "product_template_attribute_value.price_extra",
+          "name": "price_extra",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Extra Price"
+        },
+        {
+          "id": "product_template_attribute_value.ptav_active",
+          "name": "ptav_active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        }
+      ],
+      "comment": "product.template.attribute.value — Product Template Attribute Value"
+    },
+    {
+      "id": "t_product_tag",
+      "name": "product_tag",
+      "columns": [
+        {
+          "id": "product_tag.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_tag.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Name (translated: one value per language)"
+        },
+        {
+          "id": "product_tag.color",
+          "name": "color",
+          "type": "varchar",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Color"
+        }
+      ],
+      "comment": "product.tag — Product Tag"
+    },
+    {
+      "id": "t_product_pricelist",
+      "name": "product_pricelist",
+      "columns": [
+        {
+          "id": "product_pricelist.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_pricelist.name",
+          "name": "name",
+          "type": "jsonb",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Pricelist Name (translated: one value per language)"
+        },
+        {
+          "id": "product_pricelist.currency_id",
+          "name": "currency_id",
+          "type": "int",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Currency → res_currency (not in this diagram)"
+        },
+        {
+          "id": "product_pricelist.company_id",
+          "name": "company_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Company → res_company (not in this diagram)"
+        },
+        {
+          "id": "product_pricelist.active",
+          "name": "active",
+          "type": "boolean",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Active"
+        },
+        {
+          "id": "product_pricelist.sequence",
+          "name": "sequence",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Sequence"
+        }
+      ],
+      "comment": "product.pricelist — Pricelist"
+    },
+    {
+      "id": "t_product_pricelist_item",
+      "name": "product_pricelist_item",
+      "columns": [
+        {
+          "id": "product_pricelist_item.id",
+          "name": "id",
+          "type": "serial",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "Record id"
+        },
+        {
+          "id": "product_pricelist_item.pricelist_id",
+          "name": "pricelist_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Pricelist"
+        },
+        {
+          "id": "product_pricelist_item.applied_on",
+          "name": "applied_on",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Apply On (3_global | 2_product_category | 1_product | 0_product_variant)"
+        },
+        {
+          "id": "product_pricelist_item.categ_id",
+          "name": "categ_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Category"
+        },
+        {
+          "id": "product_pricelist_item.product_tmpl_id",
+          "name": "product_tmpl_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Product"
+        },
+        {
+          "id": "product_pricelist_item.product_id",
+          "name": "product_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Variant"
+        },
+        {
+          "id": "product_pricelist_item.min_quantity",
+          "name": "min_quantity",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Min. Quantity"
+        },
+        {
+          "id": "product_pricelist_item.date_start",
+          "name": "date_start",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Start Date"
+        },
+        {
+          "id": "product_pricelist_item.date_end",
+          "name": "date_end",
+          "type": "timestamp",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "End Date"
+        },
+        {
+          "id": "product_pricelist_item.compute_price",
+          "name": "compute_price",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Compute price (percentage | formula | fixed)"
+        },
+        {
+          "id": "product_pricelist_item.fixed_price",
+          "name": "fixed_price",
+          "type": "numeric",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Fixed Price"
+        },
+        {
+          "id": "product_pricelist_item.percent_price",
+          "name": "percent_price",
+          "type": "float8",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Percentage Price"
+        },
+        {
+          "id": "product_pricelist_item.base",
+          "name": "base",
+          "type": "varchar",
+          "pk": false,
+          "nullable": false,
+          "unique": false,
+          "comment": "Based on (list_price | standard_price | pricelist)"
+        },
+        {
+          "id": "product_pricelist_item.base_pricelist_id",
+          "name": "base_pricelist_id",
+          "type": "int",
+          "pk": false,
+          "nullable": true,
+          "unique": false,
+          "comment": "Other Pricelist"
+        }
+      ],
+      "comment": "product.pricelist.item — Pricelist Rule"
+    },
+    {
+      "id": "t_product_attribute_value_product_template_attribute_line_rel",
+      "name": "product_attribute_value_product_template_attribute_line_rel",
+      "comment": "many2many product.template.attribute.line.value_ids ↔ product.attribute.value (Values)",
+      "columns": [
+        {
+          "id": "product_attribute_value_product_template_attribute_line_rel.product_template_attribute_line_id",
+          "name": "product_template_attribute_line_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.template.attribute.line id"
+        },
+        {
+          "id": "product_attribute_value_product_template_attribute_line_rel.product_attribute_value_id",
+          "name": "product_attribute_value_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.attribute.value id"
+        }
+      ]
+    },
+    {
+      "id": "t_product_variant_combination",
+      "name": "product_variant_combination",
+      "comment": "many2many product.product.product_template_attribute_value_ids ↔ product.template.attribute.value (Attribute Values)",
+      "columns": [
+        {
+          "id": "product_variant_combination.product_product_id",
+          "name": "product_product_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.product id"
+        },
+        {
+          "id": "product_variant_combination.product_template_attribute_value_id",
+          "name": "product_template_attribute_value_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.template.attribute.value id"
+        }
+      ]
+    },
+    {
+      "id": "t_product_tag_product_template_rel",
+      "name": "product_tag_product_template_rel",
+      "comment": "many2many product.template.product_tag_ids ↔ product.tag (Tags)",
+      "columns": [
+        {
+          "id": "product_tag_product_template_rel.product_template_id",
+          "name": "product_template_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.template id"
+        },
+        {
+          "id": "product_tag_product_template_rel.product_tag_id",
+          "name": "product_tag_id",
+          "type": "int",
+          "pk": true,
+          "nullable": false,
+          "unique": false,
+          "comment": "product.tag id"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "r_product_template_categ_id",
+      "parent": "t_product_category",
+      "child": "t_product_template",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "categ_id",
+      "columns": [
+        {
+          "fk": "product_template.categ_id",
+          "ref": "product_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_product_template",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "uom_id",
+      "columns": [
+        {
+          "fk": "product_template.uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_product_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_product",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_product.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_category_parent_id",
+      "parent": "t_product_category",
+      "child": "t_product_category",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "parent_id",
+      "columns": [
+        {
+          "fk": "product_category.parent_id",
+          "ref": "product_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_uom_uom_relative_uom_id",
+      "parent": "t_uom_uom",
+      "child": "t_uom_uom",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "relative_uom_id",
+      "columns": [
+        {
+          "fk": "uom_uom.relative_uom_id",
+          "ref": "uom_uom.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_attribute_value_attribute_id",
+      "parent": "t_product_attribute",
+      "child": "t_product_attribute_value",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "attribute_id",
+      "columns": [
+        {
+          "fk": "product_attribute_value.attribute_id",
+          "ref": "product_attribute.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_attribute_line_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_template_attribute_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_template_attribute_line.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_attribute_line_attribute_id",
+      "parent": "t_product_attribute",
+      "child": "t_product_template_attribute_line",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "attribute_id",
+      "columns": [
+        {
+          "fk": "product_template_attribute_line.attribute_id",
+          "ref": "product_attribute.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_attribute_value_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_template_attribute_value",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_template_attribute_value.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_attribute_value_attribute_id",
+      "parent": "t_product_attribute",
+      "child": "t_product_template_attribute_value",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "attribute_id",
+      "columns": [
+        {
+          "fk": "product_template_attribute_value.attribute_id",
+          "ref": "product_attribute.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_attribute_value_attribute_line_id",
+      "parent": "t_product_template_attribute_line",
+      "child": "t_product_template_attribute_value",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "attribute_line_id",
+      "columns": [
+        {
+          "fk": "product_template_attribute_value.attribute_line_id",
+          "ref": "product_template_attribute_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_template_attribute_value_product_attribute_value_id",
+      "parent": "t_product_attribute_value",
+      "child": "t_product_template_attribute_value",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_attribute_value_id",
+      "columns": [
+        {
+          "fk": "product_template_attribute_value.product_attribute_value_id",
+          "ref": "product_attribute_value.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_pricelist_item_pricelist_id",
+      "parent": "t_product_pricelist",
+      "child": "t_product_pricelist_item",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "pricelist_id",
+      "columns": [
+        {
+          "fk": "product_pricelist_item.pricelist_id",
+          "ref": "product_pricelist.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_pricelist_item_categ_id",
+      "parent": "t_product_category",
+      "child": "t_product_pricelist_item",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "categ_id",
+      "columns": [
+        {
+          "fk": "product_pricelist_item.categ_id",
+          "ref": "product_category.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_pricelist_item_product_tmpl_id",
+      "parent": "t_product_template",
+      "child": "t_product_pricelist_item",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_tmpl_id",
+      "columns": [
+        {
+          "fk": "product_pricelist_item.product_tmpl_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_pricelist_item_product_id",
+      "parent": "t_product_product",
+      "child": "t_product_pricelist_item",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "product_id",
+      "columns": [
+        {
+          "fk": "product_pricelist_item.product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_pricelist_item_base_pricelist_id",
+      "parent": "t_product_pricelist",
+      "child": "t_product_pricelist_item",
+      "parentCard": "zeroOrOne",
+      "childCard": "zeroOrMany",
+      "identifying": false,
+      "label": "base_pricelist_id",
+      "columns": [
+        {
+          "fk": "product_pricelist_item.base_pricelist_id",
+          "ref": "product_pricelist.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_attribute_value_product_template_attribute_line_rel_product_template_attribute_line_id",
+      "parent": "t_product_template_attribute_line",
+      "child": "t_product_attribute_value_product_template_attribute_line_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_template_attribute_line_id",
+      "columns": [
+        {
+          "fk": "product_attribute_value_product_template_attribute_line_rel.product_template_attribute_line_id",
+          "ref": "product_template_attribute_line.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_attribute_value_product_template_attribute_line_rel_product_attribute_value_id",
+      "parent": "t_product_attribute_value",
+      "child": "t_product_attribute_value_product_template_attribute_line_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_attribute_value_id",
+      "columns": [
+        {
+          "fk": "product_attribute_value_product_template_attribute_line_rel.product_attribute_value_id",
+          "ref": "product_attribute_value.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_variant_combination_product_product_id",
+      "parent": "t_product_product",
+      "child": "t_product_variant_combination",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_product_id",
+      "columns": [
+        {
+          "fk": "product_variant_combination.product_product_id",
+          "ref": "product_product.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_variant_combination_product_template_attribute_value_id",
+      "parent": "t_product_template_attribute_value",
+      "child": "t_product_variant_combination",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_template_attribute_value_id",
+      "columns": [
+        {
+          "fk": "product_variant_combination.product_template_attribute_value_id",
+          "ref": "product_template_attribute_value.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_tag_product_template_rel_product_template_id",
+      "parent": "t_product_template",
+      "child": "t_product_tag_product_template_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_template_id",
+      "columns": [
+        {
+          "fk": "product_tag_product_template_rel.product_template_id",
+          "ref": "product_template.id"
+        }
+      ]
+    },
+    {
+      "id": "r_product_tag_product_template_rel_product_tag_id",
+      "parent": "t_product_tag",
+      "child": "t_product_tag_product_template_rel",
+      "parentCard": "one",
+      "childCard": "zeroOrMany",
+      "identifying": true,
+      "label": "product_tag_id",
+      "columns": [
+        {
+          "fk": "product_tag_product_template_rel.product_tag_id",
+          "ref": "product_tag.id"
+        }
+      ]
+    }
+  ]
+}
