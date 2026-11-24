@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld("vdooDesktop", {
   save: (request) => ipcRenderer.invoke("vdoo:save", request),
   openLink: (url) => ipcRenderer.invoke("vdoo:open-link", url),
   close: () => ipcRenderer.invoke("vdoo:close"),
+  setTheme: (theme) => ipcRenderer.invoke("vdoo:set-theme", theme),
   onOpenFile: (callback) => subscribe("vdoo:open-file", callback),
   onCloseRequested: (callback) => subscribe("vdoo:close-requested", callback),
   edit: (command) => ipcRenderer.invoke("vdoo:edit", command),

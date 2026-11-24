@@ -14,7 +14,7 @@ click.
 3. [Odoo app designer (Studio)](#3-odoo-app-designer-studio): models, fields, views (form, list, kanban, calendar, pivot, graph, search), menus, addon export
 4. [Ask AI](#4-ask-ai): an assistant that reviews and designs schemas
 5. [Files and folders](#5-files-and-folders): opening, saving, the Files pane and file types
-6. [Settings](#6-settings): AI provider, default folder and Odoo connection
+6. [Settings](#6-settings): theme, AI provider, default folder and Odoo connection
 7. [Keyboard shortcuts](#7-keyboard-shortcuts)
 
 ### The window at a glance
@@ -26,6 +26,7 @@ click.
 | Sidebar | Left | Three tabs: **Files** (folder tree), **Tables** (outline of the schema) and **Mermaid** (diagram source). **View › Sidebar** or **Ctrl+Shift+B** shows or hides it. |
 | Tabs | Above the work area | The schema tab (◈), the app's **Studio:** (◧) and **Diagram:** tabs while an app is open, then one tab per text file. A **•** marks unsaved changes. |
 | Ask AI panel | Right | The AI assistant. Show or hide it with the **Ask AI** toolbar button or **View › Ask AI**. |
+| Theme | **View** menu, or **Settings › Appearance** | **System theme** follows your computer's light or dark setting; **Light theme** and **Dark theme** fix it. vdoo remembers the choice. |
 | Status bar | Bottom | Table and relationship counts and any problems for the schema or app, or the editor mode and file path for a text file. |
 
 ---
@@ -465,6 +466,7 @@ Open **File › Settings…** or the **Settings** toolbar button.
 
 | Section | What you can set |
 |---|---|
+| **Appearance** | The **Theme**: **System** (follows your computer), **Light** or **Dark**. The same choice is in the **View** menu. |
 | **Files** | The **Default directory** where the Open and Save dialogs start. **Choose…** sets it and **Clear** removes it. |
 | **Ask AI** | The AI provider. **Claude** uses your Claude subscription through Claude Code, and **Check again** re-detects it. **ChatGPT** uses "Sign in with ChatGPT", with **Sign out**. A **custom endpoint** takes a base URL, an optional key (kept in the OS credential store) and a model. |
 | **Odoo** | The Odoo **URL** (for example `http://localhost:8069`), the **admin user** and, optionally, the **database**. **Save** stores them, and **Test connection** asks for the password and signs in. The password is never saved. Addresses must use https, except on this computer or your local network, where vdoo asks before connecting the first time. |

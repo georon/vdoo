@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
 import type { Schema } from "./model";
 import { toMermaid } from "./mermaid";
+import { useDarkMode } from "./theme";
 
 let renders = 0;
 let initializedTheme = "";
@@ -11,17 +12,6 @@ function setup(dark: boolean) {
   // strict: Mermaid sanitizes every label, so a column comment can't add markup or script to the page.
   mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme, er: { useMaxWidth: false }, fontFamily: "inherit" });
   initializedTheme = theme;
-}
-
-function useDarkMode() {
-  const query = window.matchMedia("(prefers-color-scheme: dark)");
-  const [dark, setDark] = useState(query.matches);
-  useEffect(() => {
-    const change = () => setDark(query.matches);
-    query.addEventListener("change", change);
-    return () => query.removeEventListener("change", change);
-  }, [query]);
-  return dark;
 }
 
 interface Props {

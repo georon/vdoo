@@ -21,6 +21,7 @@ import { appToSchema, schemaToApp } from "./odoo/convert";
 import { validateApp } from "./odoo/validateApp";
 import { generateAddon } from "./odoo/generateAddon";
 import { exampleApp } from "./odoo/exampleApp";
+import { type Theme, THEMES, applyTheme, savedTheme } from "./theme";
 
 const desktop = window.vdooDesktop;
 const MODES: DocMode[] = ["text", "rich", "markdown"];
@@ -67,6 +68,9 @@ export function App() {
   const [sideOpen, setSideOpen] = useState(() => readSetting("vdoo:sidebar-open") !== "false");
   const [aiOpen, setAiOpen] = useState(() => readSetting("vdoo:ai-open") !== "false");
   const [diagramComments, setDiagramComments] = useState(() => readSetting("vdoo:diagram-comments") !== "false");
+  /** View › Theme: System follows the operating system. */
+  const [theme, setTheme] = useState<Theme>(savedTheme);
+  const chooseTheme = (next: Theme) => { setTheme(next); applyTheme(next); };
   /** Text size of the file editors, as a zoom factor shared by every file tab. */
   const [docZoom, setDocZoom] = useState(() => clampDocZoom(Number(readSetting("vdoo:doc-zoom")) || 1));
   const zoomDocs = (factor: number) => setDocZoom((z) => clampDocZoom(Math.round(z * factor * 100) / 100));
@@ -433,6 +437,8 @@ export function App() {
       { label: "Ask AI", checked: aiOpen, onSelect: () => setAiOpen(!aiOpen) },
       { label: "Column comments in diagram", checked: diagramComments, onSelect: () => setDiagramComments(!diagramComments) },
       "separator",
+      ...THEMES.map(({ theme: t, label }) => ({ label: `${label} theme`, checked: theme === t, onSelect: () => chooseTheme(t) })),
+      "separator",
       { label: "Files", checked: sideOpen && tab === "files", onSelect: () => showPanel("files") },
       { label: "Tables", checked: sideOpen && tab === "tables", onSelect: () => showPanel("tables") },
       { label: "Mermaid source", checked: sideOpen && tab === "source", onSelect: () => showPanel("source") },
@@ -547,7 +553,7 @@ export function App() {
       onOpenRelation={(id) => setEditing({ kind: "relation", id })} onClose={() => setEditing(null)} />}
     {editing?.kind === "relation" && <RelationEditor key={editing.id ?? "new"} schema={schema} relationId={editing.id} onSave={sh.commit}
       onOpenTable={(id) => setEditing({ kind: "table", id })} onClose={() => setEditing(null)} />}
-    {editing?.kind === "settings" && <Settings onClose={() => setEditing(null)} />}
+    {editing?.kind === "settings" && <Settings theme={theme} onTheme={chooseTheme} onClose={() => setEditing(null)} />}
     {editing?.kind === "new-app" && <NewAppDialog fromDiagram={editing.fromDiagram} onClose={() => setEditing(null)} onCreate={(input) => createApp(input, editing.fromDiagram)} />}
   </div>;
 }

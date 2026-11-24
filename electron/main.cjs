@@ -1,5 +1,5 @@
 // vdoo desktop shell: one window, the editor served over app://vdoo/, schema files read and written here.
-const { app, BrowserWindow, protocol, net, ipcMain, dialog, shell, Menu, session } = require("electron");
+const { app, BrowserWindow, protocol, net, ipcMain, dialog, shell, Menu, session, nativeTheme } = require("electron");
 const path = require("node:path");
 const fs = require("node:fs");
 const { pathToFileURL } = require("node:url");
@@ -74,7 +74,7 @@ function readSchemaFile(file) {
 function createWindow() {
   win = new BrowserWindow({
     width: 1400, height: 900, minWidth: 720, minHeight: 480, show: false, title: "vdoo",
-    backgroundColor: "#16171b",
+    backgroundColor: nativeTheme.shouldUseDarkColors ? "#16171b" : "#f6f6f4",
     icon: path.join(__dirname, "icon.png"), // window and taskbar icon (Linux, Windows); installers use build/icon.png
     webPreferences: {
       preload: path.join(__dirname, "preload.cjs"), contextIsolation: true, sandbox: true,
@@ -167,6 +167,12 @@ else {
       return { path: target, name: path.basename(target) };
     });
     handle("vdoo:open-link", (_event, url) => openLink(url));
+    // View › Theme. nativeTheme also drives prefers-color-scheme in the page, which the page's own choice overrides anyway.
+    handle("vdoo:set-theme", (_event, theme) => {
+      if (!["system", "light", "dark"].includes(theme)) return;
+      nativeTheme.themeSource = theme;
+      win?.setBackgroundColor(nativeTheme.shouldUseDarkColors ? "#16171b" : "#f6f6f4");
+    });
     handle("vdoo:close", () => { closeConfirmed = true; win?.close(); });
 
     createWindow();

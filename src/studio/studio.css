@@ -6,9 +6,11 @@
   flex: 1; min-height: 0; display: flex; background: var(--bg);
 }
 @media (prefers-color-scheme: dark) {
-  .studio { --sheet: #23242a; --sheet-border: #3a3b42; --odoo: #b88bad; --odoo-text: #1b1420; --field-line: #4a4b53;
+  :root:not([data-theme="light"]) .studio { --sheet: #23242a; --sheet-border: #3a3b42; --odoo: #b88bad; --odoo-text: #1b1420; --field-line: #4a4b53;
     --c0: #b88bad; --c1: #4fc1b2; --c2: #f0b85a; --c3: #8aa6ec; }
 }
+:root[data-theme="dark"] .studio { --sheet: #23242a; --sheet-border: #3a3b42; --odoo: #b88bad; --odoo-text: #1b1420; --field-line: #4a4b53;
+    --c0: #b88bad; --c1: #4fc1b2; --c2: #f0b85a; --c3: #8aa6ec; }
 
 /* Navigation */
 .st-nav { width: 200px; flex: none; display: flex; flex-direction: column; gap: 1px; padding: 10px 8px; overflow-y: auto; background: var(--panel); border-right: 1px solid var(--border); }

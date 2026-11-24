@@ -5,14 +5,22 @@
   --select: #f08c00; --shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
   color-scheme: light;
 }
+/* Dark when the system is dark (unless View › Light theme is chosen), or when View › Dark theme is chosen. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #16171b; --panel: #1e1f24; --panel-2: #26272d; --border: #34353c; --text: #ecebe7; --text-2: #a3a29d;
     --accent: #7c96ff; --accent-text: #0e1020; --hover: rgba(255, 255, 255, 0.06); --danger: #ff6b6b;
     --pk: #f2c55c; --pk-bg: #3b3013; --fk: #7cb7ff; --fk-bg: #162a44; --warn: #ffb54d;
     --select: #ffa94d; --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
     color-scheme: dark;
   }
+}
+:root[data-theme="dark"] {
+  --bg: #16171b; --panel: #1e1f24; --panel-2: #26272d; --border: #34353c; --text: #ecebe7; --text-2: #a3a29d;
+  --accent: #7c96ff; --accent-text: #0e1020; --hover: rgba(255, 255, 255, 0.06); --danger: #ff6b6b;
+  --pk: #f2c55c; --pk-bg: #3b3013; --fk: #7cb7ff; --fk-bg: #162a44; --warn: #ffb54d;
+  --select: #ffa94d; --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }

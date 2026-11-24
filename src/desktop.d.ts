@@ -5,6 +5,8 @@ interface VdooDesktop {
   save(request: { text: string; file?: string | null; suggestedName: string; kind: "vdoo" | "vdooapp" | "mermaid" | "sql" | "svg" }): Promise<{ path: string; name: string } | null>;
   openLink(url: string): Promise<void>;
   close(): Promise<void>;
+  /** View › Theme: the window frame and native controls follow it (Electron's nativeTheme). */
+  setTheme(theme: "system" | "light" | "dark"): Promise<void>;
   onOpenFile(callback: (file: SchemaFile) => void): () => void;
   onCloseRequested(callback: () => void): () => void;
   /** Runs an Edit menu command on whatever has the focus. */

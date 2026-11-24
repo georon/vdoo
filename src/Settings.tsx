@@ -3,8 +3,9 @@ import { Modal } from "./Modal";
 import { CLAUDE_CODE_URL, PROVIDERS, savedProvider, saveAiPreference, signInChatGPT, type AiProvider } from "./ai";
 import { CustomEndpointSettings } from "./CustomEndpointSettings";
 import { OdooSettings } from "./OdooSettings";
+import { type Theme, THEMES } from "./theme";
 
-export function Settings({ onClose }: { onClose: () => void }) {
+export function Settings({ theme, onTheme, onClose }: { theme: Theme; onTheme: (theme: Theme) => void; onClose: () => void }) {
   const ai = window.vdooDesktop?.ai;
   const [provider, setProvider] = useState<AiProvider>(savedProvider);
   const [status, setStatus] = useState<AiStatus | null>(null);
@@ -16,6 +17,15 @@ export function Settings({ onClose }: { onClose: () => void }) {
   useEffect(() => { void files?.defaultDir().then(setDefaultDir).catch(() => {}); }, [files]);
 
   return <Modal title="Settings" onClose={onClose}>
+    <section className="settings">
+      <h3>Appearance</h3>
+      <div className="settings-row">
+        <div className="settings-label"><span>Theme</span><small>System follows your computer's light or dark setting. Also in View.</small></div>
+        <div className="segmented" role="group" aria-label="Theme">
+          {THEMES.map(({ theme: t, label }) => <button key={t} className={`btn ghost${theme === t ? " active" : ""}`} aria-pressed={theme === t} onClick={() => onTheme(t)}>{label}</button>)}
+        </div>
+      </div>
+    </section>
     <section className="settings">
       <h3>Files</h3>
       {!files ? <p className="hint">The default directory is available in the desktop app.</p> : <div className="settings-row">
