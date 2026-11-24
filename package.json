@@ -15,7 +15,7 @@
     "dist:win": "npm run build && electron-builder --win nsis portable --publish never",
     "dist:mac": "npm run build && electron-builder --mac --publish never",
     "dist:linux": "npm run build && electron-builder --linux --publish never",
-    "test": "vitest run && node --test scripts/test-claude-path.cjs scripts/test-files.cjs scripts/test-pdf.cjs",
+    "test": "vitest run && node --test scripts/test-claude-path.cjs scripts/test-files.cjs scripts/test-pdf.cjs scripts/test-odoo.cjs scripts/test-addon.cjs",
     "smoke": "node scripts/smoke-test.mjs"
   },
   "devDependencies": {
@@ -52,6 +52,11 @@
       {
         "ext": "vdoo",
         "name": "vdoo schema",
+        "role": "Editor"
+      },
+      {
+        "ext": "vdooapp",
+        "name": "vdoo Odoo app",
         "role": "Editor"
       }
     ],

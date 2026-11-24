@@ -10,6 +10,8 @@ export const modeForPath = (path: string | null | undefined): DocMode =>
 
 /** Files that hold a schema open in the diagram editor instead of a file tab. */
 export const isSchemaPath = (path: string) => /\.(vdoo|mmd|mermaid)$/i.test(path);
+/** Files that hold an Odoo app: they open in the Studio and app-diagram tabs. */
+export const isAppPath = (path: string) => /\.vdooapp$/i.test(path);
 
 export const baseName = (path: string | null | undefined) => (path ? path.split(/[\\/]/).pop()! : "Untitled");
 

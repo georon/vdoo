@@ -2,7 +2,7 @@ interface SchemaFile { path: string; name: string; text: string }
 
 interface VdooDesktop {
   pendingFile(): Promise<SchemaFile | null>;
-  save(request: { text: string; file?: string | null; suggestedName: string; kind: "vdoo" | "mermaid" | "sql" | "svg" }): Promise<{ path: string; name: string } | null>;
+  save(request: { text: string; file?: string | null; suggestedName: string; kind: "vdoo" | "vdooapp" | "mermaid" | "sql" | "svg" }): Promise<{ path: string; name: string } | null>;
   openLink(url: string): Promise<void>;
   close(): Promise<void>;
   onOpenFile(callback: (file: SchemaFile) => void): () => void;
@@ -11,6 +11,8 @@ interface VdooDesktop {
   edit(command: EditCommand): Promise<void>;
   /** Renders a self-contained HTML page to PDF and saves it where the user picks. Null when the dialog is cancelled. */
   exportPdf(request: { html: string; suggestedName: string }): Promise<{ path: string; name: string } | null>;
+  /** Writes a generated Odoo addon as the folder `name` inside a directory the user picks. Null when cancelled. */
+  exportAddon(request: { name: string; files: { path: string; content: string }[] }): Promise<{ path: string; count: number } | null>;
   files: VdooFiles;
   ai: VdooAi;
   odoo: VdooOdoo;

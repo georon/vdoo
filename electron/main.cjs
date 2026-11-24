@@ -7,6 +7,7 @@ const ai = require("./ai.cjs");
 const files = require("./files.cjs");
 const odoo = require("./odoo.cjs");
 const pdf = require("./pdf.cjs");
+const addon = require("./addon.cjs");
 const { csp } = require("./csp.cjs");
 
 const DIST = path.join(__dirname, "..", "dist");
@@ -18,7 +19,9 @@ const isAppUrl = (url) => {
   try { return url.startsWith("app://vdoo/") || (!!DEV_URL && new URL(url).origin === DEV_URL); } catch { return false; }
 };
 const CSP = csp();
-const SCHEMA_FILE = /\.vdoo$/i;
+// Files vdoo opens from the command line or the OS: schemas (.vdoo) and Odoo apps (.vdooapp).
+const SCHEMA_FILE = /\.vdoo(app)?$/i;
+const SAVE_EXT = { vdoo: /\.vdoo$/i, vdooapp: /\.vdooapp$/i };
 const MAX_FILE_BYTES = 20 * 1024 * 1024;
 
 protocol.registerSchemesAsPrivileged([
@@ -132,6 +135,7 @@ else {
       try { return file ? readSchemaFile(file) : null; } catch { return null; }
     });
     const fileAccess = files.register(handle, { dialog, getWindow: () => win, statePath: path.join(app.getPath("userData"), "workspace.json") });
+    addon.register(handle, { dialog, getWindow: () => win, startDir: () => fileAccess.folder || fileAccess.startDir() });
     pdf.register(handle, { dialog, getWindow: () => win, BrowserWindow, session, locale: () => app.getLocale(),
       startDir: () => fileAccess.folder || fileAccess.startDir() });
     // The Edit menu acts on whatever has the focus in the page.
@@ -143,12 +147,14 @@ else {
       if (typeof text !== "string" || text.length > MAX_FILE_BYTES) throw new Error("Nothing to save.");
       const filters = {
         vdoo: [{ name: "vdoo schema", extensions: ["vdoo"] }],
+        vdooapp: [{ name: "vdoo Odoo app", extensions: ["vdooapp"] }],
         mermaid: [{ name: "Mermaid ER diagram", extensions: ["mmd"] }],
         sql: [{ name: "SQL script", extensions: ["sql"] }],
         svg: [{ name: "SVG image", extensions: ["svg"] }],
       }[kind];
       if (!filters) throw new Error("Unknown file type.");
-      let target = kind === "vdoo" && typeof file === "string" && SCHEMA_FILE.test(file) && path.isAbsolute(file) ? file : null;
+      // Saves in place only over a file of the same kind, so an app never overwrites a .vdoo schema (or the reverse).
+      let target = SAVE_EXT[kind] && typeof file === "string" && SAVE_EXT[kind].test(file) && path.isAbsolute(file) ? file : null;
       if (!target) {
         const name = String(suggestedName || "schema").replace(/[\\/:*?"<>|]/g, "_");
         const start = fileAccess.folder || fileAccess.startDir();

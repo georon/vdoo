@@ -1,4 +1,7 @@
 node_modules/
 dist/
 release/
+.claude/
 *.tmp
+*.tsbuildinfo
+vdoo-workspace.code-workspace

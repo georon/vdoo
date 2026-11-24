@@ -14,15 +14,31 @@ import { Explorer } from "./Explorer";
 import { type Doc, DocEditor, FIND_EVENT } from "./DocEditor";
 import { docToPrintHtml, pdfName, printInBrowser } from "./exportPdf";
 import { highlight } from "./ColorPicker";
-import { type DocMode, DEFAULT_NAMES, MODE_LABELS, baseName, isSchemaPath, modeForPath } from "./textEdit";
+import { type DocMode, DEFAULT_NAMES, MODE_LABELS, baseName, isAppPath, isSchemaPath, modeForPath } from "./textEdit";
+import { type StudioPage, NewAppDialog, StudioView } from "./studio/StudioView";
+import { type OdooApp, addModel, modelById, newApp } from "./odoo/studioModel";
+import { appToSchema, schemaToApp } from "./odoo/convert";
+import { validateApp } from "./odoo/validateApp";
+import { generateAddon } from "./odoo/generateAddon";
+import { exampleApp } from "./odoo/exampleApp";
 
 const desktop = window.vdooDesktop;
 const MODES: DocMode[] = ["text", "rich", "markdown"];
-/** The tab that holds the schema and its diagram; every other tab is a file, identified by its Doc id. */
+/** The tab that holds the ER schema (a .vdoo file) and its diagram; every file tab is identified by its Doc id. */
 const SCHEMA_TAB = "schema";
+/** The two tabs of the Odoo app (a .vdooapp file), shown while one is open: the Studio designer and the app's diagram. */
+const STUDIO_TAB = "studio";
+const APP_DIAGRAM_TAB = "app-diagram";
 const DOC_ZOOM_MIN = 0.5, DOC_ZOOM_MAX = 3;
 const clampDocZoom = (z: number) => Math.min(DOC_ZOOM_MAX, Math.max(DOC_ZOOM_MIN, z));
-type Editing = { kind: "table"; id: string } | { kind: "relation"; id: string | null } | { kind: "settings" } | null;
+type Editing = { kind: "table"; id: string } | { kind: "relation"; id: string | null } | { kind: "settings" } | { kind: "new-app"; fromDiagram: boolean } | null;
+type FileRef = { path: string | null; name: string };
+/** The two documents that can be open side by side: the ER schema and the Odoo app. */
+type Slot = "schema" | "app";
+const stem = (name: string) => name.replace(/\.(vdooapp|vdoo|mmd|mermaid)$/i, "");
+const isModelPath = (path: string) => isSchemaPath(path) || isAppPath(path);
+/** The document an Odoo app is kept in: the app plus the tables drawn from it. */
+const appDocument = (app: OdooApp): Schema => ({ ...emptySchema(app.name), ...appToSchema(app), odoo: app });
 
 /** Undo history: every committed change is a new snapshot. */
 function useHistory(initial: Schema) {
@@ -35,9 +51,13 @@ function useHistory(initial: Schema) {
 }
 
 export function App() {
-  const { schema, canUndo, canRedo, commit, undo, redo, reset } = useHistory(emptySchema());
-  const [file, setFile] = useState<{ path: string | null; name: string } | null>(null);
-  const [saved, setSaved] = useState<Schema>(schema);
+  // The ER schema and the Odoo app are separate documents, each with its own file, undo history and saved state.
+  const sh = useHistory(emptySchema());
+  const [schemaFile, setSchemaFile] = useState<FileRef | null>(null);
+  const [schemaSaved, setSchemaSaved] = useState<Schema>(sh.schema);
+  const ah = useHistory(emptySchema());
+  const [appFile, setAppFile] = useState<FileRef | null>(null);
+  const [appSaved, setAppSaved] = useState<Schema>(ah.schema);
   const [editing, setEditing] = useState<Editing>(null);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [active, setActive] = useState(SCHEMA_TAB);
@@ -50,52 +70,103 @@ export function App() {
   /** Text size of the file editors, as a zoom factor shared by every file tab. */
   const [docZoom, setDocZoom] = useState(() => clampDocZoom(Number(readSetting("vdoo:doc-zoom")) || 1));
   const zoomDocs = (factor: number) => setDocZoom((z) => clampDocZoom(Math.round(z * factor * 100) / 100));
-  /** Bumped whenever another schema is opened, so the diagram fits it to the window. */
-  const [fitKey, setFitKey] = useState(0);
+  /** Bumped whenever another schema or app is opened, so its diagram fits it to the window. */
+  const [schemaFit, setSchemaFit] = useState(0);
+  const [appFit, setAppFit] = useState(0);
+  /** A diagram can't fit itself while its tab is hidden, so a newly opened app's diagram fits when its tab is first shown. */
+  const appNeedsFit = useRef(false);
   const [notice, setNotice] = useState<string | null>(null);
-  const svg = useRef("");
+  const schemaSvg = useRef("");
+  const appSvg = useRef("");
   const counter = useRef(0);
   const opening = useRef(new Set<string>());
+  const [studioPage, setStudioPage] = useState<StudioPage | null>(null);
+  /** Which document the menus act on while a file tab is active: the one shown last. */
+  const [lastSlot, setLastSlot] = useState<Slot>("schema");
+
+  const schema = sh.schema;
+  const appSchema = ah.schema;
+  const app = appSchema.odoo;
   const doc = docs.find((d) => d.id === active) ?? null;
-  const onSchema = !doc;
-  const dirty = schema !== saved;
+  const onModel = !doc;
+  const onStudio = active === STUDIO_TAB && !!app;
+  const onAppDiagram = active === APP_DIAGRAM_TAB && !!app;
+  const tabSlot: Slot | null = active === SCHEMA_TAB ? "schema" : onStudio || onAppDiagram ? "app" : null;
+  const slot: Slot = tabSlot ?? (lastSlot === "app" && app ? "app" : "schema");
+  const schemaDirty = schema !== schemaSaved;
+  const appDirty = !!app && appSchema !== appSaved;
+  const schemaName = schemaFile?.name ?? "Unsaved schema";
+  const appName = appFile?.name ?? `${app?.name ?? "app"}.vdooapp`;
+  const cur = slot === "app" ? { h: ah, file: appFile, dirty: appDirty, svg: appSvg, name: appName }
+    : { h: sh, file: schemaFile, dirty: schemaDirty, svg: schemaSvg, name: schemaName };
+  const curSchema = cur.h.schema;
   const dirtyDocs = docs.filter((d) => d.content !== d.saved);
-  const schemaName = file?.name ?? "Unsaved schema";
-  const problems = useMemo(() => validate(schema), [schema]);
+  const appProblems = useMemo(() => (app ? validateApp(app) : []), [app]);
+  const schemaProblems = useMemo(() => validate(schema), [schema]);
+  const problems = slot === "app" ? appProblems.map((p) => p.message) : schemaProblems;
 
   useEffect(() => { writeSetting("vdoo:ai-open", String(aiOpen)); }, [aiOpen]);
   useEffect(() => { writeSetting("vdoo:sidebar-open", String(sideOpen)); }, [sideOpen]);
   useEffect(() => { writeSetting("vdoo:diagram-comments", String(diagramComments)); }, [diagramComments]);
   useEffect(() => { writeSetting("vdoo:doc-zoom", String(docZoom)); }, [docZoom]);
+  useEffect(() => { if (tabSlot) setLastSlot(tabSlot); }, [tabSlot]);
   useEffect(() => {
-    const name = doc ? doc.name : file?.name ?? schema.name;
-    document.title = `${(doc ? doc.content !== doc.saved : dirty) ? "• " : ""}${name} — vdoo`;
-  }, [dirty, file, schema.name, doc]);
+    const name = doc ? doc.name : cur.name;
+    document.title = `${(doc ? doc.content !== doc.saved : cur.dirty) ? "• " : ""}${name} — vdoo`;
+  });
   useEffect(() => { if (!notice) return; const t = setTimeout(() => setNotice(null), 4000); return () => clearTimeout(t); }, [notice]);
   useEffect(() => { void desktop?.files.workspace().then((dir) => { if (dir) setFolder(dir); }); }, []);
+  // Closing the app leaves its tabs with nothing to show.
+  useEffect(() => { if ((active === STUDIO_TAB || active === APP_DIAGRAM_TAB) && !app) setActive(SCHEMA_TAB); }, [active, app]);
 
-  const confirmDiscard = useCallback(() => !dirty || window.confirm("Discard the unsaved changes to this schema?"), [dirty]);
-  const confirmQuit = useCallback(() => {
-    const names = [...(dirty ? [schemaName] : []), ...dirtyDocs.map((d) => d.name)];
+  const confirmDiscardSchema = () => !schemaDirty || window.confirm("Discard the unsaved changes to this schema?");
+  const confirmDiscardApp = () => !appDirty || window.confirm(`Discard the unsaved changes to the Odoo app ${appName}?`);
+  const confirmQuit = () => {
+    const names = [...(schemaDirty ? [schemaName] : []), ...(appDirty ? [appName] : []), ...dirtyDocs.map((d) => d.name)];
     return !names.length || window.confirm(`Discard the unsaved changes to ${names.join(", ")}?`);
-  }, [dirty, schemaName, dirtyDocs]);
+  };
 
-  const load = useCallback((loaded: SchemaFile) => {
+  /** Puts an app in the Studio tabs, asking first when the open one has unsaved changes. False when the user said no. */
+  const openApp = (next: Schema, file: FileRef | null, saved: Schema) => {
+    if (!confirmDiscardApp()) return false;
+    ah.reset(next); setAppSaved(saved); setAppFile(file); setStudioPage(null); setEditing(null);
+    appNeedsFit.current = true; setActive(STUDIO_TAB);
+    return true;
+  };
+  const showAppDiagram = () => {
+    if (appNeedsFit.current) { appNeedsFit.current = false; setAppFit((k) => k + 1); }
+    setActive(APP_DIAGRAM_TAB);
+  };
+
+  /** Opens a schema or app file: one holding an Odoo app goes to the Studio tabs, any other to the schema tab. */
+  const load = (loaded: SchemaFile) => {
+    let next: Schema;
     try {
-      const next = /\.(mmd|mermaid)$/i.test(loaded.name)
-        ? { ...fromMermaid(loaded.text), name: loaded.name.replace(/\.(mmd|mermaid)$/i, "") } : deserialize(loaded.text);
-      reset(next); setSaved(next); setEditing(null); setActive(SCHEMA_TAB); setFitKey((k) => k + 1);
-      setFile({ path: /\.vdoo$/i.test(loaded.name) ? loaded.path : null, name: /\.vdoo$/i.test(loaded.name) ? loaded.name : `${next.name}.vdoo` });
-    } catch (e) { setNotice(`Couldn't open ${loaded.name}: ${e instanceof Error ? e.message : "unreadable file"}`); }
-  }, [reset]);
+      next = /\.(mmd|mermaid)$/i.test(loaded.name) ? { ...fromMermaid(loaded.text), name: stem(loaded.name) } : deserialize(loaded.text);
+    } catch (e) { setNotice(`Couldn't open ${loaded.name}: ${e instanceof Error ? e.message : "unreadable file"}`); return; }
+    if (next.odoo) {
+      // An app saved in a .vdoo file (before .vdooapp existed) still opens; its first Save asks for a .vdooapp name.
+      const legacy = !isAppPath(loaded.name);
+      if (openApp(next, { path: legacy ? null : loaded.path, name: `${stem(loaded.name)}.vdooapp` }, next) && legacy)
+        setNotice(`${loaded.name} holds an Odoo app, so it opened in Studio. Save stores it as ${stem(loaded.name)}.vdooapp.`);
+    } else if (isAppPath(loaded.name)) setNotice(`Couldn't open ${loaded.name}: it has no Odoo app in it.`);
+    else if (confirmDiscardSchema()) {
+      const isVdoo = /\.vdoo$/i.test(loaded.name);
+      sh.reset(next); setSchemaSaved(next); setEditing(null); setActive(SCHEMA_TAB); setSchemaFit((k) => k + 1);
+      setSchemaFile({ path: isVdoo ? loaded.path : null, name: isVdoo ? loaded.name : `${next.name}.vdoo` });
+    }
+  };
 
+  // The desktop shell's callbacks are registered once; they call the current load and quit check.
+  const latest = useRef({ load, confirmQuit });
+  useEffect(() => { latest.current = { load, confirmQuit }; });
   useEffect(() => {
     if (!desktop) return;
-    const offOpen = desktop.onOpenFile((f) => { if (confirmDiscard()) load(f); });
-    const offClose = desktop.onCloseRequested(() => { if (confirmQuit()) void desktop.close(); });
+    const offOpen = desktop.onOpenFile((f) => latest.current.load(f));
+    const offClose = desktop.onCloseRequested(() => { if (latest.current.confirmQuit()) void desktop.close(); });
     return () => { offOpen(); offClose(); };
-  }, [load, confirmDiscard, confirmQuit]);
-  useEffect(() => { void desktop?.pendingFile().then((f) => f && load(f)); }, [load]);
+  }, []);
+  useEffect(() => { void desktop?.pendingFile().then((f) => f && latest.current.load(f)); }, []);
 
   // --- File tabs ---
   const addDoc = (path: string | null, name: string, content: string) => {
@@ -104,17 +175,18 @@ export function App() {
     setActive(created.id);
   };
   const newDoc = () => addDoc(null, `Untitled-${docs.filter((d) => !d.path).length + 1}`, "");
-  /** Opens a file the user chose: a schema goes to the Schema tab, anything else gets a tab of its own. */
+  /** Opens a file the user chose: a schema goes to the schema tab, an app to the Studio tabs, anything else gets a tab of its own. */
   const openPath = async (path: string) => {
     if (!desktop || opening.current.has(path)) return;
     const existing = docs.find((d) => d.path === path);
     if (existing) { setActive(existing.id); return; }
-    if (isSchemaPath(path) && !confirmDiscard()) return;
+    if (path === schemaFile?.path) { setActive(SCHEMA_TAB); return; }
+    if (path === appFile?.path) { setActive(STUDIO_TAB); return; }
     opening.current.add(path);
     try {
       const result = await desktop.files.read(path);
       if ("error" in result) setNotice(`${baseName(path)}: ${result.error}`);
-      else if (isSchemaPath(path)) load(result);
+      else if (isModelPath(path)) load(result);
       else addDoc(result.path, result.name, result.text);
     } catch (e) { setNotice(`Couldn't open ${baseName(path)}: ${e instanceof Error ? e.message : "unknown error"}`); }
     finally { opening.current.delete(path); }
@@ -125,8 +197,8 @@ export function App() {
     input.onchange = async () => {
       for (const f of input.files ?? []) {
         const text = await f.text();
-        if (!isSchemaPath(f.name)) addDoc(null, f.name, text);
-        else if (confirmDiscard()) load({ path: f.name, name: f.name, text });
+        if (isModelPath(f.name)) latest.current.load({ path: f.name, name: f.name, text });
+        else addDoc(null, f.name, text);
       }
     };
     input.click();
@@ -179,10 +251,12 @@ export function App() {
     } catch (e) { setNotice(`Couldn't export: ${e instanceof Error ? e.message : "unknown error"}`); }
   };
 
-  // --- The schema ---
-  const write = async (kind: "vdoo" | "mermaid" | "sql" | "svg", text: string, asNew: boolean) => {
-    const ext = { vdoo: "vdoo", mermaid: "mmd", sql: "sql", svg: "svg" }[kind];
-    const suggestedName = `${(file?.name ?? schema.name).replace(/\.vdoo$/i, "")}.${ext}`;
+  // --- The schema and the app ---
+  type SaveKind = "vdoo" | "vdooapp" | "mermaid" | "sql" | "svg";
+  const write = async (target: Slot, kind: SaveKind, text: string, asNew: boolean) => {
+    const ext = { vdoo: "vdoo", vdooapp: "vdooapp", mermaid: "mmd", sql: "sql", svg: "svg" }[kind];
+    const file = target === "app" ? appFile : schemaFile;
+    const suggestedName = `${stem(file?.name ?? (target === "app" ? app?.name ?? "app" : schema.name))}.${ext}`;
     if (!desktop) { download(text, suggestedName); return { path: null, name: suggestedName }; }
     try {
       const result = await desktop.save({ text, kind, suggestedName, file: asNew ? null : file?.path });
@@ -190,35 +264,95 @@ export function App() {
       return result;
     } catch (e) { setNotice(`Couldn't save: ${e instanceof Error ? e.message : "unknown error"}`); return null; }
   };
-  const saveSchema = async (asNew = false) => {
-    const result = await write("vdoo", serialize(schema), asNew);
+  /** Saves the schema as .vdoo or the app as .vdooapp. */
+  const saveModel = async (target: Slot, asNew = false) => {
+    const h = target === "app" ? ah : sh;
+    const current = h.schema;
+    const result = await write(target, target === "app" ? "vdooapp" : "vdoo", serialize(current), asNew);
     if (!result) return;
-    const name = result.name.replace(/\.vdoo$/i, "");
-    const next = schema.name === name ? schema : { ...schema, name };
-    if (next !== schema) commit(next);
-    setSaved(next); setFile(result);
+    const name = stem(result.name);
+    const next = current.name === name ? current : { ...current, name };
+    if (next !== current) h.commit(next);
+    if (target === "app") { setAppSaved(next); setAppFile(result); } else { setSchemaSaved(next); setSchemaFile(result); }
     setNotice(`Saved ${result.name}`);
   };
   const exportAs = async (kind: "mermaid" | "sql" | "svg") => {
-    if (kind === "svg" && !svg.current) { setNotice("Add a table first."); return; }
-    const text = kind === "mermaid" ? toMermaid(schema).text : kind === "sql" ? toSql(schema) : svg.current;
-    const result = await write(kind, text, true);
+    if (kind === "svg" && !cur.svg.current) { setNotice("Add a table first."); return; }
+    const text = kind === "mermaid" ? toMermaid(curSchema).text : kind === "sql" ? toSql(curSchema) : cur.svg.current;
+    const result = await write(slot, kind, text, true);
     if (result) setNotice(`Exported ${result.name}`);
   };
-  const newSchema = () => { if (confirmDiscard()) { const s = emptySchema(); reset(s); setSaved(s); setFile(null); setEditing(null); setActive(SCHEMA_TAB); setFitKey((k) => k + 1); } };
-  const addTable = () => { const t = newTable(schema); commit({ ...schema, tables: [...schema.tables, t] }); setActive(SCHEMA_TAB); setEditing({ kind: "table", id: t.id }); };
+  const newSchema = () => {
+    if (!confirmDiscardSchema()) return;
+    const s = emptySchema(); sh.reset(s); setSchemaSaved(s); setSchemaFile(null); setEditing(null); setActive(SCHEMA_TAB); setSchemaFit((k) => k + 1);
+  };
+  const addTable = () => {
+    if (slot === "app" && app) { const { app: next, model } = addModel(app, "New model"); commitApp(next); openStudio({ kind: "model", modelId: model.id, tab: "fields" }); return; }
+    const t = newTable(schema); sh.commit({ ...schema, tables: [...schema.tables, t] }); setActive(SCHEMA_TAB); setEditing({ kind: "table", id: t.id });
+  };
   const addRelation = () => { setActive(SCHEMA_TAB); setEditing({ kind: "relation", id: null }); };
+  /** Mermaid text (from the sidebar or the AI) always goes to the schema tab; the app is only edited in Studio. */
   const applyMermaid = (text: string) => {
-    try { commit({ ...fromMermaid(text, schema), name: schema.name }); setActive(SCHEMA_TAB); setNotice("Applied to the diagram. Undo with Ctrl+Z."); return null; }
-    catch (e) { const message = e instanceof Error ? e.message : "Couldn't read that diagram."; setNotice(message); return message; }
+    if (slot === "app" && schema.tables.length
+      && !window.confirm("This draws the Mermaid diagram in the schema tab, replacing its tables (Undo brings them back). The Odoo app isn't changed. Apply?")) return "Not applied.";
+    try {
+      sh.commit({ ...fromMermaid(text, schema), name: schema.name }); setActive(SCHEMA_TAB);
+      setNotice(slot === "app" ? "Applied to the schema tab; the app is unchanged. Undo with Ctrl+Z." : "Applied to the diagram. Undo with Ctrl+Z.");
+      return null;
+    } catch (e) { const message = e instanceof Error ? e.message : "Couldn't read that diagram."; setNotice(message); return message; }
+  };
+
+  // --- Studio: an Odoo app whose tables its diagram draws ---
+  const commitApp = useCallback((next: OdooApp) => ah.commit({ ...appSchema, odoo: next, ...appToSchema(next, appSchema) }), [ah.commit, appSchema]);
+  const openStudio = (page: StudioPage | null = studioPage) => { setStudioPage(page); setActive(STUDIO_TAB); };
+  const loadApp = (next: OdooApp) => openApp(appDocument(next), null, emptySchema());
+  const createApp = ({ name, model, version }: { name: string; model: string; version: OdooApp["odooVersion"] }, fromDiagram: boolean) => {
+    setEditing(null);
+    const next = fromDiagram ? { ...schemaToApp(schema, name), odooVersion: version } : newApp(name, model, version);
+    if (loadApp(next) && fromDiagram) setNotice(`Made ${next.models.length} models from the diagram. The schema tab is unchanged.`);
+  };
+  /** Puts a copy of the app's diagram in the schema tab, as plain tables; the app stays open. */
+  const copyAppDiagram = () => {
+    if (!app || !confirmDiscardSchema()) return;
+    const s = { ...emptySchema(app.name), ...appToSchema(app, appSchema) };
+    sh.reset(s); setSchemaSaved(emptySchema()); setSchemaFile(null); setEditing(null); setActive(SCHEMA_TAB); setSchemaFit((k) => k + 1);
+    setNotice(`Copied ${s.tables.length} tables to the schema tab.`);
+  };
+  const closeApp = () => {
+    if (!app || !confirmDiscardApp()) return;
+    const s = emptySchema(); ah.reset(s); setAppSaved(s); setAppFile(null); setStudioPage(null);
+    if (tabSlot === "app") setActive(SCHEMA_TAB);
+  };
+  const exportAddon = async () => {
+    if (!app) return;
+    if (appProblems.length && !window.confirm(`The app has ${appProblems.length} problem${appProblems.length > 1 ? "s" : ""}, so Odoo may refuse to install it. Export anyway?`)) return;
+    const files = generateAddon(app);
+    if (!desktop) { setNotice("Exporting an addon needs the desktop app. Copy the files from Studio › Generated code."); openStudio({ kind: "code" }); return; }
+    try {
+      const result = await desktop.exportAddon({ name: app.technicalName, files });
+      if (result) setNotice(`Exported ${result.count} files to ${result.path}`);
+    } catch (e) { setNotice(`Couldn't export: ${e instanceof Error ? e.message.replace(/^Error invoking remote method '[^']+': (Error: )?/, "") : "unknown error"}`); }
+  };
+  /** In the schema, tables and lines open their editors; in the app's diagram, the model and field they come from. */
+  const openTable = (id: string, target: Slot = slot) => {
+    if (target === "schema") { setEditing({ kind: "table", id }); return; }
+    const model = app && id.startsWith("t_") ? modelById(app, id.slice(2)) : undefined;
+    if (model) openStudio({ kind: "model", modelId: model.id, tab: "fields" });
+    else setNotice("That table belongs to Odoo or is created by a many2many field; it isn't edited in this app.");
+  };
+  const openRelation = (id: string, target: Slot = slot) => {
+    if (target === "schema") { setEditing({ kind: "relation", id }); return; }
+    const m = /^(?:r|m2m)_([^_]+)_([^_]+)/.exec(id);
+    if (app && m && modelById(app, m[1])) openStudio({ kind: "model", modelId: m[1], tab: "fields", fieldId: m[2] });
   };
 
   // --- Commands shared by the menu bar, the toolbar and the keyboard ---
-  const save = (asNew = false) => void (doc ? saveDoc(doc, asNew) : saveSchema(asNew));
+  const save = (asNew = false) => void (doc ? saveDoc(doc, asNew) : saveModel(slot, asNew));
   /** Cut, copy, paste and the like act on whatever has the focus; in a file tab so do undo and redo. */
   const editCommand = (command: EditCommand) => void (desktop ? desktop.edit(command) : document.execCommand(command));
-  const undoActive = () => (onSchema ? undo() : editCommand("undo"));
-  const redoActive = () => (onSchema ? redo() : editCommand("redo"));
+  const undoActive = () => (onModel ? cur.h.undo() : editCommand("undo"));
+  const redoActive = () => (onModel ? cur.h.redo() : editCommand("redo"));
+  const closeActive = () => { if (doc) closeDoc(doc.id); else if (tabSlot === "app") closeApp(); };
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -232,18 +366,19 @@ export function App() {
       else if (key === "o") { event.preventDefault(); void (event.shiftKey ? openFolder() : openFiles()); }
       else if (key === "n") { event.preventDefault(); if (event.shiftKey) newSchema(); else newDoc(); }
       else if (key === "p" && !event.shiftKey) { event.preventDefault(); if (doc) void exportPdf(doc); }
-      else if (key === "w") { event.preventDefault(); if (doc) closeDoc(doc.id); }
+      else if (key === "w") { event.preventDefault(); closeActive(); }
       else if (key === "f" && !event.shiftKey) { event.preventDefault(); if (doc) window.dispatchEvent(new Event(FIND_EVENT)); }
       else if (key === "b" && event.shiftKey) { event.preventDefault(); setSideOpen((v) => !v); }
-      else if (!onSchema) return;
-      else if (!typing && key === "z" && !event.shiftKey) { event.preventDefault(); undo(); }
-      else if (!typing && (key === "y" || (key === "z" && event.shiftKey))) { event.preventDefault(); redo(); }
+      else if (!onModel) return;
+      else if (!typing && key === "z" && !event.shiftKey) { event.preventDefault(); cur.h.undo(); }
+      else if (!typing && (key === "y" || (key === "z" && event.shiftKey))) { event.preventDefault(); cur.h.redo(); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   });
 
   const showPanel = (panel: typeof tab) => { setTab(panel); setSideOpen(true); };
+  const onAppSlot = slot === "app";
   const menus: Menu[] = [
     { label: "File", items: [
       { label: "New file", shortcut: "Ctrl+N", onSelect: newDoc },
@@ -256,17 +391,18 @@ export function App() {
       { label: "Save as…", shortcut: "Ctrl+Shift+S", onSelect: () => save(true) },
       "separator",
       { label: "Export as PDF…", shortcut: "Ctrl+P", disabled: !doc, onSelect: () => { if (doc) void exportPdf(doc); } },
-      { label: "Export schema as Mermaid…", onSelect: () => void exportAs("mermaid") },
-      { label: "Export schema as SQL…", onSelect: () => void exportAs("sql") },
-      { label: "Export schema as image (SVG)…", onSelect: () => void exportAs("svg") },
+      { label: `Export ${onAppSlot ? "app diagram" : "schema"} as Mermaid…`, onSelect: () => void exportAs("mermaid") },
+      { label: `Export ${onAppSlot ? "app diagram" : "schema"} as SQL…`, onSelect: () => void exportAs("sql") },
+      { label: `Export ${onAppSlot ? "app diagram" : "schema"} as image (SVG)…`, onSelect: () => void exportAs("svg") },
+      { label: "Export Odoo addon…", disabled: !app, onSelect: () => void exportAddon() },
       "separator",
-      { label: "Close tab", shortcut: "Ctrl+W", disabled: onSchema, onSelect: () => { if (doc) closeDoc(doc.id); } },
+      { label: "Close tab", shortcut: "Ctrl+W", disabled: active === SCHEMA_TAB, onSelect: closeActive },
       { label: "Settings…", onSelect: () => setEditing({ kind: "settings" }) },
       ...(desktop ? ["separator" as const, { label: "Exit", onSelect: () => window.close() }] : []),
     ] },
     { label: "Edit", items: [
-      { label: "Undo", shortcut: "Ctrl+Z", disabled: onSchema && !canUndo, onSelect: undoActive },
-      { label: "Redo", shortcut: "Ctrl+Y", disabled: onSchema && !canRedo, onSelect: redoActive },
+      { label: "Undo", shortcut: "Ctrl+Z", disabled: onModel && !cur.h.canUndo, onSelect: undoActive },
+      { label: "Redo", shortcut: "Ctrl+Y", disabled: onModel && !cur.h.canRedo, onSelect: redoActive },
       "separator",
       { label: "Cut", shortcut: "Ctrl+X", onSelect: () => editCommand("cut") },
       { label: "Copy", shortcut: "Ctrl+C", onSelect: () => editCommand("copy") },
@@ -276,8 +412,20 @@ export function App() {
       { label: "Find…", shortcut: "Ctrl+F", disabled: !doc, onSelect: () => window.dispatchEvent(new Event(FIND_EVENT)) },
     ] },
     { label: "Schema", items: [
-      { label: "Add table", onSelect: addTable },
-      { label: "Add relationship", disabled: !schema.tables.length, onSelect: addRelation },
+      { label: onAppSlot ? "Add model" : "Add table", onSelect: addTable },
+      { label: "Add relationship", disabled: !schema.tables.length || onAppSlot, onSelect: addRelation },
+    ] },
+    { label: "Studio", items: [
+      { label: "New Odoo app…", onSelect: () => setEditing({ kind: "new-app", fromDiagram: false }) },
+      { label: "Make an Odoo app from the schema diagram…", disabled: !schema.tables.length, onSelect: () => setEditing({ kind: "new-app", fromDiagram: true }) },
+      { label: "Open the example app", onSelect: () => loadApp(exampleApp()) },
+      "separator",
+      { label: "Open Studio", disabled: !app, onSelect: () => openStudio() },
+      { label: "Open the app's diagram", disabled: !app, onSelect: showAppDiagram },
+      { label: "Export Odoo addon…", disabled: !app, onSelect: () => void exportAddon() },
+      "separator",
+      { label: "Copy the app's diagram to the schema tab", disabled: !app, onSelect: copyAppDiagram },
+      { label: "Close the app", disabled: !app, onSelect: closeApp },
     ] },
     { label: "Mode", items: MODES.map((mode) => ({ label: MODE_LABELS[mode], shortcut: `Ctrl+Alt+${mode[0].toUpperCase()}`, disabled: !doc, checked: doc?.mode === mode, onSelect: () => setMode(mode) })) },
     { label: "View", items: [
@@ -295,6 +443,7 @@ export function App() {
     : editing?.kind === "relation" && editing.id ? { kind: "relation" as const, id: editing.id } : null;
   const sideTab = (id: typeof tab, label: string) =>
     <button role="tab" aria-selected={tab === id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>{label}</button>;
+  const dot = <span className="dirty" aria-label="Unsaved changes"> •</span>;
 
   return <div className="app">
     <header className="topbar">
@@ -308,8 +457,8 @@ export function App() {
       {desktop && <button className="btn ghost" title="Open folder (Ctrl+Shift+O)" onClick={() => void openFolder()}>Open folder</button>}
       <button className="btn ghost" title="Save (Ctrl+S)" onClick={() => save()}>Save</button>
       <span className="sep" />
-      <button className="btn ghost" title="Undo (Ctrl+Z)" disabled={onSchema && !canUndo} onClick={undoActive}>Undo</button>
-      <button className="btn ghost" title="Redo (Ctrl+Y)" disabled={onSchema && !canRedo} onClick={redoActive}>Redo</button>
+      <button className="btn ghost" title="Undo (Ctrl+Z)" disabled={onModel && !cur.h.canUndo} onClick={undoActive}>Undo</button>
+      <button className="btn ghost" title="Redo (Ctrl+Y)" disabled={onModel && !cur.h.canRedo} onClick={redoActive}>Redo</button>
       <span className="sep" />
       {doc ? <div className="segmented" role="group" aria-label="Editor mode">
         {MODES.map((mode) => <button key={mode} className={`btn ghost${doc.mode === mode ? " active" : ""}`} aria-pressed={doc.mode === mode}
@@ -321,9 +470,10 @@ export function App() {
         <button className="btn ghost" title="Zoom in" aria-label="Zoom in" disabled={docZoom >= DOC_ZOOM_MAX} onClick={() => zoomDocs(1.1)}>+</button>
       </div>}
       {doc && <button className="btn ghost" title="Export as PDF (Ctrl+P)" onClick={() => void exportPdf(doc)}>Export PDF</button>}
-      {!doc && <>
-        <button className="btn primary" onClick={addTable}>+ Table</button>
-        <button className="btn ghost" disabled={!schema.tables.length} onClick={addRelation}>+ Relationship</button>
+      {onStudio && <button className="btn primary" onClick={() => void exportAddon()}>Export addon…</button>}
+      {!doc && !onStudio && <>
+        <button className="btn primary" onClick={addTable}>{onAppSlot ? "+ Model" : "+ Table"}</button>
+        {!onAppSlot && <button className="btn ghost" disabled={!schema.tables.length} onClick={addRelation}>+ Relationship</button>}
         <select className="btn ghost" aria-label="Export" value="" onChange={(e) => { const v = e.target.value; e.target.value = ""; if (v) void exportAs(v as "mermaid" | "sql" | "svg"); }}>
           <option value="">Export…</option><option value="mermaid">Mermaid (.mmd)</option><option value="sql">SQL (.sql)</option><option value="svg">Image (.svg)</option>
         </select>
@@ -334,53 +484,71 @@ export function App() {
     </div>
 
     <div className="workspace">
-      {sideOpen && <aside className="sidebar">
+      {/* Studio has its own navigation, so the sidebar steps aside to give the designer room. */}
+      {sideOpen && !onStudio && <aside className="sidebar">
         <div className="tabs" role="tablist" aria-label="Sidebar">{sideTab("files", "Files")}{sideTab("tables", "Tables")}{sideTab("source", "Mermaid")}</div>
-        {tab === "files" ? <Explorer folder={folder} activePath={doc ? doc.path : file?.path ?? null} version={treeVersion}
+        {tab === "files" ? <Explorer folder={folder} activePath={doc ? doc.path : cur.file?.path ?? null} version={treeVersion}
           onOpenFile={(path) => void openPath(path)} onChooseFolder={() => void openFolder()} onRefresh={() => setTreeVersion((v) => v + 1)} />
-          : tab === "tables" ? <Outline schema={schema} onTable={(id) => setEditing({ kind: "table", id })} onRelation={(id) => setEditing({ kind: "relation", id })}
-            onExample={() => { if (confirmDiscard()) { const s = fromMermaid(EXAMPLE); reset({ ...s, name: "Example shop" }); setSaved(emptySchema()); setFile(null); setActive(SCHEMA_TAB); setFitKey((k) => k + 1); } }} />
-            : <Source schema={schema} onApply={applyMermaid} />}
+          : tab === "tables" ? <Outline schema={curSchema} onTable={(id) => openTable(id)} onRelation={(id) => openRelation(id)}
+            onExample={() => { if (confirmDiscardSchema()) { const s = fromMermaid(EXAMPLE); sh.reset({ ...s, name: "Example shop" }); setSchemaSaved(emptySchema()); setSchemaFile(null); setActive(SCHEMA_TAB); setSchemaFit((k) => k + 1); } }} />
+            : <Source schema={curSchema} onApply={applyMermaid} />}
       </aside>}
 
       <main className="main">
         <div className="doc-tabs" role="tablist" aria-label="Open files">
-          <div className={`doc-tab${onSchema ? " active" : ""}`}>
-            <button role="tab" aria-selected={onSchema} className="doc-tab-name" title={file?.path ?? "The schema and its diagram"} onClick={() => setActive(SCHEMA_TAB)}>
-              <span className="doc-tab-kind" aria-hidden="true">◈</span>{schemaName}{dirty && <span className="dirty" aria-label="Unsaved changes"> •</span>}
+          <div className={`doc-tab${active === SCHEMA_TAB ? " active" : ""}`}>
+            <button role="tab" aria-selected={active === SCHEMA_TAB} className="doc-tab-name" title={schemaFile?.path ?? "The schema and its diagram"} onClick={() => setActive(SCHEMA_TAB)}>
+              <span className="doc-tab-kind" aria-hidden="true">◈</span>{schemaName}{schemaDirty && dot}
             </button>
             {/* Closing the schema leaves an empty one: the first tab is always the schema. */}
-            {(file || schema.tables.length > 0) && <button className="doc-tab-close" title="Close schema" aria-label={`Close ${schemaName}`} onClick={newSchema}>×</button>}
+            {(schemaFile || schema.tables.length > 0) && <button className="doc-tab-close" title="Close schema" aria-label={`Close ${schemaName}`} onClick={newSchema}>×</button>}
           </div>
+          {app && <>
+            <div className={`doc-tab${onStudio ? " active" : ""}`} onAuxClick={(event) => { if (event.button === 1) closeApp(); }}>
+              <button role="tab" aria-selected={onStudio} className="doc-tab-name" title={appFile?.path ?? "Design the Odoo app's models, views and menus (not saved yet)"} onClick={() => openStudio()}>
+                <span className="doc-tab-kind" aria-hidden="true">◧</span>Studio: {app.name}{appDirty && dot}</button>
+              <button className="doc-tab-close" title="Close the app (Ctrl+W)" aria-label={`Close app ${app.name}`} onClick={closeApp}>×</button>
+            </div>
+            <div className={`doc-tab${onAppDiagram ? " active" : ""}`}>
+              <button role="tab" aria-selected={onAppDiagram} className="doc-tab-name" title="The tables the app's models create" onClick={showAppDiagram}>
+                <span className="doc-tab-kind" aria-hidden="true">◈</span>Diagram: {app.name}</button>
+            </div>
+          </>}
           {docs.map((d) => <div key={d.id} className={`doc-tab${d.id === active ? " active" : ""}`}
             onAuxClick={(event) => { if (event.button === 1) closeDoc(d.id); }}>
             <button role="tab" aria-selected={d.id === active} className="doc-tab-name" title={d.path ?? "Not saved yet"} onClick={() => setActive(d.id)}>
-              {d.name}{d.content !== d.saved && <span className="dirty" aria-label="Unsaved changes"> •</span>}
+              {d.name}{d.content !== d.saved && dot}
             </button>
             <button className="doc-tab-close" title="Close tab (Ctrl+W)" aria-label={`Close ${d.name}`} onClick={() => closeDoc(d.id)}>×</button>
           </div>)}
         </div>
-        <div className="canvas" hidden={!onSchema}>
-          <Diagram schema={schema} selected={selected} comments={diagramComments} fitKey={fitKey} onSvg={(s) => { svg.current = s; }}
-            onTable={(id) => setEditing({ kind: "table", id })} onRelation={(id) => setEditing({ kind: "relation", id })} />
+        <div className="canvas" hidden={active !== SCHEMA_TAB}>
+          <Diagram schema={schema} selected={selected} comments={diagramComments} fitKey={schemaFit} onSvg={(s) => { schemaSvg.current = s; }}
+            onTable={(id) => openTable(id, "schema")} onRelation={(id) => openRelation(id, "schema")} />
         </div>
+        {app && <div className="canvas" hidden={!onAppDiagram}>
+          <Diagram schema={appSchema} selected={null} comments={diagramComments} fitKey={appFit} onSvg={(s) => { appSvg.current = s; }}
+            onTable={(id) => openTable(id, "app")} onRelation={(id) => openRelation(id, "app")} />
+        </div>}
+        {app && onStudio && <StudioView app={app} onApp={commitApp} problems={appProblems} onExport={() => void exportAddon()} page={studioPage} onPage={setStudioPage} />}
         {docs.map((d) => <DocEditor key={d.id} doc={d} hidden={d.id !== active} zoom={docZoom} onChange={changeDoc} />)}
         <div className="statusbar">
           {doc ? <><span>{MODE_LABELS[doc.mode]}</span><span className="status-path">{doc.path ?? "Not saved yet"}</span></>
-            : <><span>{schema.tables.length} tables · {schema.relations.length} relationships</span>
+            : <><span>{onAppSlot && app ? `Odoo app ${app.technicalName} · ${app.models.length} models · ` : ""}{curSchema.tables.length} tables · {curSchema.relations.length} relationships</span>
               {problems.length > 0 && <span className="warn" title={problems.join("\n")}>{problems.length} problem{problems.length > 1 ? "s" : ""}: {problems[0]}</span>}</>}
         </div>
         {notice && <div className="toast" role="status">{notice}</div>}
       </main>
 
-      {aiOpen && <AiPanel schema={schema} onApply={(text) => void applyMermaid(text)} onSettings={() => setEditing({ kind: "settings" })} onClose={() => setAiOpen(false)} />}
+      {aiOpen && <AiPanel schema={curSchema} onApply={(text) => void applyMermaid(text)} onSettings={() => setEditing({ kind: "settings" })} onClose={() => setAiOpen(false)} />}
     </div>
 
-    {editing?.kind === "table" && tableById(schema, editing.id) && <TableEditor key={editing.id} schema={schema} tableId={editing.id} onSave={commit}
+    {editing?.kind === "table" && tableById(schema, editing.id) && <TableEditor key={editing.id} schema={schema} tableId={editing.id} onSave={sh.commit}
       onOpenRelation={(id) => setEditing({ kind: "relation", id })} onClose={() => setEditing(null)} />}
-    {editing?.kind === "relation" && <RelationEditor key={editing.id ?? "new"} schema={schema} relationId={editing.id} onSave={commit}
+    {editing?.kind === "relation" && <RelationEditor key={editing.id ?? "new"} schema={schema} relationId={editing.id} onSave={sh.commit}
       onOpenTable={(id) => setEditing({ kind: "table", id })} onClose={() => setEditing(null)} />}
     {editing?.kind === "settings" && <Settings onClose={() => setEditing(null)} />}
+    {editing?.kind === "new-app" && <NewAppDialog fromDiagram={editing.fromDiagram} onClose={() => setEditing(null)} onCreate={(input) => createApp(input, editing.fromDiagram)} />}
   </div>;
 }
 

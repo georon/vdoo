@@ -1,4 +1,6 @@
 // The schema vdoo edits. The .vdoo file holds this as JSON; the Mermaid text and SQL are generated from it.
+import type { OdooApp } from "./odoo/studioModel";
+import { normalizeApp } from "./odoo/normalize";
 
 export interface Column {
   id: string;
@@ -43,6 +45,8 @@ export interface Schema {
   name: string;
   tables: Table[];
   relations: Relation[];
+  /** An Odoo app designed in Studio. When set, the tables and relationships are derived from it. */
+  odoo?: OdooApp;
 }
 
 export const CARDINALITY: Record<Cardinality, string> = {
@@ -181,9 +185,14 @@ export function connect(schema: Schema, parentId: string, childId: string): { sc
   return { schema: { ...withChild, relations: [...withChild.relations, relation] }, relation };
 }
 
+/** A schema that carries an Odoo app (saved as .vdooapp) rather than a plain ER diagram (.vdoo). */
+export const isAppSchema = (schema: Schema): schema is Schema & { odoo: NonNullable<Schema["odoo"]> } => !!schema.odoo;
+
 // ── Files ──────────────────────────────────────────────────────────────────────────────────
 export function serialize(schema: Schema) {
-  return JSON.stringify({ format: "vdoo", version: 1, ...schema }, null, 2) + "\n";
+  const { odoo, ...rest } = schema;
+  // Version 2 only adds the optional "odoo" key, so plain diagrams stay version 1 files.
+  return JSON.stringify(odoo ? { format: "vdoo", version: 2, ...rest, odoo } : { format: "vdoo", version: 1, ...rest }, null, 2) + "\n";
 }
 
 const str = (v: unknown, fallback = "") => (typeof v === "string" ? v : fallback);
@@ -208,5 +217,6 @@ export function deserialize(text: string): Schema {
     columns: (Array.isArray(r.columns) ? r.columns : []).filter((p: Record<string, unknown>) => typeof p?.fk === "string" && typeof p?.ref === "string")
       .map((p: KeyPair) => ({ fk: p.fk, ref: p.ref })),
   }));
-  return { name: str(data.name, "Untitled"), tables, relations };
+  const odoo = data.odoo === undefined ? null : normalizeApp(data.odoo);
+  return { name: str(data.name, "Untitled"), tables, relations, ...(odoo ? { odoo } : {}) };
 }

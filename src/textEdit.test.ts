@@ -33,6 +33,12 @@ describe('modeForPath', () => {
     assert.strictEqual(E.isSchemaPath('/a/shop.MMD'), true)
     assert.strictEqual(E.isSchemaPath('/a/shop.md'), false)
   })
+  test('Odoo app files are told apart from schemas', () => {
+    assert.strictEqual(E.isAppPath('/a/shop.vdooapp'), true)
+    assert.strictEqual(E.isAppPath('/a/shop.VDOOAPP'), true)
+    assert.strictEqual(E.isAppPath('/a/shop.vdoo'), false)
+    assert.strictEqual(E.isSchemaPath('/a/shop.vdooapp'), false)
+  })
   test('every mode has a default file name', () => {
     assert.deepEqual(Object.keys(E.DEFAULT_NAMES).sort(), ['markdown', 'rich', 'text'])
   })

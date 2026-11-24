@@ -48,6 +48,7 @@ small tabbed editor for the text, Markdown and HTML files that sit next to it.
 | Close tab | Ctrl+W |
 | Text / Rich text / Markdown mode | Ctrl+Alt+T / Ctrl+Alt+R / Ctrl+Alt+M |
 | Show or hide the sidebar | Ctrl+Shift+B |
+| Find in the file (Enter: next match, Shift+Enter: previous) | Ctrl+F |
 | Bold / Italic / Link (Markdown) | Ctrl+B / Ctrl+I / Ctrl+K |
 
 Things to know: the page can only read and write inside the folder you opened and the files you picked in a dialog.
@@ -75,10 +76,17 @@ standalone Claude Code install or the copy inside Claude for Windows, signed in 
 vdoo runs it with every tool disabled. ChatGPT uses "Sign in with ChatGPT"; a custom endpoint takes a base URL, an
 optional key (stored with the OS credential store) and a model.
 
+## Odoo connection
+
+**Settings › Odoo** holds the Odoo URL, the admin user (`admin` unless you change it) and, optionally, the database
+(left empty, vdoo uses the server's only database). **Test connection** asks for the password and signs in. The
+password is never saved: vdoo asks for it each time it connects and uses it for that sign-in only. Addresses must use
+https, except on this computer or your local network, where vdoo asks before the first connection.
+
 ## Tests
 
 ```
-npm test            # model, Mermaid, SQL, text-editing and PDF tests, the Odoo diagrams; Claude Code lookup and file access tests
+npm test            # model, Mermaid, SQL, text-editing and PDF tests, the Odoo diagrams; Claude Code lookup, file access and Odoo connection tests
 npm run build && npm run smoke              # drives the built app in a hidden window
 VDOO_SMOKE_AI=1 npm run smoke               # also asks your AI provider to change the schema
 ```

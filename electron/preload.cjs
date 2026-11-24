@@ -16,6 +16,8 @@ contextBridge.exposeInMainWorld("vdooDesktop", {
   onCloseRequested: (callback) => subscribe("vdoo:close-requested", callback),
   edit: (command) => ipcRenderer.invoke("vdoo:edit", command),
   exportPdf: (request) => ipcRenderer.invoke("vdoo:export-pdf", request),
+  /** Writes a generated Odoo addon as a folder where the user picks. Null when cancelled. */
+  exportAddon: (request) => ipcRenderer.invoke("vdoo:export-addon", request),
   files: {
     workspace: () => ipcRenderer.invoke("vdoo:files-workspace"),
     chooseFolder: () => ipcRenderer.invoke("vdoo:files-choose-folder"),
