@@ -9,5 +9,10 @@ const electron = createRequire(import.meta.url)("electron");
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const env = { ...process.env };
 delete env.ELECTRON_RUN_AS_NODE;
-const child = spawn(electron, [root, ...process.argv.slice(2)], { stdio: "inherit", env });
+// Ubuntu 23.10+ blocks unprivileged user namespaces (kernel.apparmor_restrict_unprivileged_userns=1), so Chromium
+// falls back to the SUID chrome-sandbox helper, which npm installs without root ownership and Electron aborts.
+// The GPU process has its own sandbox and dies ("GPU process isn't usable") unless that is disabled too.
+// This launcher is for local development only; packaged builds keep the sandbox.
+const sandboxArgs = process.platform === "linux" ? ["--no-sandbox", "--disable-gpu-sandbox"] : [];
+const child = spawn(electron, [...sandboxArgs, root, ...process.argv.slice(2)], { stdio: "inherit", env });
 child.on("exit", (code) => process.exit(code ?? 0));
